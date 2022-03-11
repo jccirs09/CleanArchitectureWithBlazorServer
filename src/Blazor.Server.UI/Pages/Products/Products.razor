@@ -4,6 +4,7 @@
 @using CleanArchitecture.Blazor.Application.Features.Products.Commands.Import
 @using CleanArchitecture.Blazor.Application.Features.Products.DTOs
 @using CleanArchitecture.Blazor.Application.Features.Products.Queries.Export
+@using CleanArchitecture.Blazor.Application.Features.Products.Queries.GetAll
 @using CleanArchitecture.Blazor.Application.Features.Products.Queries.Pagination
 @using CleanArchitecture.Blazor.Application.Features.Products.Commands.AddEdit
 
@@ -219,9 +220,12 @@
     }
     private async Task<TableData<ProductDto>> ServerReload(TableState state)
     {
+        var userlclaim = await AuthState;
+        var _userId = userlclaim.User.GetUserName();
         _loading = true;
-        var request = new ProductsWithPaginationQuery()
+        var request = new GetAllProductsQuery()
             {
+                UserId = _userId,
                 Keyword = _searchString,
                 OrderBy = string.IsNullOrEmpty(state.SortLabel) ? "Id" : state.SortLabel,
                 SortDirection = (state.SortDirection == SortDirection.None ? SortDirection.Descending.ToString() : state.SortDirection.ToString()),
