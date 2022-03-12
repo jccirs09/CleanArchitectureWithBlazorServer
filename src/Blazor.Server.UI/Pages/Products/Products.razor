@@ -221,7 +221,7 @@
     private async Task<TableData<ProductDto>> ServerReload(TableState state)
     {
         var userlclaim = await AuthState;
-        var _userId = userlclaim.User.GetUserName();
+        var _userId = userlclaim.User.GetUserId();
         _loading = true;
         var request = new GetAllProductsQuery()
             {
