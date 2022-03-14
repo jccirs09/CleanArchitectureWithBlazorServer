@@ -13,5 +13,7 @@ public interface IApplicationDbContext
     DbSet<Document> Documents { get; set; }
     DbSet<KeyValue> KeyValues { get; set; }
     DbSet<Product> Products { get; set; }
+    DbSet<Investment> Investments { get; set; }
+    DbSet<Wallet> Wallets { get; set; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

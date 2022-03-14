@@ -20,6 +20,13 @@ public class MenuService : IMenuService
                 },
                 new()
                 {
+                    Title = "Investments",
+                    Icon = Icons.Material.Filled.Money,
+                    Href = "/investor/investments",
+                    PageStatus = PageStatus.Completed
+                },
+                new()
+                {
                     Title = "E-Commerce",
                     Icon = Icons.Material.Filled.ShoppingCart,
                     PageStatus = PageStatus.Completed,

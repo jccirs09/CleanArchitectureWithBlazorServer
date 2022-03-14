@@ -1,0 +1,205 @@
+@page "/investor/investments"
+
+@using CleanArchitecture.Blazor.Application.Features.Investments.Commands.AddEdit
+@using CleanArchitecture.Blazor.Application.Features.Investments.DTOs
+@using CleanArchitecture.Blazor.Application.Features.Investments.Queries.GetAll
+@using CleanArchitecture.Blazor.Application.Features.Products.Commands.Delete
+@using CleanArchitecture.Blazor.Application.Features.Products.Commands.Import
+@using CleanArchitecture.Blazor.Application.Features.Products.DTOs
+@using CleanArchitecture.Blazor.Application.Features.Products.Queries.Export
+@using CleanArchitecture.Blazor.Application.Features.Products.Queries.GetAll
+@using CleanArchitecture.Blazor.Application.Features.Products.Queries.Pagination
+@using CleanArchitecture.Blazor.Application.Features.Products.Commands.AddEdit
+
+@inject IJSRuntime JS
+@inject IStringLocalizer<Investments> L
+<PageTitle>@Title</PageTitle>
+<style>
+    .mud-table-toolbar {
+        height: 84px !important;
+    }
+</style>
+<ErrorBoundary>
+    <ChildContent>
+        <MudTable Items="@_investorsInvestmentsList"
+                  FixedHeader="true"
+                  FixedFooter="true"
+                  Height="calc(100vh - 265px)"
+                  Loading="@_loading"
+                  SortLabel="@L["Sort By"]"
+                  MultiSelection="true" @bind-SelectedItems="_selectedItems"
+                  Hover="true" @ref="_table">
+            <ToolBarContent>
+                <div class="justify-start pt-3">
+                    <MudText Typo="Typo.h6">@L["Investment"]</MudText>
+                    <MudHidden Breakpoint="Breakpoint.SmAndDown">
+                        <MudButton DisableElevation Variant="Variant.Outlined"
+                                   Size="Size.Small"
+                                   OnClick="@(()=>OnRefresh())"
+                                   StartIcon="@Icons.Material.Filled.Refresh" IconColor="Color.Surface" Color="Color.Primary"
+                                   Style="margin-right: 4px; margin-bottom:4px">@L["Refresh"]</MudButton>
+                        @if (_canCreate)
+                        {
+                            <MudButton DisableElevation Variant="Variant.Outlined" Color="Color.Primary"
+                                   StartIcon="@Icons.Material.Filled.Add"
+                                   Size="Size.Small"
+                                   OnClick="OnCreate"
+                                   Style="margin-right: 4px; margin-bottom:4px"
+                                   IconColor="Color.Surface">@L["Create"]</MudButton>
+                        }
+                       
+                       
+                    </MudHidden>
+                    <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
+                        <MudMenu AnchorOrigin="Origin.BottomLeft" StartIcon="@Icons.Filled.KeyboardCommandKey" EndIcon="@Icons.Filled.KeyboardArrowDown" Label="@L["Action"]" Color="Color.Primary" Variant="Variant.Filled">
+                            <MudMenuItem OnClick="@(()=>OnRefresh())">Refresh</MudMenuItem>
+                            @if (_canCreate)
+                            {
+                                <MudMenuItem OnClick="OnCreate">@L["Create"]</MudMenuItem>
+                            }                           
+                        </MudMenu>
+                    </MudHidden>
+                </div>
+                <MudSpacer />
+                <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            </ToolBarContent>
+            <ColGroup>
+                <col style="width:50px;" />
+            </ColGroup>
+            <HeaderContent>
+                <MudTh Style="text-align:right"><MudTableSortLabel SortLabel="Amount" T="InvestmentDto">@L["Amount"]</MudTableSortLabel></MudTh>
+                <MudTh Style="text-align:right"><MudTableSortLabel SortLabel="DailyRate" T="InvestmentDto">@L["Daily Rate"]</MudTableSortLabel></MudTh>
+                <MudTh ><MudTableSortLabel SortLabel="Stat" T="InvestmentDto">@L["Stat"]</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortLabel="ProofType" T="InvestmentDto">@L["Proof Type"]</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortLabel="InvestedDate" T="InvestmentDto">@L["Invested Date"]</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortLabel="EndOfInvestment" T="InvestmentDto">@L["End of Investment"]</MudTableSortLabel></MudTh>
+            </HeaderContent>
+            <RowTemplate>               
+                <MudTd DataLabel="Amount" Style="text-align:right">@context.Amount.ToString("C2")</MudTd>
+                <MudTd DataLabel="DailyRate" Style="text-align:right">@context.DailyRate.ToString("C2")</MudTd>
+                <MudTd DataLabel="Stat">@context.Stat</MudTd>
+                <MudTd DataLabel="ProofType">@context.ProofType</MudTd>
+                <MudTd DataLabel="InvestedDate">@context.Created</MudTd>
+                <MudTd DataLabel="EndOfInvestment">@context.EndOfInvestment</MudTd>
+            </RowTemplate>
+            <NoRecordsContent>
+                <MudText>@L["No matching records found"]</MudText>
+            </NoRecordsContent>
+            <LoadingContent>
+                <MudText>@L["Loading.."].</MudText>
+            </LoadingContent>
+            <PagerContent>
+                <MudTablePager />
+            </PagerContent>
+        </MudTable>
+    </ChildContent>
+    <ErrorContent>
+        <CustomError Exception="context"></CustomError>
+    </ErrorContent>
+</ErrorBoundary>
+@code {
+    public string? Title { get; private set; }
+    private HashSet<InvestmentDto> _selectedItems = new HashSet<InvestmentDto>();
+    private MudTable<InvestmentDto> _table = default!;
+    private IEnumerable<InvestmentDto> _investorsInvestmentsList = new List<InvestmentDto>();
+    private int _totalItems;
+    private string _searchString = string.Empty;
+    private bool _loading;
+    private bool _uploading;
+    private bool _downloading;
+    [Inject]
+    private ISender _mediator { get; set; } = default!;
+    [CascadingParameter]
+    protected Task<AuthenticationState> AuthState { get; set; } = default!;
+
+
+    private bool _canSearch;
+    private bool _canCreate;
+    private bool _canEdit;
+    private bool _canDelete;
+    private bool _canImport;
+    private bool _canExport;
+    protected override async Task OnInitializedAsync()
+    {
+        Title = L["Investments"];
+        var state = await AuthState;
+        _canCreate = (await AuthService.AuthorizeAsync(state.User, Permissions.Products.Create)).Succeeded;
+        _canSearch = (await AuthService.AuthorizeAsync(state.User, Permissions.Products.Search)).Succeeded;
+        _canEdit = (await AuthService.AuthorizeAsync(state.User, Permissions.Products.Edit)).Succeeded;
+        _canDelete = (await AuthService.AuthorizeAsync(state.User, Permissions.Products.Delete)).Succeeded;
+        _canImport = (await AuthService.AuthorizeAsync(state.User, Permissions.Products.Import)).Succeeded;
+        _canExport = (await AuthService.AuthorizeAsync(state.User, Permissions.Products.Export)).Succeeded;
+        await LoadData();
+    }
+    private async Task LoadData()
+    {        
+        _loading = true;
+        var request = new GetAllInvestmentsQuery();       
+        _investorsInvestmentsList = await _mediator.Send(request);
+        _loading = false;
+
+
+    }
+    private async Task OnSearch(string text)
+    {
+        _searchString = text;
+        await LoadData();
+    }
+    private async Task OnRefresh()
+    {
+        _searchString = string.Empty;
+        await LoadData();
+    }
+    private async Task OnCreate()
+    {
+        var command = new AddEditInvestmentCommand();  
+
+        command.Stat = "Pending";
+        command.DailyRate = (command.DailyRate * 2.7M) / 540;
+        command.IsActive = false;
+        command.EndOfInvestment = DateTime.Now.AddDays(540);
+      
+        var parameters = new DialogParameters
+            {
+                { nameof(_InvestmentFormDialog.model),command },
+            };
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        var dialog = DialogService.Show<_InvestmentFormDialog>(L["Add Investment"], parameters, options);
+        var state = await dialog.Result;
+        if (!state.Cancelled)
+        {
+            var result = await _mediator.Send(command);
+            await LoadData();
+            Snackbar.Add($"{L["Invested successfully"]}", MudBlazor.Severity.Success);
+        }
+    }
+    private async Task OnEdit(InvestmentDto dto)
+    {
+        var command = new AddEditInvestmentCommand()
+            {
+                Id = dto.Id,
+                Amount = dto.Amount,
+                Stat = dto.Stat,
+                DailyRate = dto.DailyRate,
+                IsActive = dto.IsActive,
+                ProofType = dto.ProofType,
+                ImageDateUrl = dto.ImageDateUrl,
+                EndOfInvestment = dto.EndOfInvestment
+            };
+        var parameters = new DialogParameters
+            {
+                { nameof(_InvestmentFormDialog.model),command },
+            };
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        var dialog = DialogService.Show<_InvestmentFormDialog>(L["Edit the product"], parameters, options);
+        var state = await dialog.Result;
+        if (!state.Cancelled)
+        {
+            var result = await _mediator.Send(command);
+            await LoadData();
+            Snackbar.Add($"{L["Invested successfully"]}", MudBlazor.Severity.Info);
+        }
+    }    
+   
+}
