@@ -84,6 +84,8 @@ public static class ApplicationDbContextSeed
             context.KeyValues.Add(new Domain.Entities.KeyValue() { Name = "Brand", Value = "MI", Text = "MI", Description = "Brand of production" });
             context.KeyValues.Add(new Domain.Entities.KeyValue() { Name = "Brand", Value = "Logitech", Text = "Logitech", Description = "Brand of production" });
             context.KeyValues.Add(new Domain.Entities.KeyValue() { Name = "Brand", Value = "Linksys", Text = "Linksys", Description = "Brand of production" });
+            context.KeyValues.Add(new Domain.Entities.KeyValue() { Name = "ProofType", Value = "BTC", Text = "BTC", Description = "Proof type of investment" });
+            context.KeyValues.Add(new Domain.Entities.KeyValue() { Name = "ProofType", Value = "ETH", Text = "ETH", Description = "Proof type of investment" });
             await context.SaveChangesAsync();
           
         }
