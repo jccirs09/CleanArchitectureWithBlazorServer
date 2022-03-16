@@ -1,0 +1,355 @@
+@page "/support/investments"
+
+@using CleanArchitecture.Blazor.Application.Features.Investments.DTOs
+@using CleanArchitecture.Blazor.Application.Features.Investments.Commands.Delete
+@using CleanArchitecture.Blazor.Application.Features.Investments.Commands.Import
+@using CleanArchitecture.Blazor.Application.Features.Investments.Queries.Export
+@using CleanArchitecture.Blazor.Application.Features.Investments.Queries.GetAll
+@using CleanArchitecture.Blazor.Application.Features.Investments.Queries.Pagination
+@using CleanArchitecture.Blazor.Application.Features.Investments.Commands.AddEdit
+
+@inject IJSRuntime JS
+@inject IStringLocalizer<InvestmentsList> L
+<PageTitle>@Title</PageTitle>
+<style>
+    .mud-table-toolbar {
+        height: 84px !important;
+    }
+</style>
+<ErrorBoundary>
+    <ChildContent>
+        @if (_canView)
+        {
+        <MudTable ServerData="@(new Func<TableState, Task<TableData<InvestmentDto>>>(ServerReload))"
+                  FixedHeader="true"
+                  FixedFooter="true"
+                  Height="calc(100vh - 265px)"
+                  Loading="@_loading"
+                  SortLabel="@L["Sort By"]"
+                  MultiSelection="true" @bind-SelectedItems="_selectedItems"
+                  Hover="true" @ref="_table">
+            <ToolBarContent>
+                <div class="justify-start pt-3">
+                    <MudText Typo="Typo.h6">@L["Investment"]</MudText>
+                    <MudHidden Breakpoint="Breakpoint.SmAndDown">
+                        <MudButton DisableElevation Variant="Variant.Outlined"
+                                   Size="Size.Small"
+                                   OnClick="@(()=>OnRefresh())"
+                                   StartIcon="@Icons.Material.Filled.Refresh" IconColor="Color.Surface" Color="Color.Primary"
+                                   Style="margin-right: 4px; margin-bottom:4px">@L["Refresh"]</MudButton>                        
+                        @if (_canDelete)
+                        {
+                            <MudButton DisableElevation Variant="Variant.Outlined" Color="Color.Error"
+                                   StartIcon="@Icons.Material.Filled.Delete"
+                                   Disabled="@(!(_selectedItems.Count>0))"
+                                   Size="Size.Small"
+                                   Style="margin-right: 4px; margin-bottom:4px"
+                                   OnClick="OnDeleteChecked"
+                                   IconColor="Color.Surface">@L["Delete"]</MudButton>
+                        }
+                        @*
+                        @if (_canImport)
+                        {
+                            <MudButton Disabled="true" DisableElevation Variant="Variant.Outlined" Color="Color.Primary"
+                                   StartIcon="@Icons.Material.Filled.Upload"
+                                   Size="Size.Small"
+                                   Style="margin-right:1px; margin-bottom:4px"
+                                   for="importdataInput"
+                                   HtmlTag="label"
+                                   IconColor="Color.Surface">
+                                @if (_uploading)
+                                {
+                                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                                    <MudText Class="ms-2"> @L["Uploading..."]</MudText>
+                                }
+                                else
+                                {
+                                    <MudText>@L["Import Data"]</MudText>
+                                }
+
+                            </MudButton>
+                            <InputFile id="importdataInput" OnChange="OnImportData" hidden accept=".xlsx" />
+                        }
+                       
+                        @if (_canExport)
+                        {
+                            <MudButton Disabled="true" DisableElevation Variant="Variant.Outlined" Color="Color.Primary"
+                                   StartIcon="@Icons.Material.Filled.Download"
+                                   Size="Size.Small"
+                                   Style="margin-right: 4px; margin-bottom:4px"
+                                   OnClick="OnExport"
+                                   IconColor="Color.Surface">
+                                @if (_downloading)
+                                {
+                                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                                    <MudText Class="ms-2"> @L["Downloading..."]</MudText>
+                                }
+                                else
+                                {
+                                    <MudText>@L["Export Data"]</MudText>
+                                }
+                            </MudButton>
+                        }
+                        *@
+                    </MudHidden>
+                    <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
+                        <MudMenu AnchorOrigin="Origin.BottomLeft" StartIcon="@Icons.Filled.KeyboardCommandKey" EndIcon="@Icons.Filled.KeyboardArrowDown" Label="@L["Action"]" Color="Color.Primary" Variant="Variant.Filled">
+                            <MudMenuItem OnClick="@(()=>OnRefresh())">Refresh</MudMenuItem>
+                           
+                            @if (_canDelete)
+                            {
+                                <MudMenuItem OnClick="OnDeleteChecked">@L["Delete"]</MudMenuItem>
+                            }
+                            @*
+                            @if (_canImport)
+                            {
+                                <InputFile id="importdataInput" OnChange="OnImportData" hidden accept=".xlsx" />
+                                <MudMenuItem for="importdataInput"
+                                         HtmlTag="label">@L["Import Data"]</MudMenuItem>
+                            }
+                            @if (_canExport)
+                            {
+                                <MudMenuItem OnClick="OnExport">@L["Export Data"]</MudMenuItem>
+                            }
+                            *@
+                        </MudMenu>
+                    </MudHidden>
+                </div>
+                <MudSpacer />
+                <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            </ToolBarContent>
+            <ColGroup>
+                <col style="width:50px;" />
+            </ColGroup>
+            <HeaderContent>
+                <MudTh Style="width:80px">@L["Actions"]</MudTh>
+                <MudTh ><MudTableSortLabel SortLabel="Investor" T="InvestmentDto">@L["Investor"]</MudTableSortLabel></MudTh>
+                <MudTh Style="text-align:right"><MudTableSortLabel SortLabel="Amount" T="InvestmentDto">@L["Amount"]</MudTableSortLabel></MudTh>
+                <MudTh Style="text-align:right"><MudTableSortLabel SortLabel="DailyRate" T="InvestmentDto">@L["Daily Rate"]</MudTableSortLabel></MudTh>
+                <MudTh ><MudTableSortLabel SortLabel="Stat" T="InvestmentDto">@L["Stat"]</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortLabel="ProofType" T="InvestmentDto">@L["Proof Type"]</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortLabel="InvestedDate" T="InvestmentDto">@L["Invested Date"]</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortLabel="EndOfInvestment" T="InvestmentDto">@L["End of Investment"]</MudTableSortLabel></MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Actions">
+                    @if (_canEdit || _canDelete)
+                    {
+                        <MudMenu Label="@L["Actions"]" Variant="Variant.Filled" DisableElevation="true" Size="Size.Small"
+                             Dense="true"
+                             EndIcon="@Icons.Filled.KeyboardArrowDown" IconColor="Color.Info" Direction="Direction.Left"
+                             OffsetX="true">
+                            @if (_canEdit)
+                            {
+                                <MudMenuItem OnClick="@(()=>OnEdit(context))">@L["Approve"]</MudMenuItem>
+                            }
+                            @if (_canDelete)
+                            {
+                                <MudMenuItem OnClick="@(()=>OnDelete(context))">@L["Delete"]</MudMenuItem>
+                            }
+                        </MudMenu>
+                    }
+                    else
+                    {
+                        <MudButton Variant="Variant.Filled" DisableElevation="true"
+                               StartIcon="@Icons.Material.Filled.DoNotTouch" IconColor="Color.Secondary" Size="Size.Small"
+                               Color="Color.Surface">
+                            @L["No Allowed"]
+                        </MudButton>
+                    }
+                </MudTd>
+                <MudTd DataLabel="Investor">@context.CreatedBy</MudTd>
+                <MudTd DataLabel="Amount" Style="text-align:right">@context.Amount.ToString("C2")</MudTd>
+                <MudTd DataLabel="DailyRate" Style="text-align:right">@context.DailyRate.ToString("C2")</MudTd>
+                <MudTd DataLabel="Stat">@context.Stat</MudTd>
+                <MudTd DataLabel="ProofType">@context.ProofType</MudTd>
+                <MudTd DataLabel="InvestedDate">@context.Created</MudTd>
+                <MudTd DataLabel="EndOfInvestment">@context.EndOfInvestment</MudTd>
+            </RowTemplate>
+            <NoRecordsContent>
+                <MudText>@L["No matching records found"]</MudText>
+            </NoRecordsContent>
+            <LoadingContent>
+                <MudText>@L["Loading.."].</MudText>
+            </LoadingContent>
+            <PagerContent>
+                <MudTablePager />
+            </PagerContent>
+        </MudTable>
+        }
+    </ChildContent>
+    <ErrorContent>
+        <CustomError Exception="context"></CustomError>
+    </ErrorContent>
+</ErrorBoundary>
+@code {
+    public string? Title { get; private set; }
+    private HashSet<InvestmentDto> _selectedItems = new HashSet<InvestmentDto>();
+    private MudTable<InvestmentDto> _table = default!;
+    private int _totalItems;
+    private string _searchString = string.Empty;
+    private bool _loading;
+    private bool _uploading;
+    private bool _downloading;
+    [Inject]
+    private ISender _mediator { get; set; } = default!;
+    [CascadingParameter]
+    protected Task<AuthenticationState> AuthState { get; set; } = default!;
+
+
+    private bool _canSearch;
+    private bool _canCreate;
+    private bool _canEdit;
+    private bool _canDelete;
+    private bool _canView;
+    private bool _canExport;
+    protected override async Task OnInitializedAsync()
+    {
+        Title = L["Investments"];
+        var state = await AuthState;
+        _canCreate = (await AuthService.AuthorizeAsync(state.User, Permissions.Supports.Create)).Succeeded;
+        _canSearch = (await AuthService.AuthorizeAsync(state.User, Permissions.Supports.Search)).Succeeded;
+        _canEdit = (await AuthService.AuthorizeAsync(state.User, Permissions.Supports.Edit)).Succeeded;
+        _canDelete = (await AuthService.AuthorizeAsync(state.User, Permissions.Supports.Delete)).Succeeded;
+        _canView = (await AuthService.AuthorizeAsync(state.User, Permissions.Supports.View)).Succeeded;
+        _canExport = (await AuthService.AuthorizeAsync(state.User, Permissions.Supports.Export)).Succeeded;
+
+    }
+    private async Task<TableData<InvestmentDto>> ServerReload(TableState state)
+    {        
+        _loading = true;
+        var request = new InvestmentsWithPaginationQuery()
+            {
+                Keyword = _searchString,
+                OrderBy = string.IsNullOrEmpty(state.SortLabel) ? "Id" : state.SortLabel,
+                SortDirection = (state.SortDirection == SortDirection.None ? SortDirection.Descending.ToString() : state.SortDirection.ToString()),
+                PageNumber = state.Page + 1,
+                PageSize = state.PageSize
+            };
+        var result = await _mediator.Send(request);
+        _loading = false;
+        return new TableData<InvestmentDto>() { TotalItems = result.TotalItems, Items = result.Items };
+
+    }
+    private async Task OnSearch(string text)
+    {
+        _selectedItems = new HashSet<InvestmentDto>();
+        _searchString = text;
+        await _table.ReloadServerData();
+    }
+    private async Task OnRefresh()
+    {
+        _selectedItems = new HashSet<InvestmentDto>();
+        _searchString = string.Empty;
+        await _table.ReloadServerData();
+    }
+    
+    private async Task OnEdit(InvestmentDto dto)
+    {
+        var command = new AddEditInvestmentCommand()
+            {
+                Id = dto.Id,
+                Amount = dto.Amount,
+                Stat = dto.Stat,
+                DailyRate = (dto.Amount * 2.7M) / 540,
+                IsActive = dto.IsActive,
+                ProofType = dto.ProofType,
+                ImageDateUrl = dto.ImageDateUrl,
+                EndOfInvestment = dto.EndOfInvestment,
+                Created = dto.Created,
+                CreatedBy = dto.CreatedBy
+            };
+        var parameters = new DialogParameters
+            {
+                { nameof(_InvestmentSupportFormDialog.model),command },
+            };
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        var dialog = DialogService.Show<_InvestmentSupportFormDialog>(L["Approve Investment"], parameters, options);
+        var state = await dialog.Result;
+        if (!state.Cancelled)
+        {
+            var result = await _mediator.Send(command);
+            await _table.ReloadServerData();
+            Snackbar.Add($"{L["Investment approved successfully!"]}", MudBlazor.Severity.Success);
+        }
+    }
+
+    private async Task OnDelete(InvestmentDto dto)
+    {
+        var deleteContent = L["You're sure you want to delete the investment:{0}?"];
+        var parameters = new DialogParameters
+        {
+            { nameof(DeleteConfirmation.ContentText), string.Format(deleteContent, dto.Amount) }
+        };
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, DisableBackdropClick = true };
+        var dialog = DialogService.Show<DeleteConfirmation>(L["Delete"], parameters, options);
+        var state = await dialog.Result;
+        if (!state.Cancelled)
+        {
+            var command = new DeleteInvestmentCommand() { Id = new int[] { dto.Id} };
+            var result = await _mediator.Send(command);
+            await _table.ReloadServerData();
+            Snackbar.Add($"{L["Deleted successfully"]}", MudBlazor.Severity.Info);
+        }
+    }
+
+    private async Task OnDeleteChecked()
+    {
+        var deleteContent = L["You're sure you want to delete the selected items:{0}?"];
+        var parameters = new DialogParameters
+        {
+            { nameof(DeleteConfirmation.ContentText), string.Format(deleteContent,_selectedItems.Count) }
+        };
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall, FullWidth = true, DisableBackdropClick = true };
+        var dialog = DialogService.Show<DeleteConfirmation>(L["Delete"], parameters, options);
+        var state = await dialog.Result;
+        if (!state.Cancelled)
+        {
+            var command = new DeleteInvestmentCommand() { Id = _selectedItems.Select(x => x.Id).ToArray() };
+            var result = await _mediator.Send(command);
+            await _table.ReloadServerData();
+            Snackbar.Add($"{L["Deleted successfully"]}", MudBlazor.Severity.Info);
+            _selectedItems = new HashSet<InvestmentDto>();
+        }
+    }
+    //private async Task OnExport()
+    //{
+    //    _downloading = true;
+    //    var request = new ExportInvestmentsQuery()
+    //        {
+    //            Keyword = _searchString,
+    //            OrderBy = string.IsNullOrEmpty(_table.TableContext.SortFieldLabel) ? "Id" : _table.TableContext.SortFieldLabel,
+    //            SortDirection = (_table.TableContext.SortDirection == SortDirection.None ? SortDirection.Descending.ToString() : _table.TableContext.SortDirection.ToString()),
+    //        };
+    //    var result = await _mediator.Send(request);
+    //    using var streamRef = new DotNetStreamReference(new MemoryStream(result));
+    //    await JS.InvokeVoidAsync("downloadFileFromStream", $"{L["Investments"]}.xlsx", streamRef);
+    //    _downloading = false;
+    //}
+    private async Task OnImportData(InputFileChangeEventArgs e)
+    {
+        _uploading = true;
+        var stream = new MemoryStream();
+        await e.File.OpenReadStream().CopyToAsync(stream);
+        var command = new ImportInvestmentsCommand()
+            {
+                Data = stream.ToArray(),
+                FileName = e.File.Name
+            };
+        var result = await _mediator.Send(command);
+        if (result.Succeeded)
+        {
+            await _table.ReloadServerData();
+            Snackbar.Add($"{L["Import data successfully"]}", MudBlazor.Severity.Info);
+        }
+        else
+        {
+            foreach (var msg in result.Errors)
+            {
+                Snackbar.Add($"{msg}", MudBlazor.Severity.Error);
+            }
+        }
+        _uploading = false;
+    }
+}

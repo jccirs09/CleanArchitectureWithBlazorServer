@@ -1,0 +1,119 @@
+@using CleanArchitecture.Blazor.Application.Features.Investments.Commands.AddEdit
+@using CleanArchitecture.Blazor.Application.Features.KeyValues.Queries.ByName
+@using SixLabors.ImageSharp
+@using SixLabors.ImageSharp.Formats
+@using SixLabors.ImageSharp.Processing
+@inherits MudComponentBase
+@inject IStringLocalizer<InvestmentsList> L
+<MudDialog>
+    <DialogContent>
+        <MudForm Model="model" @ref="form" Validation="@(modelValidator.ValidateValue)">
+            <MudGrid>
+                 <MudItem xs="12">
+                    <MudNumericField Disabled="true" Label="@L["Amount"]"
+                                     T="decimal"
+                                     Format="N2"
+                                     For="@(() => model.Amount)"
+                                     Min="0.00m"
+                                     @bind-Value="model.Amount"></MudNumericField>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudNumericField Disabled="true" Label="@L["Daily Rate"]"
+                                     T="decimal"
+                                     Format="N2"
+                                     For="@(() => model.DailyRate)"
+                                     Min="0.00m"
+                                     @bind-Value="model.DailyRate"></MudNumericField>
+                </MudItem>
+              
+                <MudItem xs="12">
+                    <MudDatePicker @bind-Date="date" ReadOnly="true" DisableToolbar="true" Label="End of Investment" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudField Disabled="true" Label="Proof Type" Variant="Variant.Text">@model.ProofType</MudField>
+                </MudItem>                     
+                <MudItem>
+                    <InputFile id="fileInput" OnChange="UploadFiles" hidden multiple accept=".jpg, .jpeg, .png" />
+                    <MudText Typo="Typo.caption">@L["Proof Pictures"]</MudText>
+                    <MudFab HtmlTag="label" Size="MudBlazor.Size.Small" 
+                            Color="MudBlazor.Color.Info"
+                            Icon="@Icons.Filled.Image"
+                            Label="Upload proof"
+                            for="fileInput" />
+                    <MudText Typo="Typo.body2">@L["The recommended size for uploading images is 640X320"]</MudText>
+                    <div class="d-fex">
+                        @if (model.ImageDateUrl is not null)
+                            foreach (var img in model.ImageDateUrl)
+                            {
+                                <MudImage ObjectFit="ObjectFit.Cover"   Height="80" Width="160" Src="@img" Alt="@img" Elevation="25" Class="mr-2 rounded-lg" />
+                            }
+                    </div>
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">@L["Cancle"]</MudButton>
+        <MudButton Color="MudBlazor.Color.Primary" OnClick="Submit">@L["Ok"]</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    MudForm form = default!;
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; } = default!;
+    [Inject] private IUploadService _uploadService { get; set; } = default!;
+    AddEditInvestmentCommandValidator modelValidator = new AddEditInvestmentCommandValidator();
+    [EditorRequired] [Parameter] public AddEditInvestmentCommand model { get; set; } = default!;
+
+    private IList<string>? _prictures = null;
+    DateTime? date = DateTime.Today.AddDays(540);
+
+    private async Task UploadFiles(InputFileChangeEventArgs e)
+    {
+        var list = new List<string>();
+        foreach (var file in e.GetMultipleFiles())
+        {
+            var filestream = file.OpenReadStream();
+            var imgstream = new MemoryStream();
+            await filestream.CopyToAsync(imgstream);
+            imgstream.Position = 0;
+            using (var outStream = new MemoryStream())
+            {
+                using (var image = Image.Load(imgstream, out IImageFormat format))
+                {
+                    image.Mutate(
+                       i => i.Resize(new ResizeOptions() { Mode = ResizeMode.Crop, Size = new SixLabors.ImageSharp.Size(640, 320) }));
+                    image.Save(outStream, format);
+                    var filename = file.Name;
+                    var fi = new FileInfo(filename);
+                    var ext = fi.Extension;
+                    var result = await _uploadService.UploadAsync(new UploadRequest()
+                        {
+                            Data = outStream.ToArray(),
+                            FileName = Guid.NewGuid().ToString() + ext,
+                            Extension = ext,
+                            UploadType = UploadType.Proof
+                        });
+                    list.Add(result);
+                }
+            }
+        }
+        Snackbar.Add($"Upload proof successfully!", MudBlazor.Severity.Success);
+        model.ImageDateUrl = list;
+    }
+    async Task Submit()
+    {
+        await form.Validate();
+        if (form.IsValid)
+        {
+            model.DailyRate = (model.Amount * 2.7M) / 540;
+            model.Stat = "Approved";
+            model.IsActive = true;
+            model.EndOfInvestment = DateTime.Now.AddDays(540);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+
+    }
+    void Cancel() => MudDialog.Cancel();
+}

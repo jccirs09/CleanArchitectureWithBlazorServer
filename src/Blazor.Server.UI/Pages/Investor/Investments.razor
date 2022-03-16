@@ -3,13 +3,7 @@
 @using CleanArchitecture.Blazor.Application.Features.Investments.Commands.AddEdit
 @using CleanArchitecture.Blazor.Application.Features.Investments.DTOs
 @using CleanArchitecture.Blazor.Application.Features.Investments.Queries.GetAll
-@using CleanArchitecture.Blazor.Application.Features.Products.Commands.Delete
-@using CleanArchitecture.Blazor.Application.Features.Products.Commands.Import
-@using CleanArchitecture.Blazor.Application.Features.Products.DTOs
-@using CleanArchitecture.Blazor.Application.Features.Products.Queries.Export
-@using CleanArchitecture.Blazor.Application.Features.Products.Queries.GetAll
-@using CleanArchitecture.Blazor.Application.Features.Products.Queries.Pagination
-@using CleanArchitecture.Blazor.Application.Features.Products.Commands.AddEdit
+
 
 @inject IJSRuntime JS
 @inject IStringLocalizer<Investments> L
@@ -124,12 +118,12 @@
     {
         Title = L["Investments"];
         var state = await AuthState;
-        _canCreate = (await AuthService.AuthorizeAsync(state.User, Permissions.Products.Create)).Succeeded;
-        _canSearch = (await AuthService.AuthorizeAsync(state.User, Permissions.Products.Search)).Succeeded;
-        _canEdit = (await AuthService.AuthorizeAsync(state.User, Permissions.Products.Edit)).Succeeded;
-        _canDelete = (await AuthService.AuthorizeAsync(state.User, Permissions.Products.Delete)).Succeeded;
-        _canImport = (await AuthService.AuthorizeAsync(state.User, Permissions.Products.Import)).Succeeded;
-        _canExport = (await AuthService.AuthorizeAsync(state.User, Permissions.Products.Export)).Succeeded;
+        _canCreate = (await AuthService.AuthorizeAsync(state.User, Permissions.Investments.Create)).Succeeded;
+        _canSearch = (await AuthService.AuthorizeAsync(state.User, Permissions.Investments.Search)).Succeeded;
+        _canEdit = (await AuthService.AuthorizeAsync(state.User, Permissions.Investments.Edit)).Succeeded;
+        _canDelete = (await AuthService.AuthorizeAsync(state.User, Permissions.Investments.Delete)).Succeeded;
+        _canImport = (await AuthService.AuthorizeAsync(state.User, Permissions.Investments.Import)).Succeeded;
+        _canExport = (await AuthService.AuthorizeAsync(state.User, Permissions.Investments.Export)).Succeeded;
         await LoadData();
     }
     private async Task LoadData()
@@ -174,32 +168,6 @@
             Snackbar.Add($"{L["Invested successfully"]}", MudBlazor.Severity.Success);
         }
     }
-    private async Task OnEdit(InvestmentDto dto)
-    {
-        var command = new AddEditInvestmentCommand()
-            {
-                Id = dto.Id,
-                Amount = dto.Amount,
-                Stat = dto.Stat,
-                DailyRate = dto.DailyRate,
-                IsActive = dto.IsActive,
-                ProofType = dto.ProofType,
-                ImageDateUrl = dto.ImageDateUrl,
-                EndOfInvestment = dto.EndOfInvestment
-            };
-        var parameters = new DialogParameters
-            {
-                { nameof(_InvestmentFormDialog.model),command },
-            };
-        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };
-        var dialog = DialogService.Show<_InvestmentFormDialog>(L["Edit the product"], parameters, options);
-        var state = await dialog.Result;
-        if (!state.Cancelled)
-        {
-            var result = await _mediator.Send(command);
-            await LoadData();
-            Snackbar.Add($"{L["Invested successfully"]}", MudBlazor.Severity.Info);
-        }
-    }    
+        
    
 }

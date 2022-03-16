@@ -1,11 +1,11 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
+// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using CleanArchitecture.Blazor.Application.Features.Investments.DTOs;
 
 namespace CleanArchitecture.Blazor.Application.Features.Investments.Queries.Pagination;
 
-    public class InvestmentsWithPaginationQuery : PaginationRequest, IRequest<PaginatedData<InvestmentDto>>
+    public class InvestmentsWithPaginationQuery : PaginationFilter, IRequest<PaginatedData<InvestmentDto>>
     {
        
     }
@@ -30,12 +30,11 @@ namespace CleanArchitecture.Blazor.Application.Features.Investments.Queries.Pagi
 
         public async Task<PaginatedData<InvestmentDto>> Handle(InvestmentsWithPaginationQuery request, CancellationToken cancellationToken)
         {
-            //TODO:Implementing InvestmentsWithPaginationQueryHandler method 
-           var filters = PredicateBuilder.FromFilter<Investment>(request.FilterRules);
-           var data = await _context.Investments.Where(filters)
-                .OrderBy("{request.Sort} {request.Order}")
-                .ProjectTo<InvestmentDto>(_mapper.ConfigurationProvider)
-                .PaginatedDataAsync(request.Page, request.Rows);
-            return data;
-        }
+        //TODO:Implementing InvestmentsWithPaginationQueryHandler method 
+        var data = await _context.Investments
+            .OrderBy($"{request.OrderBy} {request.SortDirection}")
+            .ProjectTo<InvestmentDto>(_mapper.ConfigurationProvider)
+            .PaginatedDataAsync(request.PageNumber, request.PageSize);
+        return data;
+    }
    }
