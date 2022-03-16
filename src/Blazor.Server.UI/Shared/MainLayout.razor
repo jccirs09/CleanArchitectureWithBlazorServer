@@ -1,5 +1,5 @@
 @inherits LayoutComponentBase;
-@inject IStringLocalizer<MainLayout> L
+@inject IStringLocalizer<SharedResource> L
 <MudRTLProvider RightToLeft="@_rightToLeft">
 <MudDialogProvider />
 <MudSnackbarProvider />
@@ -25,6 +25,7 @@
                      ToggleSideMenuDrawer="ToggleSideMenuDrawer"
                      RightToLeft="_rightToLeft"
                      RightToLeftToggle ="RightToLeftToggleHandler"
+                     OnSettingClick="@(() => _themingDrawerOpen = true)"
                      User="_user" />
 
             <SideMenu SideMenuDrawerOpen="_sideMenuDrawerOpen"
