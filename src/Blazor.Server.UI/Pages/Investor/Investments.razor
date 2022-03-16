@@ -100,8 +100,6 @@
     private int _totalItems;
     private string _searchString = string.Empty;
     private bool _loading;
-    private bool _uploading;
-    private bool _downloading;
     [Inject]
     private ISender _mediator { get; set; } = default!;
     [CascadingParameter]
@@ -110,9 +108,6 @@
 
     private bool _canSearch;
     private bool _canCreate;
-    private bool _canEdit;
-    private bool _canDelete;
-    private bool _canImport;
     private bool _canExport;
     protected override async Task OnInitializedAsync()
     {
@@ -120,10 +115,6 @@
         var state = await AuthState;
         _canCreate = (await AuthService.AuthorizeAsync(state.User, Permissions.Investments.Create)).Succeeded;
         _canSearch = (await AuthService.AuthorizeAsync(state.User, Permissions.Investments.Search)).Succeeded;
-        _canEdit = (await AuthService.AuthorizeAsync(state.User, Permissions.Investments.Edit)).Succeeded;
-        _canDelete = (await AuthService.AuthorizeAsync(state.User, Permissions.Investments.Delete)).Succeeded;
-        _canImport = (await AuthService.AuthorizeAsync(state.User, Permissions.Investments.Import)).Succeeded;
-        _canExport = (await AuthService.AuthorizeAsync(state.User, Permissions.Investments.Export)).Succeeded;
         await LoadData();
     }
     private async Task LoadData()
@@ -132,8 +123,6 @@
         var request = new GetAllInvestmentsQuery();       
         _investorsInvestmentsList = await _mediator.Send(request);
         _loading = false;
-
-
     }
     private async Task OnSearch(string text)
     {
@@ -167,7 +156,5 @@
             await LoadData();
             Snackbar.Add($"{L["Invested successfully"]}", MudBlazor.Severity.Success);
         }
-    }
-        
-   
+    }  
 }

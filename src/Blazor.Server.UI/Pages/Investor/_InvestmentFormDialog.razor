@@ -58,7 +58,7 @@
     AddEditInvestmentCommandValidator modelValidator = new AddEditInvestmentCommandValidator();
     [EditorRequired] [Parameter] public AddEditInvestmentCommand model { get; set; } = default!;
 
-    private IList<string>? _prictures = null;
+    //private IList<string>? _prictures = null;
 
     private async Task UploadFiles(InputFileChangeEventArgs e)
     {

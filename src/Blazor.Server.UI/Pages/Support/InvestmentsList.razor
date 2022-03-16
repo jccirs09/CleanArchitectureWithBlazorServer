@@ -95,23 +95,6 @@
                     <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
                         <MudMenu AnchorOrigin="Origin.BottomLeft" StartIcon="@Icons.Filled.KeyboardCommandKey" EndIcon="@Icons.Filled.KeyboardArrowDown" Label="@L["Action"]" Color="Color.Primary" Variant="Variant.Filled">
                             <MudMenuItem OnClick="@(()=>OnRefresh())">Refresh</MudMenuItem>
-                           
-                            @if (_canDelete)
-                            {
-                                <MudMenuItem OnClick="OnDeleteChecked">@L["Delete"]</MudMenuItem>
-                            }
-                            @*
-                            @if (_canImport)
-                            {
-                                <InputFile id="importdataInput" OnChange="OnImportData" hidden accept=".xlsx" />
-                                <MudMenuItem for="importdataInput"
-                                         HtmlTag="label">@L["Import Data"]</MudMenuItem>
-                            }
-                            @if (_canExport)
-                            {
-                                <MudMenuItem OnClick="OnExport">@L["Export Data"]</MudMenuItem>
-                            }
-                            *@
                         </MudMenu>
                     </MudHidden>
                 </div>
@@ -140,13 +123,16 @@
                              Dense="true"
                              EndIcon="@Icons.Filled.KeyboardArrowDown" IconColor="Color.Info" Direction="Direction.Left"
                              OffsetX="true">
-                            @if (_canEdit)
-                            {
-                                <MudMenuItem OnClick="@(()=>OnEdit(context))">@L["Approve"]</MudMenuItem>
-                            }
-                            @if (_canDelete)
-                            {
-                                <MudMenuItem OnClick="@(()=>OnDelete(context))">@L["Delete"]</MudMenuItem>
+                            @if(context.IsActive == false && context.Stat == "Pending")
+                            {   
+                                @if (_canEdit)
+                                {
+                                    <MudMenuItem OnClick="@(()=>OnEdit(context))">@L["Approve"]</MudMenuItem>
+                                }
+                                @if (_canDelete)
+                                {
+                                    <MudMenuItem OnClick="@(()=>OnDelete(context))">@L["Delete"]</MudMenuItem>
+                                }
                             }
                         </MudMenu>
                     }

@@ -27,7 +27,7 @@
                 </MudItem>
               
                 <MudItem xs="12">
-                    <MudDatePicker @bind-Date="date" ReadOnly="true" DisableToolbar="true" Label="End of Investment" />
+                    <MudDatePicker For="@(() => date)" @bind-Date="date" ReadOnly="true" DisableToolbar="true" Label="End of Investment" />
                 </MudItem>
                 <MudItem xs="12">
                     <MudField Disabled="true" Label="Proof Type" Variant="Variant.Text">@model.ProofType</MudField>
@@ -65,8 +65,7 @@
     [Inject] private IUploadService _uploadService { get; set; } = default!;
     AddEditInvestmentCommandValidator modelValidator = new AddEditInvestmentCommandValidator();
     [EditorRequired] [Parameter] public AddEditInvestmentCommand model { get; set; } = default!;
-
-    private IList<string>? _prictures = null;
+    
     DateTime? date = DateTime.Today.AddDays(540);
 
     private async Task UploadFiles(InputFileChangeEventArgs e)
