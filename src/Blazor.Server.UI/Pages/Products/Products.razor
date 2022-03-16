@@ -122,7 +122,7 @@
                     </MudHidden>
                 </div>
                 <MudSpacer />
-                <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Value="@_searchString" Placeholder="Search" Adornment="Adornment.Start"
                               AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
             </ToolBarContent>
             <ColGroup>
@@ -137,7 +137,7 @@
 
             </HeaderContent>
             <RowTemplate>
-                <MudTd DataLabel="Actions">
+                <MudTd DataLabel="@L["Actions"]">
                     @if (_canEdit || _canDelete)
                     {
                         <MudMenu Label="@L["Actions"]" Variant="Variant.Filled" DisableElevation="true" Size="Size.Small"
@@ -163,13 +163,13 @@
                         </MudButton>
                     }
                 </MudTd>
-                <MudTd HideSmall="true" DataLabel="Brand">@context.Brand</MudTd>
-                <MudTd DataLabel="Name">
+                <MudTd HideSmall="true" DataLabel="@L["Brand Name"]">@context.Brand</MudTd>
+                <MudTd DataLabel="@L["Product Name"]">
                     <MudText>@context.Name</MudText>
                     <MudText Typo="Typo.body2">@context.Description</MudText>
                 </MudTd>
-                <MudTd DataLabel="Price" Style="text-align:right">@context.Price.ToString("C2")</MudTd>
-                <MudTd DataLabel="Unit">@context.Unit</MudTd>
+                <MudTd DataLabel="@L["Price"]" Style="text-align:right">@context.Price.ToString("C2")</MudTd>
+                <MudTd DataLabel="@L["Unit"]">@context.Unit</MudTd>
             </RowTemplate>
             <NoRecordsContent>
                 <MudText>@L["No matching records found"]</MudText>
@@ -306,7 +306,7 @@
         var state = await dialog.Result;
         if (!state.Cancelled)
         {
-            var command = new DeleteProductCommand() { Id = new int[] { dto.Id} };
+            var command = new DeleteProductCommand(new int[] { dto.Id}) ;
             var result = await _mediator.Send(command);
             await _table.ReloadServerData();
             Snackbar.Add($"{L["Deleted successfully"]}", MudBlazor.Severity.Info);
@@ -325,7 +325,7 @@
         var state = await dialog.Result;
         if (!state.Cancelled)
         {
-            var command = new DeleteProductCommand() { Id = _selectedItems.Select(x => x.Id).ToArray() };
+            var command = new DeleteProductCommand(_selectedItems.Select(x => x.Id).ToArray());
             var result = await _mediator.Send(command);
             await _table.ReloadServerData();
             Snackbar.Add($"{L["Deleted successfully"]}", MudBlazor.Severity.Info);

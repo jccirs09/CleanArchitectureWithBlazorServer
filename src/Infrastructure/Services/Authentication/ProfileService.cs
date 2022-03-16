@@ -18,15 +18,15 @@ public class ProfileService
             Role = user.GetRoles().FirstOrDefault(),
             UserId = user.GetUserId(),
             UserName = user.GetUserName(),
-            
         };
         return await Task.FromResult(Profile);
     }
-
     public Task Update(UserModel profile)
     {
         Profile = profile;
         OnChange?.Invoke(Profile);
         return Task.CompletedTask;
     }
+
+   
 }
