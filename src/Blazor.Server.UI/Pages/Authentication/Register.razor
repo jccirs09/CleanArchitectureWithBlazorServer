@@ -2,6 +2,7 @@
 @using System.Text.RegularExpressions
 @using CleanArchitecture.Blazor.Application.Common.Security
 @using CleanArchitecture.Blazor.Infrastructure.Constants.Role
+@using CleanArchitecture.Blazor.Infrastructure.Services.Identity
 @using Microsoft.AspNetCore.Identity
 @using System.ComponentModel.DataAnnotations
 @using System.Security.Claims
@@ -30,6 +31,12 @@
     For="@(() => model.Email)" 
     Required="true"
     RequiredError="@L["e-mail is required!"]"
+    Variant="Variant.Outlined"></MudTextField>
+    <MudTextField T="string" 
+    Immediate="true"
+    Label="@L["Referred By"]" 
+    @bind-Value="model.ReferredBy" 
+    For="@(() => model.ReferredBy)"
     Variant="Variant.Outlined"></MudTextField>
 
 <MudTextField 
@@ -69,6 +76,7 @@
 @code {
     [Inject] private NavigationManager _navigation { get; set; } = default!;
     [Inject] private UserManager<ApplicationUser> _userManager { get; set; }= default!;
+    private IdentityService _identityService { get; set; } = default!;
     MudForm form;
     RegisterFormModel model = new ();
     RegisterFormModelFluentValidator registerValidator = new ();
@@ -95,27 +103,40 @@
     }
     private async Task Submit()
     {
-        await form.Validate();
+        var existed = await _identityService.GetReferralCodeAsync(model.ReferredBy);
 
-        if (form.IsValid)
+        if(existed is not null)
         {
-            var user = new ApplicationUser()
-                {
-                    UserName=model.UserName,
-                    Email=model.Email
-                };
-            var result = await _userManager.CreateAsync(user,model.Password);
-            if (result.Succeeded)
-            {
-                await _userManager.AddToRoleAsync(user, RoleConstants.BasicRole);
-                _navigation.NavigateTo("/pages/authentication/login");
-                Snackbar.Add(L["Register successfully!"], MudBlazor.Severity.Info);
-            }
-            else
-            {
-                Snackbar.Add($"{string.Join(",", result.Errors.Select(x=>x.Description))}", MudBlazor.Severity.Error);
-            }
+            await form.Validate();
 
+            if (form.IsValid)
+            {
+                var user = new ApplicationUser()
+                    {
+                        UserName = model.UserName,
+                        Email = model.Email,
+                        ReferredBy = model.ReferredBy,
+                        ReferralCode = string.Join("", Guid.NewGuid().ToString("n").Take(8).Select(o => o)).ToUpper(),
+                        IsActive =true,
+                        EmailConfirmed =true
+            };
+                var result = await _userManager.CreateAsync(user,model.Password);
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(user, RoleConstants.BasicRole);
+                    _navigation.NavigateTo("/pages/authentication/login");
+                    Snackbar.Add(L["Register successfully!"], MudBlazor.Severity.Info);
+                }
+                else
+                {
+                    Snackbar.Add($"{string.Join(",", result.Errors.Select(x=>x.Description))}", MudBlazor.Severity.Error);
+                }
+
+            }
+        }
+        else
+        {
+            Snackbar.Add($"Referral code is invalid!", MudBlazor.Severity.Error);
         }
     }
 }

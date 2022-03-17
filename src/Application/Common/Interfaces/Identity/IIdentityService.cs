@@ -10,6 +10,8 @@ public interface IIdentityService : IService
     Task<Result<TokenResponseDto>> LoginAsync(TokenRequestDto request);
     Task<Result<TokenResponseDto>> RefreshTokenAsync(RefreshTokenRequestDto request);
     Task<string> GetUserNameAsync(string userId);
+    Task<string> GetReferredByAsync(string userId);
+    Task<string> GetReferralCodeAsync(string userId);
     Task<bool> IsInRoleAsync(string userId, string role);
     Task<bool> AuthorizeAsync(string userId, string policyName);
     Task<(Result Result, string UserId)> CreateUserAsync(string userName, string password);

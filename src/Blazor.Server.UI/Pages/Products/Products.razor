@@ -224,7 +224,7 @@
         var userlclaim = await AuthState;
         var _userId = userlclaim.User.GetUserId();
         _loading = true;
-        var request = new GetAllProductsQuery()
+        var request = new ProductsWithPaginationQuery()
             {
                 UserId = _userId,
                 Keyword = _searchString,

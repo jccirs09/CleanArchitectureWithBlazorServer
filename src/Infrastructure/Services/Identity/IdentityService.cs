@@ -252,4 +252,15 @@ public class IdentityService : IIdentityService
             await _userManager.UpdateAsync(user);
         }
     }
+
+    public async Task<string> GetReferredByAsync(string userId)
+    {
+        var user = await _userManager.Users.SingleOrDefaultAsync(u => u.ReferredBy == userId);
+        return user?.DisplayName;
+    }
+    public async Task<string> GetReferralCodeAsync(string userId)
+    {
+        var user = await _userManager.Users.SingleOrDefaultAsync(u => u.ReferralCode == userId);
+        return user?.Id;
+    }
 }

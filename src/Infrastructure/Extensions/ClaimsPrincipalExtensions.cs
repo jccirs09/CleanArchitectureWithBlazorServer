@@ -25,7 +25,10 @@ public static class ClaimsPrincipalExtensions
          => claimsPrincipal.FindFirstValue(ClaimTypes.GivenName);
     public static string GetProfilePictureDataUrl(this ClaimsPrincipal claimsPrincipal)
         => claimsPrincipal.FindFirstValue(ApplicationClaimTypes.ProfilePictureDataUrl);
-
+    public static string GetReferralCode(this ClaimsPrincipal claimsPrincipal)
+        => claimsPrincipal.FindFirstValue(ApplicationClaimTypes.ReferralCode);
+    public static string GetReferredBy(this ClaimsPrincipal claimsPrincipal)
+        => claimsPrincipal.FindFirstValue(ApplicationClaimTypes.ReferredBy);
 
     public static string[] GetRoles(this ClaimsPrincipal claimsPrincipal)
         => claimsPrincipal.Claims.Where(x => x.Type == ClaimTypes.Role).Select(x => x.Value).ToArray();

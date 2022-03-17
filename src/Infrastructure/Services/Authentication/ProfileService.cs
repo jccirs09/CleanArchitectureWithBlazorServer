@@ -18,6 +18,8 @@ public class ProfileService
             Role = user.GetRoles().FirstOrDefault(),
             UserId = user.GetUserId(),
             UserName = user.GetUserName(),
+            ReferralCode = user.GetReferralCode(),
+            ReferredBy = user.GetReferredBy(),
         };
         return await Task.FromResult(Profile);
     }

@@ -1,9 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using Blazor.Server.UI.Models;
 using Blazor.Server.UI.Models.SideMenu;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Blazor.Server.UI.Services.Navigation;
 using CleanArchitecture.Blazor.Application.Common.Models;
 
@@ -13,6 +10,7 @@ public partial class SideMenu
 {
     private IEnumerable<MenuSectionModel> _menuSections = new List<MenuSectionModel>()
     {
+        
         new MenuSectionModel
         {
             Title = "GENERAL",
@@ -123,9 +121,12 @@ public partial class SideMenu
     [EditorRequired] [Parameter] public UserModel User { get; set; } = default!;
 
     [Inject] private IMenuService _menuService { get; set; } = default!;
+
     protected override Task OnInitializedAsync()
     {
         _menuSections = _menuService.Features;
         return Task.CompletedTask;
+
+        
     }
 }

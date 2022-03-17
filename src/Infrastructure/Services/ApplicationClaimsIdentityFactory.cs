@@ -40,6 +40,12 @@ public class ApplicationClaimsIdentityFactory : UserClaimsPrincipalFactory<Appli
                 new Claim(ClaimTypes.GivenName, user.DisplayName)
             });
         }
+        if (!string.IsNullOrEmpty(user.ReferralCode))
+        {
+            ((ClaimsIdentity)principal.Identity).AddClaims(new[] {
+                new Claim(ClaimTypes.Actor, user.ReferralCode)
+            });
+        }
         var appuser = await _userManager.FindByIdAsync(user.Id);
         var roles = await _userManager.GetRolesAsync(appuser);
         foreach (var rolename in roles)

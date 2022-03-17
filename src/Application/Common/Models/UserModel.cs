@@ -10,4 +10,6 @@ public class UserModel
     public string? PhoneNumber { get; set; }
     public string? Role { get; set; }
     public string? UserId { get; set; }
+    public string? ReferredBy { get; set; }
+    public string? ReferralCode { get; set; }
 }

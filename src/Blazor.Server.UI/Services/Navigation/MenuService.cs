@@ -7,6 +7,7 @@ public class MenuService : IMenuService
 {
     private readonly List<MenuSectionModel> _features = new List<MenuSectionModel>()
     {
+
         new MenuSectionModel
         {
             Title = "Application",
@@ -21,8 +22,17 @@ public class MenuService : IMenuService
                 new()
                 {
                     Title = "Investments",
-                    Icon = Icons.Material.Filled.Money,
+                    Icon = Icons.Material.Filled.Analytics,
                     Href = "/investor/investments",
+                    Roles = new string[]{"Basic"},
+                    PageStatus = PageStatus.Completed
+                },
+                new()
+                {
+                    Title = "Support",
+                    Icon = Icons.Material.Filled.Money,
+                    Href = "/support/investments",
+                    Roles= new string[]{"Admin"},
                     PageStatus = PageStatus.Completed
                 },
                 new()
@@ -36,12 +46,14 @@ public class MenuService : IMenuService
                         new(){
                              Title = "Products",
                              Href = "/pages/products",
+                             Roles = new string[]{"Basic"},
                              PageStatus = PageStatus.Completed,
                         },
                         new(){
                              Title = "Customers",
                              Href = "/pages/customers",
-                             PageStatus = PageStatus.ComingSoon,
+                             Roles = new string[] {"Admin"},
+                             PageStatus = PageStatus.Completed,
                         }
                     }
                 },

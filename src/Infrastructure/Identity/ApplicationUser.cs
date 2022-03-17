@@ -13,6 +13,8 @@ public class ApplicationUser : IdentityUser
     public string? Site { get; set; }
     [Column(TypeName = "text")]
     public string? ProfilePictureDataUrl { get; set; }
+    public string? ReferredBy { get; set; }
+    public string? ReferralCode { get; set; }
     public bool IsActive { get; set; }
     public bool IsLive { get; set; }
     public string? RefreshToken { get; set; }
