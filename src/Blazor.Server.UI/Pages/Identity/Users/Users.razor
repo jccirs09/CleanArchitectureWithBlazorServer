@@ -1,11 +1,11 @@
 @page "/indentity/users"
+@inherits OwningComponentBase
 @using Blazor.Server.UI.Components.Dialogs
 @using CleanArchitecture.Blazor.Infrastructure.Services
 @using Microsoft.AspNetCore.Components.Server.Circuits
 @using Microsoft.AspNetCore.Identity
 @inject IStringLocalizer<Users> L
 @attribute [Authorize(Policy = Permissions.Users.View)]
-@inherits MudComponentBase
 <PageTitle>@Title</PageTitle>
 <style>
     .mud-table-toolbar {
@@ -23,7 +23,7 @@
                   MultiSelection="true"
                   SelectedItems="SelectItems"
                   SortLabel="@L["Sort By"]"
-                  Loading="_loading"
+                  Loading="@_loading"
                   Filter="new Func<ApplicationUser,bool>(_quickFilter)">
             <ToolBarContent>
                 <div class="justify-start pt-3">
@@ -31,6 +31,7 @@
                     <MudHidden Breakpoint="Breakpoint.SmAndDown">
                         <MudButton DisableElevation Variant="Variant.Outlined"
                                    Size="Size.Small"
+                                   Disabled="@_loading"
                                    OnClick="@(()=>OnRefresh())"
                                    StartIcon="@Icons.Material.Filled.Refresh" IconColor="Color.Surface" Color="Color.Primary"
                                    Style="margin-right: 4px; margin-bottom:4px">@L["Refresh"]</MudButton>
@@ -75,7 +76,7 @@
                     </MudHidden>
                     <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
                         <MudMenu AnchorOrigin="Origin.BottomLeft" StartIcon="@Icons.Filled.KeyboardCommandKey" EndIcon="@Icons.Filled.KeyboardArrowDown" Label="@L["Action"]" Color="Color.Primary" Variant="Variant.Filled">
-                            <MudMenuItem OnClick="@(()=>OnRefresh())">Refresh</MudMenuItem>
+                            <MudMenuItem Disabled="@_loading" OnClick="@(()=>OnRefresh())">@L["Refresh"]</MudMenuItem>
                             @if (_canCreate)
                             {
                                 <MudMenuItem OnClick="OnCreate">@L["Create"]</MudMenuItem>
@@ -121,7 +122,7 @@
                 <MudTh>@L["Lock Status"]</MudTh>
             </HeaderContent>
             <RowTemplate>
-                <MudTd DataLabel="Actions">
+                <MudTd DataLabel="@L["Actions"]">
                     @if (_canEdit || _canManageRoles || _canRestPassword || _canActive)
                     {
                         <MudMenu Label="@L["Actions"]" Variant="Variant.Filled" DisableElevation="true"
@@ -161,8 +162,8 @@
                         </MudButton>
                     }
                 </MudTd>
-                <MudTd DataLabel="Site">@context.Site</MudTd>
-                <MudTd DataLabel="UserName">
+                <MudTd DataLabel="@L["Site"]">@context.Site</MudTd>
+                <MudTd DataLabel="@L["User Name"]">
                     <div class="d-flex align-content-center flex-wrap">
 
                         <MudBadge Color="@(context.IsLive? Color.Success :Color.Error)" Overlap="false" Dot="true" Bordered="true">
@@ -171,13 +172,13 @@
                         <MudText Class="ml-2 align-self-center">@context.UserName</MudText>
                     </div>
                 </MudTd>
-                <MudTd DataLabel="DisplayName">@context.DisplayName</MudTd>
-                <MudTd DataLabel="Email">@context.Email</MudTd>
-                <MudTd HideSmall="true" DataLabel="PhoneNumber">@context.PhoneNumber</MudTd>
-                <MudTd HideSmall="true" DataLabel="IsActive">
+                <MudTd DataLabel="@L["Display Name"]">@context.DisplayName</MudTd>
+                <MudTd DataLabel="@L["Email"]">@context.Email</MudTd>
+                <MudTd HideSmall="true" DataLabel="@L["Phone Number"]">@context.PhoneNumber</MudTd>
+                <MudTd HideSmall="true" DataLabel="@L["Is Active"]">
                     <MudCheckBox Checked="@context.IsActive" ReadOnly Color="Color.Secondary"></MudCheckBox>
                 </MudTd>
-                <MudTd HideSmall="true" DataLabel="LockoutEnd">@context.LockoutEnd</MudTd>
+                <MudTd HideSmall="true" DataLabel="@L["Lock Status"]">@context.LockoutEnd</MudTd>
             </RowTemplate>
             <PagerContent>
                 <MudTablePager />

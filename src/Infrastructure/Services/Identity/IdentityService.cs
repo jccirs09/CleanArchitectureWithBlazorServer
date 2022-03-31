@@ -18,6 +18,7 @@ namespace CleanArchitecture.Blazor.Infrastructure.Services.Identity;
 
 public class IdentityService : IIdentityService
 {
+    private readonly IServiceProvider _serviceProvider;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<ApplicationRole> _roleManager;
     private readonly IOptions<AppConfigurationSettings> _appConfig;
@@ -26,15 +27,15 @@ public class IdentityService : IIdentityService
     private readonly IStringLocalizer<IdentityService> _localizer;
 
     public IdentityService(
-        UserManager<ApplicationUser> userManager,
-        RoleManager<ApplicationRole> roleManager,
+        IServiceProvider serviceProvider,
         IOptions<AppConfigurationSettings> appConfig,
         IUserClaimsPrincipalFactory<ApplicationUser> userClaimsPrincipalFactory,
         IAuthorizationService authorizationService,
         IStringLocalizer<IdentityService> localizer)
     {
-        _userManager = userManager;
-        _roleManager = roleManager;
+        _serviceProvider = serviceProvider;
+        _userManager = _serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        _roleManager = _serviceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
         _appConfig = appConfig;
         _userClaimsPrincipalFactory = userClaimsPrincipalFactory;
         _authorizationService = authorizationService;
@@ -44,7 +45,6 @@ public class IdentityService : IIdentityService
     public async Task<string> GetUserNameAsync(string userId)
     {
         var user = await _userManager.Users.SingleOrDefaultAsync(u => u.Id == userId);
-
         return user?.UserName;
     }
 
@@ -107,25 +107,25 @@ public class IdentityService : IIdentityService
         return result;
     }
 
-    public async Task<Result<TokenResponseDto>> LoginAsync(TokenRequestDto request)
+    public async Task<Result<TokenResponse>> LoginAsync(TokenRequest request)
     {
         var user = await _userManager.FindByNameAsync(request.UserName);
         if (user == null)
         {
-            return await Result<TokenResponseDto>.FailureAsync(new string[] { _localizer["User Not Found."] });
+            return await Result<TokenResponse>.FailureAsync(new string[] { _localizer["User Not Found."] });
         }
         if (!user.IsActive)
         {
-            return await Result<TokenResponseDto>.FailureAsync(new string[] { _localizer["User Not Active. Please contact the administrator."] });
+            return await Result<TokenResponse>.FailureAsync(new string[] { _localizer["User Not Active. Please contact the administrator."] });
         }
         if (!user.EmailConfirmed)
         {
-            return await Result<TokenResponseDto>.FailureAsync(new string[] { _localizer["E-Mail not confirmed."] });
+            return await Result<TokenResponse>.FailureAsync(new string[] { _localizer["E-Mail not confirmed."] });
         }
         var passwordValid = await _userManager.CheckPasswordAsync(user, request.Password);
         if (!passwordValid)
         {
-            return await Result<TokenResponseDto>.FailureAsync(new string[] { _localizer["Invalid Credentials."] });
+            return await Result<TokenResponse>.FailureAsync(new string[] { _localizer["Invalid Credentials."] });
         }
 
         user.RefreshToken = GenerateRefreshToken();
@@ -139,29 +139,29 @@ public class IdentityService : IIdentityService
         await _userManager.UpdateAsync(user);
 
         var token = await GenerateJwtAsync(user);
-        var response = new TokenResponseDto { Token = token, RefreshTokenExpiryTime = TokenExpiryTime, RefreshToken = user.RefreshToken, ProfilePictureDataUrl = user.ProfilePictureDataUrl };
-        return await Result<TokenResponseDto>.SuccessAsync(response);
+        var response = new TokenResponse { Token = token, RefreshTokenExpiryTime = TokenExpiryTime, RefreshToken = user.RefreshToken, ProfilePictureDataUrl = user.ProfilePictureDataUrl };
+        return await Result<TokenResponse>.SuccessAsync(response);
     }
 
-    public async Task<Result<TokenResponseDto>> RefreshTokenAsync(RefreshTokenRequestDto request)
+    public async Task<Result<TokenResponse>> RefreshTokenAsync(RefreshTokenRequest request)
     {
         if (request is null)
         {
-            return await Result<TokenResponseDto>.FailureAsync(new string[] { _localizer["Invalid Client Token."] });
+            return await Result<TokenResponse>.FailureAsync(new string[] { _localizer["Invalid Client Token."] });
         }
         var userPrincipal = GetPrincipalFromExpiredToken(request.Token);
         var userEmail = userPrincipal.FindFirstValue(ClaimTypes.Email);
         var user = await _userManager.FindByEmailAsync(userEmail);
         if (user == null)
-            return await Result<TokenResponseDto>.FailureAsync(new string[] { _localizer["User Not Found."] });
+            return await Result<TokenResponse>.FailureAsync(new string[] { _localizer["User Not Found."] });
         if (user.RefreshToken != request.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
-            return await Result<TokenResponseDto>.FailureAsync(new string[] { _localizer["Invalid Client Token."] });
+            return await Result<TokenResponse>.FailureAsync(new string[] { _localizer["Invalid Client Token."] });
         var token = GenerateEncryptedToken(GetSigningCredentials(), await GetClaimsAsync(user));
         user.RefreshToken = GenerateRefreshToken();
         await _userManager.UpdateAsync(user);
 
-        var response = new TokenResponseDto { Token = token, RefreshToken = user.RefreshToken, RefreshTokenExpiryTime = user.RefreshTokenExpiryTime };
-        return await Result<TokenResponseDto>.SuccessAsync(response);
+        var response = new TokenResponse { Token = token, RefreshToken = user.RefreshToken, RefreshTokenExpiryTime = user.RefreshTokenExpiryTime };
+        return await Result<TokenResponse>.SuccessAsync(response);
     }
 
     private string GenerateRefreshToken()
@@ -247,7 +247,7 @@ public class IdentityService : IIdentityService
     public async Task UpdateLiveStatus(string userId, bool isLive)
     {
         var user = await _userManager.FindByIdAsync(userId);
-        if (user is not null)
+        if (user is not null && user.IsLive!= isLive)
         {
             user.IsLive = isLive;
             await _userManager.UpdateAsync(user);

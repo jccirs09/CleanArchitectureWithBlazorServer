@@ -78,7 +78,7 @@ public class MenuService : IMenuService
                 {
                     IsParent = true,
                     Title = "Authorization",
-                    Icon = Icons.Material.Filled.Person,
+                    Icon = Icons.Material.Filled.ManageAccounts,
                     MenuItems = new List<MenuSectionSubItemModel>
                     {
                         new()
