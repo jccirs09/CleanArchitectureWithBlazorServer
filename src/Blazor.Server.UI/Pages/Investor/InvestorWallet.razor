@@ -1,0 +1,339 @@
+@page "/investor/wallet"
+@inject IJSRuntime JS
+@inject IStringLocalizer<InvestorWallet> L
+@inherits MudComponentBase
+@using CleanArchitecture.Blazor.Application.Features.WalletPayouts.Commands.AddEdit
+@using CleanArchitecture.Blazor.Application.Features.WalletPayouts.DTOs
+@using CleanArchitecture.Blazor.Application.Features.WalletPayouts.Queries.GetAll
+@using CleanArchitecture.Blazor.Application.Features.WalletTransactions.Commands.AddEdit
+@using CleanArchitecture.Blazor.Application.Features.WalletTransactions.DTOs
+@using CleanArchitecture.Blazor.Application.Features.WalletTransactions.Queries.GetAll
+@using CleanArchitecture.Blazor.Application.Features.Wallets.Commands.AddEdit
+@using CleanArchitecture.Blazor.Application.Features.Wallets.DTOs
+@using Microsoft.AspNetCore.Authorization
+
+<PageTitle>@Title</PageTitle>
+<style>
+    .mud-table-toolbar {
+        height: 84px !important;
+    }
+</style>
+<MudTabs Elevation="2" Rounded="true" Centered="true">
+    <MudTabPanel Icon="@Icons.Material.Filled.ArrowUpward" ToolTip="Transactions" BadgeData='"!"' BadgeColor="Color.Success">
+        @*Tab panel 1 start *@
+            <ErrorBoundary>
+                <ChildContent>
+                    <MudTable Items="_walletTransactions"
+                              FixedHeader="true"
+                              FixedFooter="true"
+                              Height="calc(100vh - 265px)"
+                              Loading="@_loading"
+                              LoadingProgressColor="Color.Info"
+                              SortLabel="@L["Sort By"]"
+                              Hover="true" @ref="_table">
+                        <ToolBarContent>
+                            <div class="justify-start pt-3">
+                                <MudText Typo="Typo.h6">@L["Current Balance"]</MudText>
+                                <MudHidden Breakpoint="Breakpoint.SmAndDown">
+                                    <MudButton DisableElevation Variant="Variant.Outlined"
+                                               Size="Size.Small"
+                                               OnClick="@(()=>OnRefresh())"
+                                               StartIcon="@Icons.Material.Filled.Refresh" IconColor="Color.Surface" Color="Color.Primary"
+                                               Style="margin-right: 4px; margin-bottom:4px">@L["Refresh"]</MudButton>
+                                    @if (_canCreate)
+                                    {
+                                        <MudButton DisableElevation Variant="Variant.Outlined" Color="Color.Primary"
+                                               StartIcon="@Icons.Material.Filled.Add"
+                                               Size="Size.Small"
+                                               OnClick="OnCreate"
+                                               Style="margin-right: 4px; margin-bottom:4px"
+                                               IconColor="Color.Surface">@L["Request Payout"]</MudButton>
+                                    }
+                       
+                       
+                                </MudHidden>
+                                <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
+                                    <MudMenu AnchorOrigin="Origin.BottomLeft" StartIcon="@Icons.Filled.KeyboardCommandKey" EndIcon="@Icons.Filled.KeyboardArrowDown" Label="@L["Action"]" Color="Color.Primary" Variant="Variant.Filled">
+                                        <MudMenuItem OnClick="@(()=>OnRefresh())">Refresh</MudMenuItem>
+                                        @if (_canCreate)
+                                        {
+                                            <MudMenuItem OnClick="OnCreate">@L["Request Payout"]</MudMenuItem>
+                                        }                           
+                                    </MudMenu>
+                                </MudHidden>
+                            </div>
+                            <MudSpacer />
+                            <MudIcon Icon="@Icons.Material.Outlined.AccountBalanceWallet"/>
+                            <MudText Typo="Typo.h5" Color="Color.Primary">$@walletBalance</MudText>    
+                        </ToolBarContent>
+                        <HeaderContent>
+                                <MudTh Style="text-align:left"><MudTableSortLabel SortLabel="Type" T="WalletTransactionDto">@L["Type"]</MudTableSortLabel></MudTh>
+                                <MudTh Style="text-align:right"><MudTableSortLabel SortLabel="Amount" T="WalletTransactionDto">@L["Amount"]</MudTableSortLabel></MudTh>
+                                <MudTh Style="text-align:right"><MudTableSortLabel SortLabel="PreviousBalance" T="WalletTransactionDto">@L["Old Balance"]</MudTableSortLabel></MudTh>
+                                <MudTh Style="text-align:right"><MudTableSortLabel SortLabel="NewBalance" T="WalletTransactionDto">@L["New Balance"]</MudTableSortLabel></MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="Stat">@context.Type</MudTd>
+               
+                            @if(@context.Type == "Receive")
+                            {
+                                 <MudTd DataLabel="Amount" Style="text-align:right; color:green"><MudIcon Icon="@Icons.Material.Outlined.MoveUp"/> -@context.Amount.ToString("C2")</MudTd>
+                            }
+                            else
+                            {
+                                <MudTd DataLabel="Amount" Style="text-align:right; color:red"><MudIcon Icon="@Icons.Material.Outlined.MoveDown"/> +@context.Amount.ToString("C2")</MudTd>
+                            }
+                            <MudTd DataLabel="Old Balance" Style="text-align:right">@context.PreviousBalance.ToString("C2")</MudTd>
+                           <MudTd DataLabel="New Balance" Style="text-align:right">@context.NewBalance.ToString("C2")</MudTd>
+                        </RowTemplate>
+                        <NoRecordsContent>
+                            <MudText>@L["No matching records found"]</MudText>
+                        </NoRecordsContent>
+                        <LoadingContent>
+                            <MudText>@L["Loading.."].</MudText>
+                        </LoadingContent>
+                        <PagerContent>
+                            <MudTablePager />
+                        </PagerContent>
+                    </MudTable>
+                </ChildContent>
+                <ErrorContent>
+                    <CustomError Exception="context"></CustomError>
+                </ErrorContent>
+            </ErrorBoundary>
+        @*Tab panel 1 end *@
+    </MudTabPanel>
+    <MudTabPanel Icon="@Icons.Material.Filled.RequestQuote" ToolTip="Payouts" BadgeData="3" BadgeColor="Color.Error">
+        @*Tab panel 2 start *@
+                <ErrorBoundary>
+                <ChildContent>
+                    <MudTable Items="_walletPayouts"
+                              FixedHeader="true"
+                              FixedFooter="true"
+                              Height="calc(100vh - 265px)"
+                              Loading="@_loading"
+                              LoadingProgressColor="Color.Info"
+                              SortLabel="@L["Sort By"]"
+                              Hover="true" @ref="_table2">
+                        <ToolBarContent>
+                            <div class="justify-start pt-3">
+                                <MudText Typo="Typo.h6">@L["Current Balance"]</MudText>
+                                <MudHidden Breakpoint="Breakpoint.SmAndDown">
+                                    <MudButton DisableElevation Variant="Variant.Outlined"
+                                               Size="Size.Small"
+                                               OnClick="@(()=>OnRefresh())"
+                                               StartIcon="@Icons.Material.Filled.Refresh" IconColor="Color.Surface" Color="Color.Primary"
+                                               Style="margin-right: 4px; margin-bottom:4px">@L["Refresh"]</MudButton>
+                                    @if (_canCreate)
+                                    {
+                                        <MudButton DisableElevation Variant="Variant.Outlined" Color="Color.Primary"
+                                               StartIcon="@Icons.Material.Filled.Add"
+                                               Size="Size.Small"
+                                               OnClick="OnCreate"
+                                               Style="margin-right: 4px; margin-bottom:4px"
+                                               IconColor="Color.Surface">@L["Request Payout"]</MudButton>
+                                    }
+                                </MudHidden>
+                                <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
+                                    <MudMenu AnchorOrigin="Origin.BottomLeft" StartIcon="@Icons.Filled.KeyboardCommandKey" EndIcon="@Icons.Filled.KeyboardArrowDown" Label="@L["Action"]" Color="Color.Primary" Variant="Variant.Filled">
+                                        <MudMenuItem OnClick="@(()=>OnRefresh())">Refresh</MudMenuItem>
+                                        @if (_canCreate)
+                                        {
+                                            <MudMenuItem OnClick="OnCreate">@L["Request Payout"]</MudMenuItem>
+                                        }                           
+                                    </MudMenu>
+                                </MudHidden>
+                            </div>
+                            <MudSpacer />
+                            <MudIcon Icon="@Icons.Material.Outlined.AccountBalanceWallet"/>
+                            <MudText Typo="Typo.h5" Color="Color.Primary">$@walletBalance</MudText>    
+                        </ToolBarContent>
+                        <HeaderContent>
+                                <MudTh Style="text-align:left"><MudTableSortLabel SortLabel="Type" T="WalletPayoutDto">@L["Type"]</MudTableSortLabel></MudTh>
+                                <MudTh Style="text-align:right"><MudTableSortLabel SortLabel="Amount" T="WalletPayoutDto">@L["Amount"]</MudTableSortLabel></MudTh>
+                                <MudTh><MudTableSortLabel SortLabel="Stat" T="WalletPayoutDto">@L["Status"]</MudTableSortLabel></MudTh>
+                                <MudTh><MudTableSortLabel SortLabel="Created" T="WalletPayoutDto">@L["Requested"]</MudTableSortLabel></MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                           <MudTd DataLabel="Type" Style="text-align:left">@context.Type</MudTd>
+                           <MudTd DataLabel="Amount" Style="text-align:right"> @context.Amount.ToString("C2")</MudTd>
+                           <MudTd DataLabel="Status">@context.Stat</MudTd>
+                           <MudTd DataLabel="Requested" >@context.Created</MudTd>
+                        </RowTemplate>
+                        <NoRecordsContent>
+                            <MudText>@L["No matching records found"]</MudText>
+                        </NoRecordsContent>
+                        <LoadingContent>
+                            <MudText>@L["Loading.."].</MudText>
+                        </LoadingContent>
+                        <PagerContent>
+                            <MudTablePager />
+                        </PagerContent>
+                    </MudTable>
+                </ChildContent>
+                <ErrorContent>
+                    <CustomError Exception="context"></CustomError>
+                </ErrorContent>
+            </ErrorBoundary>
+        @*Tab panel 2 end *@
+    </MudTabPanel>
+</MudTabs>
+
+@code {
+    public string? Title { get; private set; }
+    [Inject]
+    private IReferralService _referralService { get; set; } = default!;
+    [Inject]
+    private IWalletTransactionService _walletTransactionService  { get; set; } = default!;
+    [CascadingParameter]
+    protected Task<AuthenticationState> AuthState { get; set; } = default!;
+    private IEnumerable<WalletTransactionDto> _walletTransactions = new List<WalletTransactionDto>();
+    private IEnumerable<WalletPayoutDto> _walletPayouts = new List<WalletPayoutDto>();
+    [Inject]
+    private ISender _mediator { get; set; } = default!;
+    private MudTable<WalletTransactionDto> _table = default!;
+    private MudTable<WalletPayoutDto> _table2 = default!;
+    private WalletDto _walletDto = new WalletDto();
+    private string? color;
+
+    private bool _canView;
+    private bool _canCreate;
+    private decimal walletBalance;
+    private bool _loading;
+    private string? _userId;
+    private string? _receiver;
+    private decimal _amount;
+    protected override async Task OnInitializedAsync()
+    {
+        Title = L["My Wallet"];
+        var state = await AuthState;
+        _userId = state.User.GetUserId();
+        _canView = (await AuthService.AuthorizeAsync(state.User, Permissions.Investments.View)).Succeeded;
+        _canCreate = (await AuthService.AuthorizeAsync(state.User, Permissions.Investments.Create)).Succeeded;
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        @if(_canView)
+        {
+             _loading = true;
+             walletBalance = await _referralService.GetInvestorWalletAsync();
+             var request = new GetAllWalletTransactionsQuery();       
+            _walletTransactions = await _mediator.Send(request);
+
+            var payouts = new GetAllWalletPayoutsQuery();
+            _walletPayouts = await _mediator.Send(payouts);
+
+            _loading = false;
+        }
+        var state = await AuthState;
+        _userId = state.User.GetUserId();
+    }
+    private async Task OnRefresh()
+    {
+        await LoadData();
+    }
+    private async Task OnCreate()
+    {
+
+        var command = new AddEditWalletPayoutCommand();        
+        var parameters = new DialogParameters
+        {
+            {nameof(_PayoutDialog.model), command },
+        };
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        var dialog = DialogService.Show<_PayoutDialog>(L["Payout Request"], parameters, options);
+        var state = await dialog.Result;
+        _amount = command.Amount;
+        if (!state.Cancelled)
+        {
+            command.FromUser = _userId;
+            if (command.Amount > walletBalance)
+            {
+                Snackbar.Add("Insufficient balance!", MudBlazor.Severity.Error);
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(command.ToUser))
+                {
+                    command.Stat = "Pending";
+                    var result = await _mediator.Send(command);
+                    await LoadData();
+                    Snackbar.Add($"{L["Approval Pending!"]}", MudBlazor.Severity.Warning);
+                }
+                else
+                {
+                    command.Stat = "Complete";
+                    _receiver = command.ToUser;
+                    var check = await _referralService.GetWalletUser(command.ToUser);
+                    if (check != null)
+                    {
+                        //Sender Transaction
+                        await SenderAsync();
+                        await SenderWalletAsync();
+                        //Receiver Transaction
+                        await ReceiverAsync();
+                        await ReceiverWalletAsync();
+                        var result = await _mediator.Send(command);
+                        await LoadData();
+                        Snackbar.Add($"{L["Payout completed!"]}", MudBlazor.Severity.Success);
+                        _amount = decimal.Zero;
+                        _receiver = string.Empty;
+                    }
+                    else
+                    {
+                        Snackbar.Add("Invalid Wallet!", MudBlazor.Severity.Error);
+                    }
+                }
+            }   
+        }
+    }
+    private async Task SenderAsync()
+    {
+        //Sender transaction
+        var command = new AddEditWalletTransactionCommand();
+        command.UserId = _userId;
+        command.Amount = _amount;
+        command.PreviousBalance = walletBalance;
+        command.NewBalance = walletBalance - _amount;
+        command.Type = "Send";
+        command.Stat = "Complete";
+        await _mediator.Send(command);
+    }
+    private async Task ReceiverAsync()
+    {
+        //Receiver transaction
+        var receiver = await _referralService.GetWalletUser(_receiver);
+        var command = new AddEditWalletTransactionCommand();
+        command.UserId = _receiver;
+        command.Amount = _amount;
+        command.PreviousBalance = receiver.CurrentBalance;
+        command.NewBalance = receiver.CurrentBalance + _amount;
+        command.Type = "Receive";
+        command.Stat = "Complete";
+        await _mediator.Send(command);
+    }
+    private async Task SenderWalletAsync()
+    {
+        //Sender Wallet Update
+        var sender = await _referralService.GetWalletUser(_userId);
+        var command = new AddEditWalletCommand();
+        command.Id = sender.Id ;
+        command.CurrentBalance = sender.CurrentBalance - _amount;
+        command.Created = sender.Created;
+        command.CreatedBy = sender.CreatedBy;
+        await _mediator.Send(command);
+    }
+    private async Task ReceiverWalletAsync()
+    {
+        //Receiver Wallet Update
+        var receiver = await _referralService.GetWalletUser(_receiver);
+        var command = new AddEditWalletCommand();
+        command.Id = receiver.Id ;
+        command.CurrentBalance = receiver.CurrentBalance + _amount;
+        command.Created = receiver.Created;
+        command.CreatedBy = receiver.CreatedBy;
+        await _mediator.Send(command);
+    }
+}

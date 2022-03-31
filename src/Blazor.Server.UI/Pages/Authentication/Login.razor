@@ -19,7 +19,7 @@
                   Label="@L["User name"]"
                   Variant="Variant.Outlined"
                   Required="true"
-                  RequiredError="@L["user name is required!"]"
+                  RequiredError="@L["User name is required!"]"
                   Class="my-6"></MudTextField>
 
     <MudTextField @bind-Value="model.Password" For="@(() => model.Password)"
@@ -97,6 +97,7 @@
         if (context.Validate())
         {
             var result = await _authenticationService.Login(model);
+
             if (!result)
             {
                 Snackbar.Add(L["Please check your username and password. If you are still unable to log in, contact your administrator."], MudBlazor.Severity.Error);

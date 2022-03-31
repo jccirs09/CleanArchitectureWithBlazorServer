@@ -112,9 +112,9 @@
             </ColGroup>
             <HeaderContent>
                 <MudTh Style="width:80px">@L["Actions"]</MudTh>
-                <MudTh><MudTableSortLabel SortBy="new Func<ApplicationUser, object>(x=>x.Site)">@L["Site"]</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<ApplicationUser, object>(x=>x.DisplayName)">@L["Display Name"]</MudTableSortLabel></MudTh>
                 <MudTh><MudTableSortLabel SortBy="new Func<ApplicationUser, object>(x=>x.UserName)">@L["User Name"]</MudTableSortLabel></MudTh>
-                <MudTh><MudTableSortLabel SortBy="new Func<ApplicationUser, object>(x=>x.DisplayName)">@L["Dispaly Name"]</MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<ApplicationUser, object>(x=>x.ReferralCode)">@L["Referral Code"]</MudTableSortLabel></MudTh>
                 <MudTh><MudTableSortLabel SortBy="new Func<ApplicationUser, object>(x=>x.Email)">@L["Email"]</MudTableSortLabel></MudTh>
                 <MudTh><MudTableSortLabel SortBy="new Func<ApplicationUser, object>(x=>x.PhoneNumber)">@L["Phone Number"]</MudTableSortLabel></MudTh>
                 <MudTh><MudTableSortLabel SortBy="new Func<ApplicationUser, object>(x=>x.IsActive)">@L["Is Active"]</MudTableSortLabel></MudTh>
@@ -161,7 +161,7 @@
                         </MudButton>
                     }
                 </MudTd>
-                <MudTd DataLabel="@L["Site"]">@context.Site</MudTd>
+                <MudTd DataLabel="@L["Display Name"]">@context.DisplayName</MudTd>
                 <MudTd DataLabel="@L["User Name"]">
                     <div class="d-flex align-content-center flex-wrap">
 
@@ -171,7 +171,7 @@
                         <MudText Class="ml-2 align-self-center">@context.UserName</MudText>
                     </div>
                 </MudTd>
-                <MudTd DataLabel="@L["Display Name"]">@context.DisplayName</MudTd>
+                <MudTd DataLabel="@L["referral Code"]">@context.ReferralCode</MudTd>
                 <MudTd DataLabel="@L["Email"]">@context.Email</MudTd>
                 <MudTd HideSmall="true" DataLabel="@L["Phone Number"]">@context.PhoneNumber</MudTd>
                 <MudTd HideSmall="true" DataLabel="@L["Is Active"]">

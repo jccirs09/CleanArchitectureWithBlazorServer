@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using CleanArchitecture.Blazor.Application.Common.Interfaces.Identity.DTOs;
+using CleanArchitecture.Blazor.Application.Common.Security;
 
 namespace CleanArchitecture.Blazor.Application.Common.Interfaces.Identity;
 
@@ -11,7 +12,6 @@ public interface IIdentityService : IService
     Task<Result<TokenResponse>> RefreshTokenAsync(RefreshTokenRequest request);
     Task<string> GetUserNameAsync(string userId);
     Task<string> GetReferredByAsync(string userId);
-    Task<string> GetReferralCodeAsync(string userId);
     Task<bool> IsInRoleAsync(string userId, string role);
     Task<bool> AuthorizeAsync(string userId, string policyName);
     Task<(Result Result, string UserId)> CreateUserAsync(string userName, string password);

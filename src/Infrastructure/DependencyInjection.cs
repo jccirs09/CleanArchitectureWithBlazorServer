@@ -62,6 +62,8 @@ public static class DependencyInjection
         services.AddTransient<IExcelService, ExcelService>();
         services.AddTransient<IUploadService, UploadService>();
         services.AddTransient<IIdentityService, IdentityService>();
+        services.AddTransient<IReferralService, ReferralService>();
+        services.AddScoped<IWalletTransactionService, WalletTransactionService>();
         services.Configure<AppConfigurationSettings>(configuration.GetSection("AppConfigurationSettings"));
         services.Configure<MailSettings>(configuration.GetSection("MailSettings"));
         services.AddTransient<IMailService, SMTPMailService>();

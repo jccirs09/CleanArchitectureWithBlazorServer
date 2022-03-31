@@ -1,5 +1,6 @@
 @page "/pages/authentication/register"
 @using System.Text.RegularExpressions
+@using CleanArchitecture.Blazor.Application.Common.Interfaces.Identity
 @using CleanArchitecture.Blazor.Application.Common.Security
 @using CleanArchitecture.Blazor.Infrastructure.Constants.Role
 @using CleanArchitecture.Blazor.Infrastructure.Services.Identity
@@ -32,7 +33,8 @@
     Required="true"
     RequiredError="@L["e-mail is required!"]"
     Variant="Variant.Outlined"></MudTextField>
-    <MudTextField T="string" 
+
+<MudTextField T="string" 
     Immediate="true"
     Label="@L["Referred By"]" 
     @bind-Value="model.ReferredBy" 
@@ -76,7 +78,7 @@
 @code {
     [Inject] private NavigationManager _navigation { get; set; } = default!;
     [Inject] private UserManager<ApplicationUser> _userManager { get; set; }= default!;
-    private IdentityService _identityService { get; set; } = default!;
+    [Inject] private IReferralService _referralService { get; set; } = default!;
     MudForm form;
     RegisterFormModel model = new ();
     RegisterFormModelFluentValidator registerValidator = new ();
@@ -103,11 +105,10 @@
     }
     private async Task Submit()
     {
-        var existed = await _identityService.GetReferralCodeAsync(model.ReferredBy);
+        await form.Validate();
 
-        if(existed is not null)
+        if(string.IsNullOrEmpty(model.ReferredBy))
         {
-            await form.Validate();
 
             if (form.IsValid)
             {
@@ -119,7 +120,7 @@
                         ReferralCode = string.Join("", Guid.NewGuid().ToString("n").Take(8).Select(o => o)).ToUpper(),
                         IsActive =true,
                         EmailConfirmed =true
-            };
+                    };
                 var result = await _userManager.CreateAsync(user,model.Password);
                 if (result.Succeeded)
                 {
@@ -135,8 +136,42 @@
             }
         }
         else
-        {
-            Snackbar.Add($"Referral code is invalid!", MudBlazor.Severity.Error);
+        {            
+            var referred = await _referralService.GetReferralAsync(model.ReferredBy);
+
+            if(referred is not null)
+            {        
+
+                if (form.IsValid)
+                {
+                    
+                    var user = new ApplicationUser()
+                    {
+                        UserName = model.UserName,
+                        Email = model.Email,
+                        ReferredBy = referred.UserId,
+                        ReferralCode = string.Join("", Guid.NewGuid().ToString("n").Take(8).Select(o => o)).ToUpper(),
+                        IsActive =true,
+                        EmailConfirmed =true
+                    };
+                    var result = await _userManager.CreateAsync(user,model.Password);
+                    if (result.Succeeded)
+                    {
+                        await _userManager.AddToRoleAsync(user, RoleConstants.BasicRole);
+                        _navigation.NavigateTo("/pages/authentication/login");
+                        Snackbar.Add(L["Register successfully!"], MudBlazor.Severity.Info);
+                    }
+                    else
+                    {
+                        Snackbar.Add($"{string.Join(",", result.Errors.Select(x=>x.Description))}", MudBlazor.Severity.Error);
+                    }
+
+                }
+            }
+            else
+            {
+                Snackbar.Add($"Referral code is invalid!", MudBlazor.Severity.Error);
+            }
         }
     }
 }

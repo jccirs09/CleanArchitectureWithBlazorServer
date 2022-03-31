@@ -39,7 +39,7 @@
                                    Size="Size.Small"
                                    OnClick="OnCreate"
                                    Style="margin-right: 4px; margin-bottom:4px"
-                                   IconColor="Color.Surface">@L["Create"]</MudButton>
+                                   IconColor="Color.Surface">@L["Invest"]</MudButton>
                         }
                        
                        
@@ -49,7 +49,7 @@
                             <MudMenuItem OnClick="@(()=>OnRefresh())">Refresh</MudMenuItem>
                             @if (_canCreate)
                             {
-                                <MudMenuItem OnClick="OnCreate">@L["Create"]</MudMenuItem>
+                                <MudMenuItem OnClick="OnCreate">@L["Invest"]</MudMenuItem>
                             }                           
                         </MudMenu>
                     </MudHidden>

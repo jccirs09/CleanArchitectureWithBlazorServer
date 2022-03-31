@@ -5,8 +5,10 @@ namespace CleanArchitecture.Blazor.Application.Features.Investments.Commands.Add
 
     public class AddEditInvestmentCommandValidator : AbstractValidator<AddEditInvestmentCommand>
     {
-        public AddEditInvestmentCommandValidator()
-        {        
+
+
+    public AddEditInvestmentCommandValidator()
+        {
         RuleFor(v => v.ProofType)
            .MaximumLength(30)
            .NotEmpty();
@@ -15,8 +17,8 @@ namespace CleanArchitecture.Blazor.Application.Features.Investments.Commands.Add
         RuleFor(v => v.Amount)
                .LessThanOrEqualTo(10000);
         RuleFor(v => v.ImageDateUrl)
-            .NotEmpty();
-        }
+            .NotEmpty();        
+       }
 
         public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
         {
@@ -25,5 +27,7 @@ namespace CleanArchitecture.Blazor.Application.Features.Investments.Commands.Add
                 return Array.Empty<string>();
             return result.Errors.Select(e => e.ErrorMessage);
         };
+
+    
 }
 

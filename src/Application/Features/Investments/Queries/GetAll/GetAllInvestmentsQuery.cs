@@ -35,9 +35,11 @@ namespace CleanArchitecture.Blazor.Application.Features.Investments.Queries.GetA
         {
         var userId = await _currentUserService.UserId();
             //TODO:Implementing GetAllInvestmentsQueryHandler method 
-            var data = await _context.Investments.Where(x=>x.CreatedBy.Equals(userId))
-                         .ProjectTo<InvestmentDto>(_mapper.ConfigurationProvider)
-                         .ToListAsync(cancellationToken);
+            var data = await _context.Investments
+                    .Where(x=>x.CreatedBy.Equals(userId))
+                    .OrderByDescending(o => o.Created)
+                    .ProjectTo<InvestmentDto>(_mapper.ConfigurationProvider)
+                    .ToListAsync(cancellationToken);
             return data;
         }
     }

@@ -41,8 +41,12 @@ public class ApplicationDbContext : IdentityDbContext<
 
     public DbSet<Product> Products { get; set; }
     public DbSet<Investment> Investments { get; set; }
+    public DbSet<Referral> Referrals { get; set; }
 
     public DbSet<Wallet> Wallets { get; set; }
+    public DbSet<WalletPayout> WalletPayouts { get; set; }
+    public DbSet<WalletTransaction> WalletTransactions { get; set; }
+
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
     {
         var userId = await _currentUserService.UserId();

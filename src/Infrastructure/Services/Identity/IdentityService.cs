@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using CleanArchitecture.Blazor.Application.Common.Interfaces.Identity.DTOs;
+using CleanArchitecture.Blazor.Application.Common.Security;
 using CleanArchitecture.Blazor.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -128,6 +129,7 @@ public class IdentityService : IIdentityService
         }
 
         user.RefreshToken = GenerateRefreshToken();
+
         var TokenExpiryTime = DateTime.Now.AddDays(7);
 
         if (request.RememberMe)
@@ -194,6 +196,8 @@ public class IdentityService : IIdentityService
                 new(ClaimTypes.Locality, user.Site),
                 new(ClaimTypes.NameIdentifier, user.Id),
                 new(ApplicationClaimTypes.ProfilePictureDataUrl, user.ProfilePictureDataUrl),
+                new(ApplicationClaimTypes.ReferralCode, user.ReferralCode),
+                new(ApplicationClaimTypes.ReferredBy, user.ReferredBy),
                 new(ClaimTypes.Email, user.Email),
                 new(ClaimTypes.GivenName, user.DisplayName),
                 new(ClaimTypes.MobilePhone, user.PhoneNumber ?? string.Empty)
@@ -258,9 +262,6 @@ public class IdentityService : IIdentityService
         var user = await _userManager.Users.SingleOrDefaultAsync(u => u.ReferredBy == userId);
         return user?.DisplayName;
     }
-    public async Task<string> GetReferralCodeAsync(string userId)
-    {
-        var user = await _userManager.Users.SingleOrDefaultAsync(u => u.ReferralCode == userId);
-        return user?.Id;
-    }
+
+   
 }

@@ -1,0 +1,72 @@
+@using CleanArchitecture.Blazor.Application.Features.Investments.Commands.AddEdit
+@using CleanArchitecture.Blazor.Application.Features.KeyValues.Queries.ByName
+@using CleanArchitecture.Blazor.Application.Features.WalletPayouts.Commands.AddEdit
+@using CleanArchitecture.Blazor.Application.Features.WalletTransactions.Commands.AddEdit
+@using CleanArchitecture.Blazor.Application.Features.Wallets.Queries.GetAll
+@using SixLabors.ImageSharp
+@using SixLabors.ImageSharp.Formats
+@using SixLabors.ImageSharp.Processing
+@using Microsoft.AspNetCore.Authorization
+@inherits MudComponentBase
+@inject IStringLocalizer<InvestorWallet> L
+<MudDialog>
+    <DialogContent>
+        <MudForm Model="model" @ref="form" Validation="@(modelValidator.ValidateValue)">
+            <MudGrid>
+                 <MudItem xs="12">
+                    <MudNumericField Label="@L["Amount"]"
+                                     T="decimal"
+                                     Format="N2"
+                                     For="@(() => model.Amount)"
+                                     Min="0.00m"
+                                     @bind-Value="model.Amount" Adornment="Adornment.Start"
+                                     AdornmentIcon="@Icons.Material.Filled.AttachMoney">
+                                 </MudNumericField>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudSelect For="@(() => model.Type)" @bind-Value="@model.Type" Label="Payout Type" HelperText="String" Placeholder="Please Select" AdornmentIcon="@Icons.Material.Filled.EnhancedEncryption">
+                        <MudSelectItem Value="@("Wallet")">Wallet</MudSelectItem>
+                        <MudSelectItem Value="@("Cash")">Cash</MudSelectItem>
+                    </MudSelect>
+                </MudItem>      
+                
+                    @if(model.Type =="Wallet")
+                    {
+                        <MudItem xs="12">
+                            <MudTextField For="@(() => model.ToUser)" @bind-Value="@model.ToUser" Label="To User Wallet">
+
+                            </MudTextField>
+                        </MudItem>
+                    }
+                
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">@L["Cancel"]</MudButton>
+        <MudButton Color="MudBlazor.Color.Primary" OnClick="Submit">@L["Ok"]</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    MudForm form = default!;
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; } = default!;
+    AddEditWalletPayoutCommandValidator modelValidator = new AddEditWalletPayoutCommandValidator();
+    [EditorRequired] [Parameter] public AddEditWalletPayoutCommand model { get; set; } = default!;
+    private bool hide =true;
+    //private IList<string>? _prictures = null;
+
+
+    
+    async Task Submit()
+    {  
+        await form.Validate();
+        if (form.IsValid)
+        {
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+            
+    }
+    void Cancel() => MudDialog.Cancel();
+}

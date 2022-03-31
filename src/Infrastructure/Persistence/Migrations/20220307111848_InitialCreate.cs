@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -31,7 +31,8 @@ namespace CleanArchitecture.Blazor.Infrastructure.Persistence.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     DisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Site = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ProfilePictureDataUrl = table.Column<string>(type: "text", nullable: true),
+                    ProfilePictureData
+                    = table.Column<string>(type: "text", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     IsLive = table.Column<bool>(type: "bit", nullable: false),
                     RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),

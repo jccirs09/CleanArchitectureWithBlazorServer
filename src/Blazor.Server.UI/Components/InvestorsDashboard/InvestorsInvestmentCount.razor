@@ -1,0 +1,41 @@
+@inherits MudComponentBase
+@inject IStringLocalizer<InvestorsInvestmentCount> L
+<MudElement @attributes="@UserAttributes"
+            Class="@Classname"
+            Style="@Style">
+            
+            
+             
+</MudElement>
+<MudElement @attributes="@UserAttributes"
+            Class="@Classname"
+            Style="@Style">
+            
+</MudElement>
+<MudElement @attributes="@UserAttributes"
+            Class="@Classname"
+            Style="@Style">
+            
+</MudElement>
+
+@code
+{
+    [Inject] private IReferralService _referralService { get; set; } = default!;
+    private int investmentCount;
+    private int _investmentSum;
+    private decimal investmentSum;
+    private decimal investmentDailyRate;
+    private readonly List<int> _lastTenDaysInstalls = new() {20, 41, 63, 23, 38, 25, 50, 46, 11, 26};
+    private const double IncreaseDecreaseInstalls = 0.2;
+
+    protected override async Task OnInitializedAsync()
+    {
+         await LoadData();
+    }
+    private async Task LoadData()
+    {
+        investmentCount = await _referralService.GetInvestorInvestmentCountAsync();
+        investmentSum = await _referralService.GetInvestorInvestmentSumAsync();
+        investmentDailyRate = await _referralService.GetInvestorInvestmentDailyRateAsync();
+    }
+}

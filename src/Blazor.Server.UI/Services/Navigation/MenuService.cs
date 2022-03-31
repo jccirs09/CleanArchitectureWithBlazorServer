@@ -1,13 +1,20 @@
 using Blazor.Server.UI.Models.SideMenu;
+using CleanArchitecture.Blazor.Infrastructure.Identity;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Identity;
 using MudBlazor;
 
 namespace Blazor.Server.UI.Services.Navigation;
 
 public class MenuService : IMenuService
 {
-    private readonly List<MenuSectionModel> _features = new List<MenuSectionModel>()
+    private readonly RoleManager<ApplicationRole> _roleManager;
+    public MenuService(RoleManager<ApplicationRole> roleManager)
     {
-
+        _roleManager = roleManager;
+    }
+    private readonly List<MenuSectionModel> _features = new List<MenuSectionModel>()
+    {        
         new MenuSectionModel
         {
             Title = "Application",
@@ -21,9 +28,25 @@ public class MenuService : IMenuService
                 },
                 new()
                 {
+                    Title = "Dashboard",
+                    Icon = Icons.Material.Filled.Dashboard,
+                    Href = "/investor/dashboard",
+                    Roles = new string[]{"Basic"},
+                    PageStatus = PageStatus.Completed
+                },
+                new()
+                {
                     Title = "Investments",
                     Icon = Icons.Material.Filled.Analytics,
                     Href = "/investor/investments",
+                    Roles = new string[]{"Basic"},
+                    PageStatus = PageStatus.Completed
+                },
+                new()
+                {
+                    Title = "Wallet",
+                    Icon = Icons.Material.Filled.AccountBalanceWallet,
+                    Href = "/investor/wallet",
                     Roles = new string[]{"Basic"},
                     PageStatus = PageStatus.Completed
                 },
@@ -149,6 +172,7 @@ public class MenuService : IMenuService
             }
         }
     };
+    
 
     public IEnumerable<MenuSectionModel> Features => _features;
 }

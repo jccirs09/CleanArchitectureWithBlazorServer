@@ -1,0 +1,96 @@
+@page "/investor/dashboard"
+@inject IJSRuntime JS
+@inject IStringLocalizer<Dashboard> L
+@inherits MudComponentBase
+@using Microsoft.AspNetCore.Authorization
+
+<PageTitle>@Title</PageTitle>
+<MudContainer MaxWidth="MaxWidth.Large">
+    <MudGrid>
+            <MudItem md="4" sm="12" xs="12">
+                <MudCard>
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">Total Invested Amount</MudText>
+                        </CardHeaderContent>
+                        <CardHeaderActions>
+                            <MudIconButton Link="/investor/investments" Icon="@Icons.Material.Filled.CurrencyBitcoin" Color="Color.Default" />
+                        </CardHeaderActions>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudText Typo="Typo.h4">$@investmentSum</MudText>
+                    </MudCardContent>                    
+                </MudCard>
+           </MudItem>
+           <MudItem md="4" sm="12" xs="12">
+                <MudCard>
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">Investment Count</MudText>
+                        </CardHeaderContent>
+                        <CardHeaderActions>
+                            <MudIconButton Link="/investor/investments" Icon="@Icons.Material.Filled.Countertops" Color="Color.Default" />
+                        </CardHeaderActions>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudText Typo="Typo.h4">@investmentCount</MudText>
+                    </MudCardContent>                    
+                </MudCard>
+            </MudItem>
+            <MudItem md="4" sm="12" xs="12">
+                <MudCard>
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">My Daily Rate</MudText>
+                        </CardHeaderContent>
+                        <CardHeaderActions>
+                            <MudIconButton Icon="@Icons.Material.Filled.CalendarViewDay" Color="Color.Default" />
+                        </CardHeaderActions>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudText Typo="Typo.h4">$@investmentDailyRate</MudText>
+                    </MudCardContent>                    
+                </MudCard>
+            </MudItem>
+            <MudItem md="4" sm="12" xs="12">
+                <MudCard>
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">Current Balance</MudText>
+                        </CardHeaderContent>
+                        <CardHeaderActions>
+                            <MudIconButton Link="/investor/wallet" Icon="@Icons.Material.Filled.AccountBalanceWallet" Color="Color.Default" />
+                        </CardHeaderActions>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudText Typo="Typo.h4">$@walletBalance</MudText>
+                    </MudCardContent>                    
+                </MudCard>
+            </MudItem>
+    </MudGrid>
+</MudContainer>
+@code {
+    public string? Title { get; private set; }
+    [Inject] private IReferralService _referralService { get; set; } = default!; 
+    protected Task<AuthenticationState> AuthState { get; set; } = default!;
+
+    private int investmentCount;
+    private decimal investmentSum;
+    private decimal investmentDailyRate;
+    private bool _canView;
+    private decimal walletBalance;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Title = L["Investor's Dashboard"];        
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        investmentCount = await _referralService.GetInvestorInvestmentCountAsync();
+        investmentSum = await _referralService.GetInvestorInvestmentSumAsync();
+        investmentDailyRate = await _referralService.GetInvestorInvestmentDailyRateAsync();
+        walletBalance = await _referralService.GetInvestorWalletAsync();         
+    }
+}

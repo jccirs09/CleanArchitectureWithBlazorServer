@@ -16,7 +16,9 @@
                                      Format="N2"
                                      For="@(() => model.Amount)"
                                      Min="0.00m"
-                                     @bind-Value="model.Amount"></MudNumericField>
+                                     @bind-Value="model.Amount" Adornment="Adornment.Start"
+                                     AdornmentIcon="@Icons.Material.Filled.AttachMoney">
+                                 </MudNumericField>
                 </MudItem>
                 <MudItem xs="12">
                     <MudSelect For="@(() => model.ProofType)" @bind-Value="@model.ProofType" Label="Proof Type" HelperText="String" Placeholder="Please Select" AdornmentIcon="@Icons.Material.Filled.EnhancedEncryption">
@@ -26,9 +28,8 @@
                 </MudItem>      
                 <MudItem>
                     <InputFile id="fileInput" OnChange="UploadFiles" hidden multiple accept=".jpg, .jpeg, .png" />
-                    <MudText Typo="Typo.caption">@L["Proof Pictures"]</MudText>
                     <MudFab HtmlTag="label" Size="MudBlazor.Size.Small" 
-                            Color="MudBlazor.Color.Info"
+                            Color="MudBlazor.Color.Primary"
                             Icon="@Icons.Filled.Image"
                             Label="Upload proof"
                             for="fileInput" />
@@ -45,7 +46,7 @@
         </MudForm>
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Cancel">@L["Cancle"]</MudButton>
+        <MudButton OnClick="Cancel">@L["Cancel"]</MudButton>
         <MudButton Color="MudBlazor.Color.Primary" OnClick="Submit">@L["Ok"]</MudButton>
     </DialogActions>
 </MudDialog>

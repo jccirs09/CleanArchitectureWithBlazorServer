@@ -1,13 +1,13 @@
 @page "/"
+@using Blazor.Server.UI.Components.InvestorsDashboard
 @using Microsoft.AspNetCore.Authorization
 <PageTitle>@Title</PageTitle>
+
 <MudContainer MaxWidth="MaxWidth.Large">
     <MudGrid>
-        <MudItem md="8"
-                 sm="12"
-                 xs="12">
-            <MudBlazorCard />
-        </MudItem>
+        <MudItem>
+            <InvestorsInvestmentCount />
+        </MudItem>    
         <MudItem md="4"
                  sm="12"
                  xs="12">

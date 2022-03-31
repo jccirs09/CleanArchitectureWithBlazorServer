@@ -1,4 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
+// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
 
@@ -31,11 +31,12 @@ namespace CleanArchitecture.Blazor.Application.Features.Wallets.Commands.AddEdit
             //TODO:Implementing AddEditWalletCommandHandler method 
             if (request.Id > 0)
             {
-                var item = await _context.Wallets.FindAsync(new object[] { request.Id }, cancellationToken);
-                item = _mapper.Map(request, item);
-                await _context.SaveChangesAsync(cancellationToken);
-                return Result<int>.Success(item.Id);
-            }
+            var item = await _context.Wallets.FindAsync(new object[] { request.Id }, cancellationToken);
+            _ = item ?? throw new NotFoundException($"Wallet {request.Id} Not Found.");
+            item = _mapper.Map(request, item);
+            await _context.SaveChangesAsync(cancellationToken);
+            return Result<int>.Success(item.Id);
+        }
             else
             {
                 var item = _mapper.Map<Wallet>(request);

@@ -15,5 +15,8 @@ public interface IApplicationDbContext
     DbSet<Product> Products { get; set; }
     DbSet<Investment> Investments { get; set; }
     DbSet<Wallet> Wallets { get; set; }
+    DbSet<Referral> Referrals { get; set; }
+    DbSet<WalletPayout> WalletPayouts { get; set; }
+    DbSet<WalletTransaction> WalletTransactions { get; set; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }
