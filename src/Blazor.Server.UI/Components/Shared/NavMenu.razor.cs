@@ -9,6 +9,11 @@ public partial class NavMenu
 {
 
 
+    [EditorRequired] [Parameter] public bool IsDarkMode { get; set; }
+    [EditorRequired] [Parameter] public bool SideMenuDrawerOpen { get; set; }
+    [EditorRequired] [Parameter] public EventCallback ToggleSideMenuDrawer { get; set; }
+    [EditorRequired] [Parameter] public EventCallback OpenCommandPalette { get; set; }
+    [EditorRequired] [Parameter] public UserModel User { get; set; } = default!;
 
 
     [EditorRequired][Parameter] public ThemeManagerModel ThemeManager { get; set; } = default!;

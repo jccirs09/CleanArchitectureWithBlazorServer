@@ -2,7 +2,7 @@
 // MudBlazor licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-namespace Blazor.Server.UI.Services.UserPreferences;
+namespace Blazor.Server.UI.Services;
 
 public class UserPreferences
 {
@@ -14,6 +14,9 @@ public class UserPreferences
     /// <summary>
     /// If true DarkTheme is used. LightTheme otherwise
     /// </summary>
-    public bool DarkTheme { get; set; }
+    public bool IsDarkMode { get; set; }
+    public string PrimaryColor { get; set; } = "#2d4275";
+    public string SecondaryColor { get; set; } = "#ff4081ff";
+    public double BorderRadius { get; set; } = 4;
 }
 

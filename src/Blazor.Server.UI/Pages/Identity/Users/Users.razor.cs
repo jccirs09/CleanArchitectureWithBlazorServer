@@ -12,8 +12,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor;
 
-namespace Blazor.Server.UI.Pages.Identity.Users
-{
+namespace Blazor.Server.UI.Pages.Identity.Users;
+
     public partial class Users : IDisposable
     {
         private List<ApplicationUser> UserList = new List<ApplicationUser>();
@@ -24,8 +24,7 @@ namespace Blazor.Server.UI.Pages.Identity.Users
 
         [CascadingParameter]
         protected Task<AuthenticationState> AuthState { get; set; } = default!;
-        [Inject]
-        private UserManager<ApplicationUser> _userManager { get; set; } = default!;
+        private UserManager<ApplicationUser> _userManager { get; set; } = default !;
         [Inject]
         public CircuitHandler circuitHandler { get; set; } = default!;
         private bool _canCreate;
@@ -41,6 +40,8 @@ namespace Blazor.Server.UI.Pages.Identity.Users
         private MudTable<ApplicationUser> _table = default!;
         protected override async Task OnInitializedAsync()
         {
+            _userManager = ScopedServices.GetRequiredService<UserManager<ApplicationUser>>();
+
             Title = L["Users"];
             var state = await AuthState;
             _canCreate = (await AuthService.AuthorizeAsync(state.User, Permissions.Users.Create)).Succeeded;
@@ -52,7 +53,7 @@ namespace Blazor.Server.UI.Pages.Identity.Users
             _canRestPassword = (await AuthService.AuthorizeAsync(state.User, Permissions.Users.RestPassword)).Succeeded;
             _canImport = false; // (await AuthService.AuthorizeAsync(state.User, Permissions.Users.Import)).Succeeded;
             _canExport = false; // (await AuthService.AuthorizeAsync(state.User, Permissions.Users.Export)).Succeeded;
-            UserList = await _userManager.Users.ToListAsync();
+            await LoadData();
             (circuitHandler as CircuitHandlerService).CircuitsChanged += HandleCircuitsChanged;
         }
         public void Dispose()
@@ -63,8 +64,7 @@ namespace Blazor.Server.UI.Pages.Identity.Users
         {
             InvokeAsync(async () =>
             {
-                await OnRefresh();
-                StateHasChanged();
+                Snackbar.Add($"{L["Circuits changed."]}", MudBlazor.Severity.Info);
             });
         }
 
@@ -82,9 +82,23 @@ namespace Blazor.Server.UI.Pages.Identity.Users
         };
         private async Task OnRefresh()
         {
-            UserList = await _userManager.Users.ToListAsync();
-        }
 
+            await LoadData();
+
+        }
+        private async Task LoadData()
+        {
+            if (_loading) return;
+            try
+            {
+                _loading = true;
+                UserList = await _userManager.Users.ToListAsync();
+            }
+            finally
+            {
+                _loading = false;
+            }
+        }
         private async Task OnCreate()
         {
             var model = new UserFormModel() { AssignRoles = new string[] { RoleConstants.BasicRole } };
@@ -146,12 +160,13 @@ namespace Blazor.Server.UI.Pages.Identity.Users
             var result = await dialog.Result;
             if (!result.Cancelled)
             {
-                item.DisplayName = model.DisplayName;
-                item.UserName = model.UserName;
-                item.Email = model.Email;
-                item.PhoneNumber = model.PhoneNumber;
-                item.ProfilePictureDataUrl = model.ProfilePictureDataUrl;
-                item.Site = model.Site;
+
+            item.Email = model.Email;
+            item.PhoneNumber = model.PhoneNumber;
+            item.ProfilePictureDataUrl = model.ProfilePictureDataUrl;
+            item.DisplayName = model.DisplayName;
+            item.Site = model.Site;
+            item.UserName = model.UserName;
                 var state = await _userManager.UpdateAsync(item);
                 if (model.AssignRoles is not null && model.AssignRoles.Length > 0)
                 {
@@ -189,8 +204,10 @@ namespace Blazor.Server.UI.Pages.Identity.Users
 
         private async Task OnSetActive(ApplicationUser item)
         {
-            item.IsActive = !item.IsActive;
+
+        item.IsActive = !item.IsActive;
             var state = await _userManager.UpdateAsync(item);
+            //item.IsActive = !item.IsActive;
             if (state.Succeeded)
             {
                 Snackbar.Add($"{L["Update successfully"]}", MudBlazor.Severity.Info);
@@ -211,9 +228,6 @@ namespace Blazor.Server.UI.Pages.Identity.Users
             var result = await dialog.Result;
             if (!result.Cancelled)
             {
-                item.DisplayName = model.DisplayName;
-                item.UserName = model.UserName;
-                item.ProfilePictureDataUrl = model.ProfilePictureDataUrl;
                 var token = await _userManager.GeneratePasswordResetTokenAsync(item);
                 var state = await _userManager.ResetPasswordAsync(item, token, model.Password);
                 if (state.Succeeded)
@@ -237,4 +251,3 @@ namespace Blazor.Server.UI.Pages.Identity.Users
             return Task.CompletedTask;
         }
     }
-}

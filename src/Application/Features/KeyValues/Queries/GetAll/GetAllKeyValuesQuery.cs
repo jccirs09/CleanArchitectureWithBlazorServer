@@ -6,14 +6,14 @@ using CleanArchitecture.Blazor.Application.Features.KeyValues.DTOs;
 
 namespace CleanArchitecture.Blazor.Application.Features.KeyValues.Queries.ByName;
 
-public class GetAllKeyValuesQuery : IRequest<IList<KeyValueDto>>, ICacheable
+public class GetAllKeyValuesQuery : IRequest<IEnumerable<KeyValueDto>>, ICacheable
 {
 
     public string CacheKey => KeyValueCacheKey.GetAllCacheKey;
 
     public MemoryCacheEntryOptions? Options => new MemoryCacheEntryOptions().AddExpirationToken(new CancellationChangeToken(KeyValueCacheKey.SharedExpiryTokenSource.Token));
 }
-public class GetAllKeyValuesQueryHandler : IRequestHandler<GetAllKeyValuesQuery, IList<KeyValueDto>>
+public class GetAllKeyValuesQueryHandler : IRequestHandler<GetAllKeyValuesQuery, IEnumerable<KeyValueDto>>
 {
 
     private readonly IApplicationDbContext _context;
@@ -27,7 +27,7 @@ public class GetAllKeyValuesQueryHandler : IRequestHandler<GetAllKeyValuesQuery,
         _context = context;
         _mapper = mapper;
     }
-    public async Task<IList<KeyValueDto>> Handle(GetAllKeyValuesQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<KeyValueDto>> Handle(GetAllKeyValuesQuery request, CancellationToken cancellationToken)
     {
         var data = await _context.KeyValues.OrderBy(x => x.Name).ThenBy(x => x.Value)
            .ProjectTo<KeyValueDto>(_mapper.ConfigurationProvider)

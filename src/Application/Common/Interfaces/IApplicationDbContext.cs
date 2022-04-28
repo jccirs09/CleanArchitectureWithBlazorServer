@@ -3,6 +3,8 @@
 
 
 
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+
 namespace CleanArchitecture.Blazor.Application.Common.Interfaces;
 
 public interface IApplicationDbContext
@@ -18,5 +20,6 @@ public interface IApplicationDbContext
     DbSet<Referral> Referrals { get; set; }
     DbSet<WalletPayout> WalletPayouts { get; set; }
     DbSet<WalletTransaction> WalletTransactions { get; set; }
+    ChangeTracker ChangeTracker { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

@@ -1,4 +1,5 @@
 @page "/user/profile"
+@inherits OwningComponentBase
 @using CleanArchitecture.Blazor.Infrastructure.Services.Authentication
 @using SixLabors.ImageSharp
 @using SixLabors.ImageSharp.Formats
@@ -134,8 +135,6 @@
     public string Title { get; set; } = "Profile";
     [CascadingParameter]
     protected Task<AuthenticationState> AuthState { get; set; } = default!;
-    [Inject]
-    private UserManager<ApplicationUser> _userManager { get; set; } = default!;
     [Inject] private IUploadService _uploadService { get; set; } = default!;
     [Inject]
     private ProfileService _profileService { get; set; } = default!;
@@ -143,6 +142,7 @@
     private UserFluentValidator userValidator = new();
     [Inject]
     private IReferralService _referralService{ get; set; } = default!;
+    private UserManager<ApplicationUser> _userManager { get; set; } = default !;
     private ChangePasswordModel changepassword { get; set; } = new();
     private PasswordFluentValidator passwordValidator = new PasswordFluentValidator();
     private string referralCode;
@@ -169,6 +169,7 @@
     }
     protected override async Task OnInitializedAsync()
     {
+        _userManager = ScopedServices.GetRequiredService<UserManager<ApplicationUser>>();
         var state = await AuthState;
         model = await _profileService.Get(state.User);
         userId = state.User.GetUserId();
@@ -220,6 +221,8 @@
                 state.User.UpdateDisplayName(model.DisplayName);
             if(model.Avatar is not null)
                 state.User.UpdateProfilePictureUrl(model.Avatar);
+            if(model.PhoneNumber is not null)
+                state.User.UpdatePhoneNumber(model.PhoneNumber);
             await _profileService.Update(model);
             Snackbar.Add($"{L["Update successfully"]}", MudBlazor.Severity.Info);
         }
@@ -238,7 +241,7 @@
             }
             else
             {
-                Snackbar.Add($"{L["Changed password fail."]} {string.Join(",", result.Errors.Select(x => x.Description).ToArray())}", MudBlazor.Severity.Error);
+                Snackbar.Add($"{string.Join(",", result.Errors.Select(x => x.Description).ToArray())}", MudBlazor.Severity.Error);
             }
         }
     }

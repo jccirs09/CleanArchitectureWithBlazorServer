@@ -1,3 +1,4 @@
+@inherits OwningComponentBase
 @page "/indentity/roles"
 @using Blazor.Server.UI.Components.Dialogs
 @using CleanArchitecture.Blazor.Infrastructure.Constants.ClaimTypes
@@ -25,6 +26,7 @@
                   MultiSelection="true"
                   SelectedItems="@SelectItems"
                   SortLabel="@L["Sort By"]"
+                  Loading="@_loading"
                   Filter="new Func<ApplicationRole,bool>(_quickFilter)">
             <ToolBarContent>
                 <div class="justify-start pt-3">
@@ -33,6 +35,7 @@
                         <MudButton DisableElevation Variant="Variant.Outlined"
                                    Size="Size.Small"
                                    OnClick="OnRefresh"
+                                   Disabled="@_loading"
                                    StartIcon="@Icons.Material.Filled.Refresh" IconColor="Color.Surface" Color="Color.Primary"
                                    Style="margin-right: 4px; margin-bottom:4px">@L["Refresh"]</MudButton>
                         @if (_canCreate)
@@ -76,7 +79,7 @@
                     </MudHidden>
                     <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
                         <MudMenu AnchorOrigin="Origin.BottomLeft" StartIcon="@Icons.Filled.KeyboardCommandKey" EndIcon="@Icons.Filled.KeyboardArrowDown" Label="@L["Action"]" Color="Color.Primary" Variant="Variant.Filled">
-                            <MudMenuItem OnClick="@(()=>OnRefresh())">Refresh</MudMenuItem>
+                            <MudMenuItem Disabled="@_loading" OnClick="@(()=>OnRefresh())">@L["Refresh"]</MudMenuItem>
                             @if (_canCreate)
                             {
                                 <MudMenuItem OnClick="OnCreate">@L["Create"]</MudMenuItem>
@@ -169,7 +172,7 @@
     public string? Title { get; private set; }
     [CascadingParameter]
     private Task<AuthenticationState> AuthState { get; set; } = default!;
-    [Inject]
+
     private RoleManager<ApplicationRole> _roleManager { get; set; } = default!;
 
     private List<PermissionModel> _permissions = new();
@@ -182,8 +185,10 @@
     private bool _canImport;
     private bool _canExport;
     private bool _showPermissionsDrawer;
+    private bool _loading;
     protected override async Task OnInitializedAsync()
     {
+        _roleManager = ScopedServices.GetRequiredService<RoleManager<ApplicationRole>>();
         Title = L["Roles"];
         var state = await AuthState;
         _canCreate = (await AuthService.AuthorizeAsync(state.User, Permissions.Roles.Create)).Succeeded;
@@ -193,7 +198,7 @@
         _canManagePermissions = (await AuthService.AuthorizeAsync(state.User, Permissions.Roles.ManagePermissions)).Succeeded;
         _canImport = false;// (await AuthService.AuthorizeAsync(state.User, Permissions.Users.Import)).Succeeded;
         _canExport = false;// (await AuthService.AuthorizeAsync(state.User, Permissions.Users.Export)).Succeeded;
-        RoleList = await _roleManager.Roles.ToListAsync();
+        await LoadData();
 
     }
     private Func<ApplicationRole, bool> _quickFilter => x =>
@@ -211,8 +216,21 @@
        };
     private async Task OnRefresh()
     {
-        RoleList = await _roleManager.Roles.ToListAsync();
+        await LoadData();
     }
+     private async Task LoadData()
+        {
+            if (_loading) return;
+            try
+            {
+                _loading = true;
+               RoleList = await _roleManager.Roles.ToListAsync();
+            }
+            finally
+            {
+                _loading = false;
+            }
+        }
     private async Task OnCreate()
     {
         var model = new RoleFormModel();
@@ -254,9 +272,9 @@
         var result = await dialog.Result;
         if (!result.Cancelled)
         {
+            
             item.Name = model.Name;
             item.Description = model.Description;
-
             var state = await _roleManager.UpdateAsync(item);
             if (state.Succeeded)
             {

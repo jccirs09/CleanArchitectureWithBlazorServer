@@ -35,6 +35,7 @@
                   OnCommitEditClick="@(() => Snackbar.Add(L["Update successfully"], MudBlazor.Severity.Info))"
                   IsEditRowSwitchingBlocked="false"
                   ReadOnly="@_readonly"
+                  Loading="@_loading"
                   SortLabel="@L["Sort By"]"
                   Filter="new Func<KeyValueDto,bool>(_quickFilter)">
             <ToolBarContent>
@@ -44,11 +45,13 @@
                     <MudButton DisableElevation Variant="Variant.Outlined"
                                Size="Size.Small"
                                OnClick="OnRefresh"
+                               Disabled="@_loading"
                                StartIcon="@Icons.Material.Filled.Refresh" IconColor="Color.Surface" Color="Color.Primary"
                                Style="margin-right: 4px; margin-bottom:4px">@L["Refresh"]</MudButton>
                     @if (_canCreate)
                     {
                         <MudButton DisableElevation Variant="Variant.Outlined" Color="Color.Primary"
+                               Disabled="@_editing"
                                StartIcon="@Icons.Material.Filled.Add"
                                Size="Size.Small"
                                OnClick="OnCreate"
@@ -59,7 +62,7 @@
                     {
                         <MudButton DisableElevation Variant="Variant.Outlined" Color="Color.Error"
                                StartIcon="@Icons.Material.Filled.Delete"
-                               Disabled="@(!(_selectedItems.Count>0))"
+                               Disabled="@(!(_selectedItems.Count>0) || _editing)"
                                OnClick="OnDeleteChecked"
                                Size="Size.Small"
                                Style="margin-right: 4px; margin-bottom:4px"
@@ -88,14 +91,14 @@
                     </MudHidden>
                     <MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
                         <MudMenu  AnchorOrigin="Origin.BottomLeft" StartIcon="@Icons.Filled.KeyboardCommandKey" EndIcon="@Icons.Filled.KeyboardArrowDown" Label="@L["Action"]" Color="Color.Primary" Variant="Variant.Filled">
-                            <MudMenuItem  OnClick="@(()=>OnRefresh())">Refresh</MudMenuItem>
+                            <MudMenuItem Disabled="@_loading" OnClick="@(()=>OnRefresh())">@L["Refresh"]</MudMenuItem>
                             @if (_canCreate)
                             {
-                                <MudMenuItem OnClick="OnCreate">@L["Create"]</MudMenuItem>
+                                <MudMenuItem Disabled="@_editing" OnClick="OnCreate">@L["Create"]</MudMenuItem>
                             }
                             @if (_canDelete)
                             {
-                                <MudMenuItem OnClick="OnDeleteChecked">@L["Delete"]</MudMenuItem>
+                                <MudMenuItem Disabled="@(!(_selectedItems.Count>0) || _editing)" OnClick="OnDeleteChecked">@L["Delete"]</MudMenuItem>
                             }
                             @if (_canImport)
                             {   <InputFile id="importdataInput" OnChange="OnImportData" hidden accept=".xlsx" />
@@ -168,6 +171,7 @@
     private bool _canCancelEdit=true;
     private string _searchString = string.Empty;
     private bool _sortNameByLength;
+    private bool _editing;
     [CascadingParameter]
     private Task<AuthenticationState> AuthState { get; set; } = default!;
     [Inject]
@@ -179,6 +183,7 @@
     private bool _canImport;
     private bool _canExport;
     private bool _readonly => !_canCreate || !_canEdit;
+    private bool _loading;
     protected override async Task OnInitializedAsync()
     {
         var state = await AuthState;
@@ -212,10 +217,19 @@
     }
     private async Task LoadData()
     {
-        var cmd = new GetAllKeyValuesQuery();
-        KeyValueList = await _mediator.Send(cmd);
-        _selectedItems=new HashSet<KeyValueDto>();;
-        _selectedItem = null;
+        if(_loading) return;
+        try{
+            _loading = true;
+            var cmd = new GetAllKeyValuesQuery();
+            KeyValueList = (await _mediator.Send(cmd)).ToList();
+            _selectedItems=new HashSet<KeyValueDto>();;
+            _selectedItem = null;
+        }
+        finally
+        {
+            _loading = false;
+        }
+
 
     }
     private async Task OnRefresh()
@@ -243,6 +257,7 @@
     }
     private Task OnCreate()
     {
+        _editing = true;
         var newitem = new KeyValueDto()
         {
             Name = _selectedItem?.Name,
@@ -253,26 +268,38 @@
     }
     private void BackupItem(object element)
     {
-        _elementBeforeEdit = new()
-            {
-                Id = ((KeyValueDto)element).Id,
-                Name = ((KeyValueDto)element).Name,
-                Text = ((KeyValueDto)element).Text,
-                Value = ((KeyValueDto)element).Value,
-                Description = ((KeyValueDto)element).Description,
-            };
+        InvokeAsync(() =>
+        {
+            _editing = true;
+            _elementBeforeEdit = new()
+                {
+                    Id = ((KeyValueDto)element).Id,
+                    Name = ((KeyValueDto)element).Name,
+                    Text = ((KeyValueDto)element).Text,
+                    Value = ((KeyValueDto)element).Value,
+                    Description = ((KeyValueDto)element).Description,
+                };
+                StateHasChanged();
+        });
     }
     private void ResetItemToOriginalValues(object element)
     {
-        ((KeyValueDto)element).Id = _elementBeforeEdit.Id;
-        ((KeyValueDto)element).Name = _elementBeforeEdit.Name;
-        ((KeyValueDto)element).Text = _elementBeforeEdit.Text;
-        ((KeyValueDto)element).Value = _elementBeforeEdit.Value;
-        ((KeyValueDto)element).Description = _elementBeforeEdit.Description;
+        InvokeAsync(() =>
+        {
+            ((KeyValueDto)element).Id = _elementBeforeEdit.Id;
+            ((KeyValueDto)element).Name = _elementBeforeEdit.Name;
+            ((KeyValueDto)element).Text = _elementBeforeEdit.Text;
+            ((KeyValueDto)element).Value = _elementBeforeEdit.Value;
+            ((KeyValueDto)element).Description = _elementBeforeEdit.Description;
+
+            _editing = false;
+            StateHasChanged();
+        });
+
     }
     private void ItemHasBeenCommitted(object element)
     {
-        Task.Run(async () =>
+        InvokeAsync(async () =>
         {
             var command = new AddEditKeyValueCommand()
                 {
@@ -284,6 +311,7 @@
                 };
             var result = await _mediator.Send(command);
             ((KeyValueDto)element).Id = result.Data;
+            _editing = false;
             StateHasChanged();
         });
     }

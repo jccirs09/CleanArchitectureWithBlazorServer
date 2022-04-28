@@ -4,7 +4,7 @@
 
 using Blazored.LocalStorage;
 
-namespace Blazor.Server.UI.Services.UserPreferences;
+namespace Blazor.Server.UI.Services;
 
 public interface IUserPreferencesService
 {
@@ -38,7 +38,25 @@ public class UserPreferencesService : IUserPreferencesService
 
     public async Task<UserPreferences> LoadUserPreferences()
     {
-        return await _localStorage.GetItemAsync<UserPreferences>(Key);
+        private readonly ILocalStorageService _localStorage;
+        private const string Key = "userPreferences";
+        
+        public UserPreferencesService(ILocalStorageService localStorage)
+        {
+            _localStorage = localStorage;
+        }
+        
+        public async Task SaveUserPreferences(UserPreferences userPreferences)
+        {
+            await _localStorage.SetItemAsync(Key, userPreferences);
+        }
+
+        public async Task<UserPreferences> LoadUserPreferences()
+        {
+     
+            return await _localStorage.GetItemAsync<UserPreferences>(Key);
+      
+        }
     }
 }
 

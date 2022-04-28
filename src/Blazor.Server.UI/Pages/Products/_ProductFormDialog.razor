@@ -1,3 +1,4 @@
+@using CleanArchitecture.Blazor.Application.Features.KeyValues.DTOs
 @using CleanArchitecture.Blazor.Application.Features.KeyValues.Queries.ByName
 @using CleanArchitecture.Blazor.Application.Features.Products.Commands.AddEdit
 @using SixLabors.ImageSharp
@@ -25,6 +26,7 @@
                 </MudItem>
                 <MudItem xs="12" sm="4">
                     <DictionaryAutocomplete Dictionary="Brand"
+                                     DataSource="datasource"
                                      Label="@L["Brand"]"
                                      For="@(() => model.Brand)"
                                      ResetValueOnEmptyText="true"
@@ -39,11 +41,12 @@
                                      @bind-Value="model.Price"></MudNumericField>
                 </MudItem>
                 <MudItem xs="12" sm="4">
-                    <MudTextField Label="@L["Unit"]"
-                                  Required="true"
-                                  RequiredError="@L["unit is required!"]"
-                                  For="@(() => model.Unit)"
-                                  @bind-Value="model.Unit"></MudTextField>
+                    <DictionaryAutocomplete Dictionary="Unit"
+                                     DataSource="datasource"
+                                     Label="@L["Unit"]"
+                                     For="@(() => model.Unit)"
+                                     ResetValueOnEmptyText="true"
+                                     @bind-Value="model.Unit"></DictionaryAutocomplete>
                 </MudItem>
                 <MudItem>
                     <InputFile id="fileInput" OnChange="UploadFiles" hidden multiple accept=".jpg, .jpeg, .png" />
@@ -78,6 +81,7 @@
     [Inject] private IUploadService _uploadService { get; set; } = default!;
     AddEditProductCommandValidator modelValidator = new AddEditProductCommandValidator();
     [EditorRequired] [Parameter] public AddEditProductCommand model { get; set; } = default!;
+    [EditorRequired] [Parameter] public IEnumerable<KeyValueDto> datasource { get; set; } = default!;
 
     private IList<string>? _prictures = null;
 

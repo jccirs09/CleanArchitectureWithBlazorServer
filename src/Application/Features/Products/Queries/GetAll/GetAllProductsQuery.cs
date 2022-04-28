@@ -6,6 +6,37 @@ using CleanArchitecture.Blazor.Application.Features.Products.DTOs;
 
 namespace CleanArchitecture.Blazor.Application.Features.Products.Queries.GetAll;
 
+    public class GetAllProductsQuery : PaginationFilter, IRequest<PaginatedData<ProductDto>>
+{
+
+    }
+    
+    public class GetAllProductsQueryHandler :
+         IRequestHandler<GetAllProductsQuery, PaginatedData<ProductDto>>
+    {
+        private readonly IApplicationDbContext _context;
+        private readonly IMapper _mapper;
+        private readonly IStringLocalizer<GetAllProductsQueryHandler> _localizer;
+
+    public GetAllProductsQueryHandler(
+            IApplicationDbContext context,
+            IMapper mapper,
+            IStringLocalizer<GetAllProductsQueryHandler> localizer)
+        {
+            _context = context;
+            _mapper = mapper;
+            _localizer = localizer;
+        }
+
+        public async Task<PaginatedData<ProductDto>> Handle(GetAllProductsQuery request, CancellationToken cancellationToken)
+        {
+        //TODO:Implementing GetAllProductsQueryHandler method
+            var data = await _context.Products.Where(x => x.CreatedBy.Equals(request.UserId))
+               .OrderBy($"{request.OrderBy} {request.SortDirection}")
+               .ProjectTo<ProductDto>(_mapper.ConfigurationProvider)
+               .PaginatedDataAsync(request.PageNumber, request.PageSize);
+            return data;
+    }
 public class GetAllProductsQuery : IRequest<IEnumerable<ProductDto>>, ICacheable
 {
     public string CacheKey => ProductCacheKey.GetAllCacheKey;

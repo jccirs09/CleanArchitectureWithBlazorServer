@@ -21,7 +21,7 @@ public static class DependencyInjection
             {
                 options.UseInMemoryDatabase("BlazorDashboardDb");
                 options.EnableSensitiveDataLogging();
-            }, ServiceLifetime.Transient);
+            });
         }
         else
         {
@@ -30,8 +30,8 @@ public static class DependencyInjection
                 options.UseSqlServer(
                     configuration.GetConnectionString("DefaultConnection"),
                     b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName));
-                options.EnableSensitiveDataLogging();
-            }, ServiceLifetime.Transient);
+                 options.EnableSensitiveDataLogging();
+            });
             services.AddDatabaseDeveloperPageExceptionFilter();
         }
 
@@ -44,8 +44,13 @@ public static class DependencyInjection
         });
         services.Configure<DashbordSettings>(configuration.GetSection(DashbordSettings.SectionName));
         services.AddSingleton(s => s.GetRequiredService<IOptions<DashbordSettings>>().Value);
+<<<<<<< HEAD
         services.AddScoped<IDbContextFactory<ApplicationDbContext>, BlazorContextFactory<ApplicationDbContext>>();
         services.AddTransient<IApplicationDbContext>(provider => provider.GetRequiredService<IDbContextFactory<ApplicationDbContext>>().CreateDbContext());
+=======
+        services.AddScoped<IDbContextFactory<ApplicationDbContext>,BlazorContextFactory<ApplicationDbContext>>();
+        services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<IDbContextFactory<ApplicationDbContext>>().CreateDbContext());
+>>>>>>> main
         services.AddScoped<IDomainEventService, DomainEventService>();
 
         services
