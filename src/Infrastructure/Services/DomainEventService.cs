@@ -3,7 +3,6 @@
 
 using CleanArchitecture.Blazor.Domain.Common;
 using MediatR;
-using Microsoft.Extensions.Logging;
 
 namespace CleanArchitecture.Blazor.Infrastructure.Services;
 

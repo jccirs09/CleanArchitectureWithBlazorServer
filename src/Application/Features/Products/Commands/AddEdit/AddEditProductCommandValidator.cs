@@ -7,7 +7,7 @@ public class AddEditProductCommandValidator : AbstractValidator<AddEditProductCo
 {
     public AddEditProductCommandValidator()
     {
-       
+
         RuleFor(v => v.Name)
               .MaximumLength(256)
               .NotEmpty();

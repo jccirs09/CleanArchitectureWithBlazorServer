@@ -3,15 +3,15 @@
 
 namespace CleanArchitecture.Blazor.Application.Features.Investments.Commands.Import;
 
-    public class ImportInvestmentsCommandValidator : AbstractValidator<ImportInvestmentsCommand>
+public class ImportInvestmentsCommandValidator : AbstractValidator<ImportInvestmentsCommand>
+{
+    public ImportInvestmentsCommandValidator()
     {
-        public ImportInvestmentsCommandValidator()
-        {
-           //TODO:Implementing ImportInvestmentCommandValidator method 
-           //ex. RuleFor(v => v.Data)
-           //      .NotNull()
-           //      .NotEmpty();
-           throw new System.NotImplementedException();
-        }
+        //TODO:Implementing ImportInvestmentCommandValidator method 
+        //ex. RuleFor(v => v.Data)
+        //      .NotNull()
+        //      .NotEmpty();
+        throw new System.NotImplementedException();
     }
+}
 

@@ -18,7 +18,7 @@ public class DeleteKeyValueCommand : IRequest<Result>, ICacheInvalidator
 
 
 public class DeleteKeyValueCommandHandler : IRequestHandler<DeleteKeyValueCommand, Result>
-   
+
 {
     private readonly IApplicationDbContext _context;
 

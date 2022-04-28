@@ -11,15 +11,15 @@ public class ImportKeyValuesCommand : IRequest<Result>, ICacheInvalidator
     public string FileName { get; set; }
     public byte[] Data { get; set; }
     public CancellationTokenSource? SharedExpiryTokenSource => KeyValueCacheKey.SharedExpiryTokenSource;
-    public ImportKeyValuesCommand(string fileName,byte[] data)
+    public ImportKeyValuesCommand(string fileName, byte[] data)
     {
         FileName = fileName;
-            Data = data;
+        Data = data;
     }
 }
 public record CreateKeyValueTemplateCommand : IRequest<byte[]>
 {
-   
+
 }
 public class ImportKeyValuesCommandHandler :
     IRequestHandler<CreateKeyValueTemplateCommand, byte[]>,

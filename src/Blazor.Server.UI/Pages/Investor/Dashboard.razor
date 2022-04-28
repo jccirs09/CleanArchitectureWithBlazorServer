@@ -11,14 +11,29 @@
                 <MudCard>
                     <MudCardHeader>
                         <CardHeaderContent>
-                            <MudText Typo="Typo.h6">Total Invested Amount</MudText>
+                            <MudText Typo="Typo.h6">Current Balance</MudText>
                         </CardHeaderContent>
                         <CardHeaderActions>
-                            <MudIconButton Link="/investor/investments" Icon="@Icons.Material.Filled.CurrencyBitcoin" Color="Color.Default" />
+                            <MudIconButton Link="/investor/wallet" Icon="@Icons.Material.Filled.AccountBalanceWallet" Color="Color.Error" />
                         </CardHeaderActions>
                     </MudCardHeader>
                     <MudCardContent>
-                        <MudText Typo="Typo.h4">$@investmentSum</MudText>
+                        <MudText Color="Color.Error" Typo="Typo.h4">$@walletBalance</MudText>
+                    </MudCardContent>                    
+                </MudCard>
+            </MudItem>
+            <MudItem md="4" sm="12" xs="12">
+                <MudCard>
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">Total Invested Amount</MudText>
+                        </CardHeaderContent>
+                        <CardHeaderActions>
+                            <MudIconButton Link="/investor/investments" Icon="@Icons.Material.Filled.CurrencyBitcoin" Color="Color.Warning" />
+                        </CardHeaderActions>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudText Color="Color.Warning" Typo="Typo.h4">$@investmentSum</MudText>
                     </MudCardContent>                    
                 </MudCard>
            </MudItem>
@@ -29,11 +44,11 @@
                             <MudText Typo="Typo.h6">Investment Count</MudText>
                         </CardHeaderContent>
                         <CardHeaderActions>
-                            <MudIconButton Link="/investor/investments" Icon="@Icons.Material.Filled.Countertops" Color="Color.Default" />
+                            <MudIconButton Link="/investor/investments" Icon="@Icons.Material.Filled.Countertops" Color="Color.Info" />
                         </CardHeaderActions>
                     </MudCardHeader>
                     <MudCardContent>
-                        <MudText Typo="Typo.h4">@investmentCount</MudText>
+                        <MudText Color="Color.Info" Typo="Typo.h4">@investmentCount</MudText>
                     </MudCardContent>                    
                 </MudCard>
             </MudItem>
@@ -44,26 +59,11 @@
                             <MudText Typo="Typo.h6">My Daily Rate</MudText>
                         </CardHeaderContent>
                         <CardHeaderActions>
-                            <MudIconButton Icon="@Icons.Material.Filled.CalendarViewDay" Color="Color.Default" />
+                            <MudIconButton Icon="@Icons.Material.Filled.CalendarViewDay" Color="Color.Secondary" />
                         </CardHeaderActions>
                     </MudCardHeader>
                     <MudCardContent>
-                        <MudText Typo="Typo.h4">$@investmentDailyRate</MudText>
-                    </MudCardContent>                    
-                </MudCard>
-            </MudItem>
-            <MudItem md="4" sm="12" xs="12">
-                <MudCard>
-                    <MudCardHeader>
-                        <CardHeaderContent>
-                            <MudText Typo="Typo.h6">Current Balance</MudText>
-                        </CardHeaderContent>
-                        <CardHeaderActions>
-                            <MudIconButton Link="/investor/wallet" Icon="@Icons.Material.Filled.AccountBalanceWallet" Color="Color.Default" />
-                        </CardHeaderActions>
-                    </MudCardHeader>
-                    <MudCardContent>
-                        <MudText Typo="Typo.h4">$@walletBalance</MudText>
+                        <MudText Color="Color.Secondary" Typo="Typo.h4">$@investmentDailyRate</MudText>
                     </MudCardContent>                    
                 </MudCard>
             </MudItem>

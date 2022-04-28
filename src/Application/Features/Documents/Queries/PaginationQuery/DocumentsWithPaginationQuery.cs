@@ -1,9 +1,8 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using CleanArchitecture.Blazor.Application.Features.Documents.DTOs;
-using CleanArchitecture.Blazor.Application.Common.Specification;
 using CleanArchitecture.Blazor.Application.Features.Documents.Caching;
+using CleanArchitecture.Blazor.Application.Features.Documents.DTOs;
 
 namespace CleanArchitecture.Blazor.Application.Features.Documents.Queries.PaginationQuery;
 
@@ -31,10 +30,10 @@ public class DocumentsQueryHandler : IRequestHandler<DocumentsWithPaginationQuer
     }
     public async Task<PaginatedData<DocumentDto>> Handle(DocumentsWithPaginationQuery request, CancellationToken cancellationToken)
     {
-    
+
         var data = await _context.Documents
             .Specify(new DocumentsQuery(await _currentUserService.UserId()))
-            .Where(x=>x.Description.Contains(request.Keyword))
+            .Where(x => x.Description.Contains(request.Keyword))
             .OrderBy($"{request.OrderBy} {request.SortDirection}")
             .ProjectTo<DocumentDto>(_mapper.ConfigurationProvider)
             .PaginatedDataAsync(request.PageNumber, request.PageSize);

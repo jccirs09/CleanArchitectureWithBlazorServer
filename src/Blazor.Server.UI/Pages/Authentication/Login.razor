@@ -16,7 +16,7 @@
 
     <MudTextField T="string"
                   @bind-Value="model.UserName" For="@(() => model.UserName)"
-                  Label="@L["User name"]"
+                  Label="@L["Username"]"
                   Variant="Variant.Outlined"
                   Required="true"
                   RequiredError="@L["User name is required!"]"
@@ -35,7 +35,7 @@
 
     <div Class="d-flex justify-space-between align-center">
         <MudCheckBox For="@(() => model.RememberMe)" @bind-Checked="model.RememberMe" Label="@L["Remember me?"]" Color="Color.Primary" Class="ml-n1 my-3"></MudCheckBox>
-        <MudLink Href="/pages/authentication/forgot-password">@L["Forgot password?"]</MudLink>
+      @* <MudLink Href="/pages/authentication/forgot-password">@L["Forgot password?"]</MudLink>*@
     </div>
 
 
@@ -49,12 +49,7 @@
 
     [Inject] private NavigationManager _navigation { get; set; }= default!;
     [Inject] private IdentityAuthenticationService _authenticationService { get; set; } = default!;
-    LoginFormModel model = new LoginFormModel()
-        {
-            UserName = "administrator",
-            Password = "!@Dyc00nP@55w0rd!",
-            RememberMe = true
-        };
+    LoginFormModel model = new LoginFormModel();
 
     bool success = false;
     bool PasswordVisibility;

@@ -3,22 +3,22 @@
 
 namespace CleanArchitecture.Blazor.Application.Features.WalletPayouts.Commands.Delete;
 
-    public class DeleteWalletPayoutCommandValidator : AbstractValidator<DeleteWalletPayoutCommand>
+public class DeleteWalletPayoutCommandValidator : AbstractValidator<DeleteWalletPayoutCommand>
+{
+    public DeleteWalletPayoutCommandValidator()
     {
-        public DeleteWalletPayoutCommandValidator()
-        {
-           //TODO:Implementing DeleteWalletPayoutCommandValidator method 
-           //ex. RuleFor(v => v.Id).NotNull().GreaterThan(0);
-           throw new System.NotImplementedException();
-        }
+        //TODO:Implementing DeleteWalletPayoutCommandValidator method 
+        //ex. RuleFor(v => v.Id).NotNull().GreaterThan(0);
+        throw new System.NotImplementedException();
     }
-    public class DeleteCheckedWalletPayoutsCommandValidator : AbstractValidator<DeleteCheckedWalletPayoutsCommand>
+}
+public class DeleteCheckedWalletPayoutsCommandValidator : AbstractValidator<DeleteCheckedWalletPayoutsCommand>
+{
+    public DeleteCheckedWalletPayoutsCommandValidator()
     {
-        public DeleteCheckedWalletPayoutsCommandValidator()
-        {
-            //TODO:Implementing DeleteProductCommandValidator method 
-            //ex. RuleFor(v => v.Id).NotNull().NotEmpty();
-            throw new System.NotImplementedException();
-        }
+        //TODO:Implementing DeleteProductCommandValidator method 
+        //ex. RuleFor(v => v.Id).NotNull().NotEmpty();
+        throw new System.NotImplementedException();
     }
+}
 

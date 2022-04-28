@@ -1,8 +1,8 @@
+using Blazor.Server.UI.Models.Article;
+using Blazor.Server.UI.Services;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using MudBlazor.Utilities;
-using Blazor.Server.UI.Models.Article;
-using Blazor.Server.UI.Services;
 
 namespace Blazor.Server.UI.Components.Index;
 

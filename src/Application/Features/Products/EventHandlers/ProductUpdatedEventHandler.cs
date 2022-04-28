@@ -3,22 +3,22 @@
 
 namespace CleanArchitecture.Blazor.Application.Features.Products.EventHandlers;
 
-    public class ProductUpdatedEventHandler : INotificationHandler<DomainEventNotification<ProductUpdatedEvent>>
+public class ProductUpdatedEventHandler : INotificationHandler<DomainEventNotification<ProductUpdatedEvent>>
+{
+    private readonly ILogger<ProductUpdatedEventHandler> _logger;
+
+    public ProductUpdatedEventHandler(
+        ILogger<ProductUpdatedEventHandler> logger
+        )
     {
-        private readonly ILogger<ProductUpdatedEventHandler> _logger;
-
-        public ProductUpdatedEventHandler(
-            ILogger<ProductUpdatedEventHandler> logger
-            )
-        {
-            _logger = logger;
-        }
-        public Task Handle(DomainEventNotification<ProductUpdatedEvent> notification, CancellationToken cancellationToken)
-        {
-            var domainEvent = notification.DomainEvent;
-
-            _logger.LogInformation("CleanArchitecture Domain Event: {DomainEvent}", domainEvent.GetType().Name);
-
-            return Task.CompletedTask;
-        }
+        _logger = logger;
     }
+    public Task Handle(DomainEventNotification<ProductUpdatedEvent> notification, CancellationToken cancellationToken)
+    {
+        var domainEvent = notification.DomainEvent;
+
+        _logger.LogInformation("CleanArchitecture Domain Event: {DomainEvent}", domainEvent.GetType().Name);
+
+        return Task.CompletedTask;
+    }
+}

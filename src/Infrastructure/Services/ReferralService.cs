@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AutoMapper;
-using CleanArchitecture.Blazor.Application.Features.Investments.DTOs;
 using CleanArchitecture.Blazor.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -37,8 +31,8 @@ public class ReferralService : IReferralService
     public async Task<int> GetInvestorInvestmentCountAsync()
     {
         var userId = await _currentUserService.UserId();
-        return  await _context.Investments.CountAsync(u => u.CreatedBy == userId && u.IsActive == true);
-        
+        return await _context.Investments.CountAsync(u => u.CreatedBy == userId && u.IsActive == true);
+
     }
 
     public async Task<decimal> GetInvestorInvestmentSumAsync()
@@ -56,5 +50,10 @@ public class ReferralService : IReferralService
     public async Task<Wallet> GetWalletUser(string userId)
     {
         return await _context.Wallets.FirstOrDefaultAsync(x => x.CreatedBy.Equals(userId));
+    }
+
+    public async Task<Referral> GetReferralCodeAsync(string userId)
+    {
+        return await _context.Referrals.FirstOrDefaultAsync(x => x.UserId == userId);
     }
 }

@@ -3,13 +3,13 @@
 
 namespace CleanArchitecture.Blazor.Domain.Events;
 
-    public class InvestmentDeletedEvent : DomainEvent
+public class InvestmentDeletedEvent : DomainEvent
+{
+    public InvestmentDeletedEvent(Investment item)
     {
-        public InvestmentDeletedEvent(Investment item)
-        {
-            Item = item;
-        }
-
-        public Investment Item { get; }
+        Item = item;
     }
+
+    public Investment Item { get; }
+}
 

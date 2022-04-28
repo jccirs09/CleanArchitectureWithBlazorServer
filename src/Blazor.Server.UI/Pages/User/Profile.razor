@@ -53,6 +53,12 @@
                         <MudItem sm="6" xs="12">
                             <MudTextField For="@(() => model.Email)" @bind-Value="model.Email" Label="@L["Email"]" Variant="Variant.Text" ReadOnly="true"></MudTextField>
                         </MudItem>
+                         <MudItem sm="6" xs="12">
+                            <MudTextField For="@(() => referralCode)" @bind-Value="referralCode" Label="@L["Referral Code"]" Variant="Variant.Text" ReadOnly="true"></MudTextField>
+                        </MudItem>
+                        <MudItem sm="6" xs="12">
+                            <MudTextField For="@(() => model.UserId)" @bind-Value="model.UserId" Label="@L["Wallet Code"]" Variant="Variant.Text" ReadOnly="true"></MudTextField>
+                        </MudItem>
                         <MudItem sm="6" xs="12">
                             <MudTextField For="@(() => model.DisplayName)"  @bind-Value="model.DisplayName" Label="@L["Display Name"]" Variant="Variant.Text"></MudTextField>
                         </MudItem>
@@ -135,10 +141,12 @@
     private ProfileService _profileService { get; set; } = default!;
     private UserModel model { get; set; } = new();
     private UserFluentValidator userValidator = new();
-
+    [Inject]
+    private IReferralService _referralService{ get; set; } = default!;
     private ChangePasswordModel changepassword { get; set; } = new();
     private PasswordFluentValidator passwordValidator = new PasswordFluentValidator();
-
+    private string referralCode;
+    private string userId;
 
     bool PasswordVisibility;
     InputType PasswordInput = InputType.Password;
@@ -163,7 +171,9 @@
     {
         var state = await AuthState;
         model = await _profileService.Get(state.User);
-
+        userId = state.User.GetUserId();
+        var data = await _referralService.GetReferralCodeAsync(userId);
+        referralCode = data.ReferralCode;
     }
 
     private async Task UploadPhoto(InputFileChangeEventArgs e)

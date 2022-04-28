@@ -4,8 +4,8 @@
 namespace CleanArchitecture.Blazor.Application.Features.WalletTransactions.DTOs;
 
 
-    public class WalletTransactionDto:IMapFrom<WalletTransaction>
-    {
+public class WalletTransactionDto : IMapFrom<WalletTransaction>
+{
     public int Id { get; set; }
     public string? UserId { get; set; }
     public decimal Amount { get; set; }

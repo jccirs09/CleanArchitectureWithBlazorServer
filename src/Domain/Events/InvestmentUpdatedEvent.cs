@@ -4,13 +4,13 @@
 namespace CleanArchitecture.Blazor.Domain.Events;
 
 
-    public class InvestmentUpdatedEvent : DomainEvent
+public class InvestmentUpdatedEvent : DomainEvent
+{
+    public InvestmentUpdatedEvent(Investment item)
     {
-        public InvestmentUpdatedEvent(Investment item)
-        {
-            Item = item;
-        }
-
-        public Investment Item { get; }
+        Item = item;
     }
+
+    public Investment Item { get; }
+}
 

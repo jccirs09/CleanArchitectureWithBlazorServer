@@ -3,22 +3,22 @@
 
 namespace CleanArchitecture.Blazor.Application.Features.Investments.EventHandlers;
 
-    public class InvestmentDeletedEventHandler : INotificationHandler<DomainEventNotification<InvestmentDeletedEvent>>
+public class InvestmentDeletedEventHandler : INotificationHandler<DomainEventNotification<InvestmentDeletedEvent>>
+{
+    private readonly ILogger<InvestmentDeletedEventHandler> _logger;
+
+    public InvestmentDeletedEventHandler(
+        ILogger<InvestmentDeletedEventHandler> logger
+        )
     {
-        private readonly ILogger<InvestmentDeletedEventHandler> _logger;
-
-        public InvestmentDeletedEventHandler(
-            ILogger<InvestmentDeletedEventHandler> logger
-            )
-        {
-            _logger = logger;
-        }
-        public Task Handle(DomainEventNotification<InvestmentDeletedEvent> notification, CancellationToken cancellationToken)
-        {
-            var domainEvent = notification.DomainEvent;
-
-            _logger.LogInformation("CleanArchitecture Domain Event: {DomainEvent}", domainEvent.GetType().Name);
-
-            return Task.CompletedTask;
-        }
+        _logger = logger;
     }
+    public Task Handle(DomainEventNotification<InvestmentDeletedEvent> notification, CancellationToken cancellationToken)
+    {
+        var domainEvent = notification.DomainEvent;
+
+        _logger.LogInformation("CleanArchitecture Domain Event: {DomainEvent}", domainEvent.GetType().Name);
+
+        return Task.CompletedTask;
+    }
+}

@@ -1,7 +1,6 @@
 using System.Net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Logging;
 using Serilog.Context;
 
 namespace CleanArchitecture.Blazor.Infrastructure.Middlewares;
@@ -13,8 +12,8 @@ internal class ExceptionHandlingMiddleware : IMiddleware
     private readonly IStringLocalizer<ExceptionHandlingMiddleware> _localizer;
 
     public ExceptionHandlingMiddleware(
-  
-        ICurrentUserService currentUserService ,
+
+        ICurrentUserService currentUserService,
         ILogger<ExceptionHandlingMiddleware> logger,
         IStringLocalizer<ExceptionHandlingMiddleware> localizer)
     {
@@ -31,7 +30,7 @@ internal class ExceptionHandlingMiddleware : IMiddleware
         }
         catch (Exception exception)
         {
-            var userId =await _currentUserService.UserId();
+            var userId = await _currentUserService.UserId();
             if (!string.IsNullOrEmpty(userId)) LogContext.PushProperty("UserId", userId);
             string errorId = Guid.NewGuid().ToString();
             LogContext.PushProperty("ErrorId", errorId);
@@ -48,7 +47,7 @@ internal class ExceptionHandlingMiddleware : IMiddleware
             }
             if (!string.IsNullOrEmpty(exception.Message))
             {
-                responseModel.Errors=new string[] { exception.Message };
+                responseModel.Errors = new string[] { exception.Message };
             }
             switch (exception)
             {

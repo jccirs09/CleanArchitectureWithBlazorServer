@@ -8,5 +8,5 @@ public static class RoleConstants
     public const string AdministratorRole = "Admin";
     public const string BasicRole = "Investor";
     public const string SupportRole = "Support";
-    public const string DefaultPassword = "!@Dyc00nP@55w0rd!";
+    public const string DefaultPassword = "!@Dyc00nP@55w0rd";
 }

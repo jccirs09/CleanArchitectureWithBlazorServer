@@ -3,13 +3,13 @@
 
 namespace CleanArchitecture.Blazor.Domain.Events;
 
-    public class WalletDeletedEvent : DomainEvent
+public class WalletDeletedEvent : DomainEvent
+{
+    public WalletDeletedEvent(Wallet item)
     {
-        public WalletDeletedEvent(Wallet item)
-        {
-            Item = item;
-        }
-
-        public Wallet Item { get; }
+        Item = item;
     }
+
+    public Wallet Item { get; }
+}
 

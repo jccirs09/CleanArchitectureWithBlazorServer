@@ -3,7 +3,7 @@ using MudBlazor.Utilities;
 
 namespace Blazor.Server.UI.Pages.Investor;
 
-public partial class InvestorWallet :  MudComponentBase
+public partial class InvestorWallet : MudComponentBase
 {
     private string Classname =>
         new CssBuilder()

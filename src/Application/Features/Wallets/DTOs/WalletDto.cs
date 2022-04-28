@@ -4,8 +4,8 @@
 namespace CleanArchitecture.Blazor.Application.Features.Wallets.DTOs;
 
 
-    public class WalletDto:IMapFrom<Wallet>
-    {
+public class WalletDto : IMapFrom<Wallet>
+{
     public int Id { get; set; }
     public decimal CurrentBalance { get; set; }
     public DateTime? Created { get; set; }

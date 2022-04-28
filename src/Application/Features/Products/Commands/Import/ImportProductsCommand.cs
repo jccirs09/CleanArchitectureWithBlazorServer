@@ -12,9 +12,9 @@ public class ImportProductsCommand : IRequest<Result>, ICacheInvalidator
     public string CacheKey => ProductCacheKey.GetAllCacheKey;
     public CancellationTokenSource? SharedExpiryTokenSource => ProductCacheKey.SharedExpiryTokenSource;
 
-    public string FileName { get;  }
-    public byte[] Data { get;  }
-    public ImportProductsCommand(string fileName,byte[] data)
+    public string FileName { get; }
+    public byte[] Data { get; }
+    public ImportProductsCommand(string fileName, byte[] data)
     {
         FileName = fileName;
         Data = data;

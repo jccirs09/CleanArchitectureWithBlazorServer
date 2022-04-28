@@ -4,11 +4,12 @@
 
 namespace CleanArchitecture.Blazor.Application.Features.WalletTransactions.Caching;
 
-    public static class WalletTransactionCacheKey
+public static class WalletTransactionCacheKey
+{
+    public const string GetAllCacheKey = "all-WalletTransactions";
+    public static string GetPagtionCacheKey(string parameters)
     {
-        public const string GetAllCacheKey = "all-WalletTransactions";
-        public static string GetPagtionCacheKey(string parameters) {
-            return "WalletTransactionsWithPaginationQuery,{parameters}";
-        }
+        return "WalletTransactionsWithPaginationQuery,{parameters}";
     }
+}
 

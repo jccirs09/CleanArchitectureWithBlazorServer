@@ -4,13 +4,13 @@
 namespace CleanArchitecture.Blazor.Domain.Events;
 
 
-    public class WalletPayoutUpdatedEvent : DomainEvent
+public class WalletPayoutUpdatedEvent : DomainEvent
+{
+    public WalletPayoutUpdatedEvent(WalletPayout item)
     {
-        public WalletPayoutUpdatedEvent(WalletPayout item)
-        {
-            Item = item;
-        }
-
-        public WalletPayout Item { get; }
+        Item = item;
     }
+
+    public WalletPayout Item { get; }
+}
 

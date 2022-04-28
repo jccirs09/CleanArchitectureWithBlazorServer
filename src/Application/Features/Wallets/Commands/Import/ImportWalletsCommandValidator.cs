@@ -3,15 +3,15 @@
 
 namespace CleanArchitecture.Blazor.Application.Features.Wallets.Commands.Import;
 
-    public class ImportWalletsCommandValidator : AbstractValidator<ImportWalletsCommand>
+public class ImportWalletsCommandValidator : AbstractValidator<ImportWalletsCommand>
+{
+    public ImportWalletsCommandValidator()
     {
-        public ImportWalletsCommandValidator()
-        {
-           //TODO:Implementing ImportWalletCommandValidator method 
-           //ex. RuleFor(v => v.Data)
-           //      .NotNull()
-           //      .NotEmpty();
-           throw new System.NotImplementedException();
-        }
+        //TODO:Implementing ImportWalletCommandValidator method 
+        //ex. RuleFor(v => v.Data)
+        //      .NotNull()
+        //      .NotEmpty();
+        throw new System.NotImplementedException();
     }
+}
 

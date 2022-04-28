@@ -1,6 +1,6 @@
+using Blazor.Server.UI.Models.Application;
 using MudBlazor;
 using MudBlazor.Utilities;
-using Blazor.Server.UI.Models.Application;
 
 namespace Blazor.Server.UI.Components.Index;
 

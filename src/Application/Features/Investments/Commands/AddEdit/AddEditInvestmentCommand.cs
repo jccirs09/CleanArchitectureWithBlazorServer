@@ -6,28 +6,28 @@ using CleanArchitecture.Blazor.Application.Features.Investments.DTOs;
 
 namespace CleanArchitecture.Blazor.Application.Features.Investments.Commands.AddEdit;
 
-    public class AddEditInvestmentCommand: InvestmentDto,IRequest<Result<int>>, IMapFrom<Investment>
-    {
-      
-    }
+public class AddEditInvestmentCommand : InvestmentDto, IRequest<Result<int>>, IMapFrom<Investment>
+{
 
-    public class AddEditInvestmentCommandHandler : IRequestHandler<AddEditInvestmentCommand, Result<int>>
+}
+
+public class AddEditInvestmentCommandHandler : IRequestHandler<AddEditInvestmentCommand, Result<int>>
+{
+    private readonly IApplicationDbContext _context;
+    private readonly IMapper _mapper;
+    private readonly IStringLocalizer<AddEditInvestmentCommandHandler> _localizer;
+    public AddEditInvestmentCommandHandler(
+        IApplicationDbContext context,
+        IStringLocalizer<AddEditInvestmentCommandHandler> localizer,
+        IMapper mapper
+        )
     {
-        private readonly IApplicationDbContext _context;
-        private readonly IMapper _mapper;
-        private readonly IStringLocalizer<AddEditInvestmentCommandHandler> _localizer;
-        public AddEditInvestmentCommandHandler(
-            IApplicationDbContext context,
-            IStringLocalizer<AddEditInvestmentCommandHandler> localizer,
-            IMapper mapper
-            )
-        {
-            _context = context;
-            _localizer = localizer;
-            _mapper = mapper;
-        }
-        public async Task<Result<int>> Handle(AddEditInvestmentCommand request, CancellationToken cancellationToken)
-        {
+        _context = context;
+        _localizer = localizer;
+        _mapper = mapper;
+    }
+    public async Task<Result<int>> Handle(AddEditInvestmentCommand request, CancellationToken cancellationToken)
+    {
         //TODO:Implementing AddEditInvestmentCommandHandler method 
         if (request.Id > 0)
         {
@@ -38,13 +38,13 @@ namespace CleanArchitecture.Blazor.Application.Features.Investments.Commands.Add
             return Result<int>.Success(item.Id);
         }
         else
-            {
-                var item = _mapper.Map<Investment>(request);
-                _context.Investments.Add(item);
-                await _context.SaveChangesAsync(cancellationToken);
-                return Result<int>.Success(item.Id);
-            }
-           
+        {
+            var item = _mapper.Map<Investment>(request);
+            _context.Investments.Add(item);
+            await _context.SaveChangesAsync(cancellationToken);
+            return Result<int>.Success(item.Id);
         }
+
     }
+}
 

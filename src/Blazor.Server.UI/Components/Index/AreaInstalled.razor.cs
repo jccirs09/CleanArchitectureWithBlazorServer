@@ -1,15 +1,13 @@
+using Blazor.Server.UI.Models.Charts;
+using Blazor.Server.UI.Models.Charts.Chart;
+using Blazor.Server.UI.Models.Charts.Legend;
+using Blazor.Server.UI.Models.Charts.Series;
+using Blazor.Server.UI.Models.Charts.XAxis;
+using Blazor.Server.UI.Models.Charts.YAxis;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using MudBlazor;
 using MudBlazor.Utilities;
-using Blazor.Server.UI.Models.Charts;
-using Blazor.Server.UI.Models.Charts.Chart;
-using Blazor.Server.UI.Models.Charts.DataLabels;
-using Blazor.Server.UI.Models.Charts.Legend;
-using Blazor.Server.UI.Models.Charts.Series;
-using Blazor.Server.UI.Models.Charts.Tooltip;
-using Blazor.Server.UI.Models.Charts.XAxis;
-using Blazor.Server.UI.Models.Charts.YAxis;
 
 namespace Blazor.Server.UI.Components.Index;
 
@@ -18,7 +16,8 @@ public partial class AreaInstalled : MudComponentBase
     private static readonly Dictionary<int, List<SeriesModel<int>>> Series = new()
     {
         {
-            2020, new List<SeriesModel<int>>
+            2020,
+            new List<SeriesModel<int>>
             {
                 new()
                 {
@@ -33,7 +32,8 @@ public partial class AreaInstalled : MudComponentBase
             }
         },
         {
-            2019, new List<SeriesModel<int>>
+            2019,
+            new List<SeriesModel<int>>
             {
                 new()
                 {
@@ -59,7 +59,7 @@ public partial class AreaInstalled : MudComponentBase
             .Build();
 
     [Inject] private IJSRuntime JsRuntime { get; set; }
-    
+
     protected override void OnInitialized()
     {
         _chartOptions = new ChartOptionsModel<SeriesModel<int>, string>
@@ -82,7 +82,7 @@ public partial class AreaInstalled : MudComponentBase
             Series = Series[_selectedYear],
             XAxis = new XAxisModel<string>
             {
-                Categories = new List<string> {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"},
+                Categories = new List<string> { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep" },
                 AxisBorder = new XAxisModel<string>.AxisBorderModel
                 {
                     Show = false
@@ -117,7 +117,7 @@ public partial class AreaInstalled : MudComponentBase
                 Position = "top",
                 HorizontalAlign = "right"
             },
-            Colors = new List<string> {"var(--mud-palette-primary)", Colors.Yellow.Default},
+            Colors = new List<string> { "var(--mud-palette-primary)", Colors.Yellow.Default },
         };
     }
 

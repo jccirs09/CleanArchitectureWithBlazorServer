@@ -3,15 +3,15 @@
 
 namespace CleanArchitecture.Blazor.Application.Features.Investments.Commands.Update;
 
-    public class UpdateInvestmentCommandValidator : AbstractValidator<UpdateInvestmentCommand>
+public class UpdateInvestmentCommandValidator : AbstractValidator<UpdateInvestmentCommand>
+{
+    public UpdateInvestmentCommandValidator()
     {
-        public UpdateInvestmentCommandValidator()
-        {
-           //TODO:Implementing UpdateInvestmentCommandValidator method 
-           //ex. RuleFor(v => v.Name)
-           //      .MaximumLength(256)
-           //      .NotEmpty();
-           throw new System.NotImplementedException();
-        }
+        //TODO:Implementing UpdateInvestmentCommandValidator method 
+        //ex. RuleFor(v => v.Name)
+        //      .MaximumLength(256)
+        //      .NotEmpty();
+        throw new System.NotImplementedException();
     }
+}
 

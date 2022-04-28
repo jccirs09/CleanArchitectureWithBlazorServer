@@ -23,7 +23,7 @@ public class FillModel
         [JsonPropertyName("opacityFrom")] public double OpacityFrom { get; set; } = 1;
         [JsonPropertyName("opacityTo")] public double OpacityTo { get; set; } = 1;
 
-        [JsonPropertyName("stops")] public List<int> Stops { get; set; } = new() {0, 50, 100};
+        [JsonPropertyName("stops")] public List<int> Stops { get; set; } = new() { 0, 50, 100 };
         // [JsonPropertyName("colorStops")] public List<ColorStopModel> ColorStops { get; set; } = new(); // TODO...
 
         public class ColorStopModel

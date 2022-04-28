@@ -1,6 +1,5 @@
 
 using Blazor.Server.UI.Components.Dialogs;
-using Blazor.Server.UI.Shared;
 using CleanArchitecture.Blazor.Application.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
@@ -129,7 +128,7 @@ public partial class EntityTable<TEntity, TId, TRequest>
 
     private PaginationFilter GetPaginationFilter(TableState state)
     {
-       
+
 
         var filter = new PaginationFilter
         {
@@ -171,8 +170,8 @@ public partial class EntityTable<TEntity, TId, TRequest>
             _ = Context.CreateFunc ?? throw new InvalidOperationException("CreateFunc can't be null!");
             parameters.Add(nameof(AddEditModal<TRequest>.SaveFunc), Context.CreateFunc);
 
-            requestModel = (await Context.GetDefaultsFunc())??new TRequest();
-                    
+            requestModel = (await Context.GetDefaultsFunc()) ?? new TRequest();
+
         }
         else
         {
@@ -184,7 +183,7 @@ public partial class EntityTable<TEntity, TId, TRequest>
             Func<TRequest, Task> saveFunc = entity => Context.UpdateFunc(id, entity);
             parameters.Add(nameof(AddEditModal<TRequest>.SaveFunc), saveFunc);
 
-            requestModel =(await Context.GetDetailsFunc(id)) ?? new TRequest();
+            requestModel = (await Context.GetDetailsFunc(id)) ?? new TRequest();
         }
 
         parameters.Add(nameof(AddEditModal<TRequest>.RequestModel), requestModel);

@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CleanArchitecture.Blazor.Infrastructure.Constants;
 using Microsoft.AspNetCore.SignalR.Client;
 
@@ -13,7 +8,7 @@ public class HubClient : IAsyncDisposable
     private readonly string _hubUrl;
     private readonly string _userId;
     private bool _started = false;
-    public HubClient(string siteUrl,string userId)
+    public HubClient(string siteUrl, string userId)
     {
         if (string.IsNullOrWhiteSpace(siteUrl))
             throw new ArgumentNullException(nameof(siteUrl));
@@ -57,7 +52,7 @@ public class HubClient : IAsyncDisposable
             await _hubConnection.SendAsync(SignalR.ConnectUser, _userId);
             _started = true;
         }
-     
+
     }
 
 
@@ -97,7 +92,7 @@ public class HubClient : IAsyncDisposable
         if (!_started)
             throw new InvalidOperationException("Client not started");
         // send the message
-        await _hubConnection.SendAsync(SignalR.SendNotification,  message);
+        await _hubConnection.SendAsync(SignalR.SendNotification, message);
     }
     public async ValueTask DisposeAsync()
     {

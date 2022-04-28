@@ -1,54 +1,26 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AutoMapper;
-using CleanArchitecture.Blazor.Application.Features.Wallets.DTOs;
-using CleanArchitecture.Blazor.Application.Features.WalletTransactions.DTOs;
-using CleanArchitecture.Blazor.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Blazor.Infrastructure.Services;
 public class WalletTransactionService : IWalletTransactionService
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
     private readonly ICurrentUserService _currentUserService;
 
-    public WalletTransactionService(ApplicationDbContext context,
+    public WalletTransactionService(IApplicationDbContext context,
         IMapper mapper,
         ICurrentUserService currentUserService)
     {
         _context = context;
         _mapper = mapper;
         _currentUserService = currentUserService;
-    }   
-
-    public void Save(WalletTransactionDto walletTransaction)
-    {
-        var item = _mapper.Map<WalletTransaction>(walletTransaction);
-        if (walletTransaction.Id == 0)
-        {
-            _context.WalletTransactions.Add(item);
-        }
-        else
-        {
-            _context.WalletTransactions.Update(item);
-        }
-        _context.SaveChanges();
     }
 
-    public void SaveWallet(WalletDto wallet)
+    public async Task<int> GetPendingPayoutCountAsync()
     {
-        var item = _mapper.Map<Wallet>(wallet);
-        if (wallet.Id == 0)
-        {
-            _context.Wallets.Add(item);
-        }
-        else
-        {
-            _context.Wallets.Update(item);
-        }
-        _context.SaveChanges();
+        var userId = await _currentUserService.UserId();
+        return await _context.WalletPayouts.CountAsync(u => u.CreatedBy == userId && u.Stat.Equals("Pending"));
+
     }
 }

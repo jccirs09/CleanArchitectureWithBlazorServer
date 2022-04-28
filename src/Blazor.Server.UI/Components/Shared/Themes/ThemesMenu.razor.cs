@@ -1,8 +1,6 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Blazor.Server.UI.Models;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using Blazor.Server.UI.Models;
 
 namespace Blazor.Server.UI.Components.Shared.Themes;
 
@@ -11,7 +9,7 @@ public partial class ThemesMenu
     // TODO: The razor file could probably be cleaner..
     // TODO: Find why MudOverlay does not work..
     // TODO: Better CSS..
-    
+
     private readonly List<string> _primaryColors = new()
     {
         "#2d4275",
@@ -23,10 +21,10 @@ public partial class ThemesMenu
         Colors.Red.Default
     };
 
-    [EditorRequired] [Parameter] public bool ThemingDrawerOpen { get; set; }
-    [EditorRequired] [Parameter] public EventCallback<bool> ThemingDrawerOpenChanged { get; set; }
-    [EditorRequired] [Parameter] public ThemeManagerModel ThemeManager { get; set; }
-    [EditorRequired] [Parameter] public EventCallback<ThemeManagerModel> ThemeManagerChanged { get; set; }
+    [EditorRequired][Parameter] public bool ThemingDrawerOpen { get; set; }
+    [EditorRequired][Parameter] public EventCallback<bool> ThemingDrawerOpenChanged { get; set; }
+    [EditorRequired][Parameter] public ThemeManagerModel ThemeManager { get; set; }
+    [EditorRequired][Parameter] public EventCallback<ThemeManagerModel> ThemeManagerChanged { get; set; }
 
     [Parameter]
     public double Radius { get; set; }

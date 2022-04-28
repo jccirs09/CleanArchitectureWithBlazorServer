@@ -1,5 +1,3 @@
-using MudBlazor;
-using MudBlazor.Utilities;
 using Blazor.Server.UI.Models.Charts;
 using Blazor.Server.UI.Models.Charts.Chart;
 using Blazor.Server.UI.Models.Charts.DataLabels;
@@ -7,6 +5,8 @@ using Blazor.Server.UI.Models.Charts.Legend;
 using Blazor.Server.UI.Models.Charts.PlotOptions;
 using Blazor.Server.UI.Models.Charts.Stroke;
 using Blazor.Server.UI.Models.Charts.Tooltip;
+using MudBlazor;
+using MudBlazor.Utilities;
 
 namespace Blazor.Server.UI.Components.Index;
 
@@ -34,12 +34,12 @@ public partial class CurrentDownload : MudComponentBase
                 Height = "440px",
                 Id = "currentDownload"
             },
-            Series = new List<int> {297, 214, 113, 54},
+            Series = new List<int> { 297, 214, 113, 54 },
             Tooltip = new TooltipModel
             {
                 Enabled = false
             },
-            Labels = new List<string> {"Android", "IOS", "Mac", "Windows"},
+            Labels = new List<string> { "Android", "IOS", "Mac", "Windows" },
             Stroke = new StrokeModel
             {
                 Show = false

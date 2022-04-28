@@ -3,22 +3,22 @@
 
 namespace CleanArchitecture.Blazor.Application.Features.WalletTransactions.EventHandlers;
 
-    public class WalletTransactionUpdatedEventHandler : INotificationHandler<DomainEventNotification<WalletTransactionUpdatedEvent>>
+public class WalletTransactionUpdatedEventHandler : INotificationHandler<DomainEventNotification<WalletTransactionUpdatedEvent>>
+{
+    private readonly ILogger<WalletTransactionUpdatedEventHandler> _logger;
+
+    public WalletTransactionUpdatedEventHandler(
+        ILogger<WalletTransactionUpdatedEventHandler> logger
+        )
     {
-        private readonly ILogger<WalletTransactionUpdatedEventHandler> _logger;
-
-        public WalletTransactionUpdatedEventHandler(
-            ILogger<WalletTransactionUpdatedEventHandler> logger
-            )
-        {
-            _logger = logger;
-        }
-        public Task Handle(DomainEventNotification<WalletTransactionUpdatedEvent> notification, CancellationToken cancellationToken)
-        {
-            var domainEvent = notification.DomainEvent;
-
-            _logger.LogInformation("CleanArchitecture Domain Event: {DomainEvent}", domainEvent.GetType().Name);
-
-            return Task.CompletedTask;
-        }
+        _logger = logger;
     }
+    public Task Handle(DomainEventNotification<WalletTransactionUpdatedEvent> notification, CancellationToken cancellationToken)
+    {
+        var domainEvent = notification.DomainEvent;
+
+        _logger.LogInformation("CleanArchitecture Domain Event: {DomainEvent}", domainEvent.GetType().Name);
+
+        return Task.CompletedTask;
+    }
+}

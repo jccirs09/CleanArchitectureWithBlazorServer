@@ -3,7 +3,7 @@ using MudBlazor.Utilities;
 
 namespace Blazor.Server.UI.Pages.Investor;
 
-public partial class Dashboard :  MudComponentBase
+public partial class Dashboard : MudComponentBase
 {
     private string Classname =>
         new CssBuilder()

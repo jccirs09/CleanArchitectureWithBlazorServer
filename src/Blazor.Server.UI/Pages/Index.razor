@@ -1,63 +1,94 @@
 @page "/"
-@using Blazor.Server.UI.Components.InvestorsDashboard
+@inject IJSRuntime JS
+@inject IStringLocalizer<Index> L
 @using Microsoft.AspNetCore.Authorization
-<PageTitle>@Title</PageTitle>
 
+<PageTitle>@Title</PageTitle>
 <MudContainer MaxWidth="MaxWidth.Large">
     <MudGrid>
-        <MudItem>
-            <InvestorsInvestmentCount />
-        </MudItem>    
-        <MudItem md="4"
-                 sm="12"
-                 xs="12">
-            <ArticleCarousel />
-        </MudItem>
-        <MudItem md="4"
-                 sm="12"
-                 xs="12">
-            <DataCard ChartId="chartOne"
-                      IncreaseDecrease="IncreaseDecreaseActiveUsers"
-                      LastTenDays="_lastTenDaysActiveUsers"
-                      Title="Total Active Users"
-                      Total="TotalActiveUsers" />
-        </MudItem>
-        <MudItem md="4"
-                 sm="12"
-                 xs="12">
-            <DataCard BarColor="@Colors.Blue.Default"
-                      ChartId="chartTwo"
-                      IncreaseDecrease="IncreaseDecreaseInstalls"
-                      LastTenDays="_lastTenDaysInstalls"
-                      Title="Total Installed"
-                      Total="TotalInstalls" />
-        </MudItem>
-        <MudItem md="4"
-                 sm="12"
-                 xs="12">
-            <DataCard BarColor="@Colors.Orange.Default"
-                      ChartId="chartThree"
-                      IncreaseDecrease="IncreaseDecreaseDownloads"
-                      LastTenDays="_lastTenDaysDownloads"
-                      Title="Total Downloads"
-                      Total="TotalDownloads" />
-        </MudItem>
-        <MudItem md="6"
-                 sm="12">
-            <CurrentDownload />
-        </MudItem>
-        <MudItem md="6"
-                 sm="12">
-            <AreaInstalled />
-        </MudItem>
-        <MudItem md="8"
-                 sm="12">
-            <NewInvoice />
-        </MudItem>
-        <MudItem md="4"
-                 sm="12">
-            <TopApplications />
-        </MudItem>
+            <MudItem md="4" sm="12" xs="12">
+                <MudCard>
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">Current Balance</MudText>
+                        </CardHeaderContent>
+                        <CardHeaderActions>
+                            <MudIconButton Link="/investor/wallet" Icon="@Icons.Material.Filled.AccountBalanceWallet" Color="Color.Error" />
+                        </CardHeaderActions>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudText Color="Color.Error" Typo="Typo.h4">$@walletBalance</MudText>
+                    </MudCardContent>                    
+                </MudCard>
+            </MudItem>
+            <MudItem md="4" sm="12" xs="12">
+                <MudCard>
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">Total Invested Amount</MudText>
+                        </CardHeaderContent>
+                        <CardHeaderActions>
+                            <MudIconButton Link="/investor/investments" Icon="@Icons.Material.Filled.CurrencyBitcoin" Color="Color.Warning" />
+                        </CardHeaderActions>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudText Color="Color.Warning" Typo="Typo.h4">$@investmentSum</MudText>
+                    </MudCardContent>                    
+                </MudCard>
+           </MudItem>
+           <MudItem md="4" sm="12" xs="12">
+                <MudCard>
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">Investment Count</MudText>
+                        </CardHeaderContent>
+                        <CardHeaderActions>
+                            <MudIconButton Link="/investor/investments" Icon="@Icons.Material.Filled.Countertops" Color="Color.Info" />
+                        </CardHeaderActions>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudText Color="Color.Info" Typo="Typo.h4">@investmentCount</MudText>
+                    </MudCardContent>                    
+                </MudCard>
+            </MudItem>
+            <MudItem md="4" sm="12" xs="12">
+                <MudCard>
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">My Daily Rate</MudText>
+                        </CardHeaderContent>
+                        <CardHeaderActions>
+                            <MudIconButton Icon="@Icons.Material.Filled.CalendarViewDay" Color="Color.Secondary" />
+                        </CardHeaderActions>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudText Color="Color.Secondary" Typo="Typo.h4">$@investmentDailyRate</MudText>
+                    </MudCardContent>                    
+                </MudCard>
+            </MudItem>            
     </MudGrid>
 </MudContainer>
+@code {
+    [Inject] private IReferralService _referralService { get; set; } = default!; 
+    protected Task<AuthenticationState> AuthState { get; set; } = default!;
 
+    private int investmentCount;
+    private decimal investmentSum;
+    private decimal investmentDailyRate;
+    private bool _canView;
+    private decimal walletBalance;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Title = L["Dycoon - Don't delay, invest today!"];        
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        investmentCount = await _referralService.GetInvestorInvestmentCountAsync();
+        investmentSum = await _referralService.GetInvestorInvestmentSumAsync();
+        investmentDailyRate = await _referralService.GetInvestorInvestmentDailyRateAsync();
+        walletBalance = await _referralService.GetInvestorWalletAsync();         
+    }
+}

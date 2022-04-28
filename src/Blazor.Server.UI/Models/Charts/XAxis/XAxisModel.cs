@@ -135,7 +135,7 @@ public class XAxisModel<TCategory>
             {
                 [JsonPropertyName("colorFrom")] public string ColorFrom { get; set; } = "#D8E3F0";
                 [JsonPropertyName("colorTo")] public string ColorTo { get; set; } = "#BED1E6";
-                [JsonPropertyName("stops")] public List<int> Stops { get; set; } = new() {0, 100};
+                [JsonPropertyName("stops")] public List<int> Stops { get; set; } = new() { 0, 100 };
                 [JsonPropertyName("opacityFrom")] public double OpacityFrom { get; set; } = 0.4;
                 [JsonPropertyName("opacityTo")] public double OpacityTo { get; set; } = 0.5;
             }

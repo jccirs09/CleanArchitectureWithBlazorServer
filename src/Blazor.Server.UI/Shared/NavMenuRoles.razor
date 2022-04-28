@@ -1,0 +1,148 @@
+@inject Microsoft.Extensions.Localization.IStringLocalizer<NavMenuRoles> _localizer
+@using System.Security.Claims
+
+<MudDrawer Breakpoint="Breakpoint.Md"
+           Class="side-menu"
+           Elevation="0"
+           Open="SideMenuDrawerOpen"
+           OpenChanged="@(e => SideMenuDrawerOpenChanged.InvokeAsync(e))"
+           Variant="DrawerVariant.Responsive"
+           >
+    <MudDrawerHeader Class="align-center d-flex align-center pa-0">        
+        <MudImage Class="ml-6 mr-2" Src="icos\dycoon.ico" />
+        <MudText Typo="Typo.subtitle2">
+            <b>@_localizer[Settings.AppName]</b>
+        </MudText>
+    </MudDrawerHeader>
+        @if (SideMenuDrawerOpen)
+        {
+            <div class="mx-6">
+                <MudButton Class="d-flex justify-start my-3 user-button"
+                           FullWidth="true">
+                    <ChildContent>
+                        <div class="align-center d-flex">
+                            <MudAvatar Image="@User.Avatar" />
+                        </div>
+                        <div class="d-flex flex-column px-4">
+                            <MudText Class="d-flex justify-start"
+                                     Typo="Typo.body2">
+                                @User.DisplayName
+                            </MudText>
+                            <MudText Class="d-flex justify-start"
+                                     Typo="Typo.caption">
+                                @User.Role
+                            </MudText>
+                        </div>
+                    </ChildContent>
+                </MudButton>
+            </div>
+        }
+        else
+        {
+            <div class="d-flex justify-center my-3">
+                <MudAvatar Image="@User.Avatar" />
+            </div>
+        }
+        <MudNavMenu>
+            <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">@_localizer["Home"]</MudNavLink>
+   
+            <MudListSubheader Class="mt-2 mb-n2">@_localizer["Investor"]</MudListSubheader>
+            @if (_canViewDashboards)
+            {
+                <MudNavLink Href="/investor/dashboard" Icon="@Icons.Material.Filled.Dashboard">
+                    @_localizer["Dashboard"]
+                </MudNavLink>
+            }
+    
+            @if (_canViewInvestments)
+            {   
+                <MudNavLink Href="/investor/investments" Icon="@Icons.Material.Filled.Analytics">
+                    @_localizer["Investments"]
+                </MudNavLink>
+            }   
+   
+            @if (_canViewWallet)
+            {
+                <MudNavLink Href="/investor/wallet" Icon="@Icons.Material.Filled.AccountBalanceWallet">
+                    @_localizer["Wallet"]
+                </MudNavLink>
+            }
+            @if (_canViewSupport)
+            {
+                <MudNavLink Href="/support/investments" Icon="@Icons.Material.Filled.Analytics">
+                    @_localizer["Investments"]
+                </MudNavLink>
+            }
+            @if (_canViewRoles)
+            {
+                <MudNavLink Href="/indentity/roles" Icon="@Icons.Material.Filled.RocketLaunch">
+                    @_localizer["Roles"]
+                </MudNavLink>
+            }
+            @if (_canViewUsers)
+            {
+                <MudNavLink Href="/indentity/users" Icon="@Icons.Material.Filled.VerifiedUser">
+                    @_localizer["Investors"]
+                </MudNavLink>
+            }
+            
+        </MudNavMenu>
+        <MudDivider Class="mt-auto"></MudDivider>
+        <MudNavMenu Class="d-flex justify-space-between pa-4" >
+            <MudLink Href="#"  Style="font-size:0.625rem;line-height:1.125rem;color:#6F6F6F !important">@Settings.Copyright</MudLink>
+            <MudText Class=""  Style="font-size:0.625rem;line-height:1.125rem;color:#6F6F6F !important">version @Settings.Version</MudText>
+        </MudNavMenu>
+</MudDrawer>
+<style>
+
+        .mud-nav-link {
+            white-space: normal !important;
+        }
+        .mud-nav-link.active:not(.mud-nav-link-disabled) {
+            border-right: 3px solid var(--mud-palette-primary);
+            background-color: rgba(var(--mud-palette-primary-rgb), 0.1)
+        }
+        
+        .side-menu {
+            border-right: 1px solid var(--mud-palette-table-lines)
+        }
+        
+        .user-button {
+            text-transform:none; 
+            background: rgba(var(--mud-palette-primary-rgb), 0.1)
+        }
+        
+        .side-menu .mud-chip.mud-chip-size-small
+        {
+            font-size: 0.625rem;
+            height: 1.125rem;
+        }
+       
+</style>
+@code {
+
+    [EditorRequired] [Parameter] public bool SideMenuDrawerOpen { get; set; } 
+    [EditorRequired] [Parameter] public EventCallback<bool> SideMenuDrawerOpenChanged { get; set; }
+    [EditorRequired] [Parameter] public UserModel User { get; set; } = default!;
+    [CascadingParameter]
+    protected Task<AuthenticationState> AuthState { get; set; } = default!;
+
+
+    private bool _canViewDashboards;    
+    private bool _canViewWallet;
+    private bool _canViewSupport;
+    private bool _canViewInvestments;
+    private bool _canViewRoles;
+    private bool _canViewUsers;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var state = await AuthState;
+        _canViewInvestments = (await AuthService.AuthorizeAsync(state.User, Permissions.Investments.View)).Succeeded;
+        _canViewWallet = (await AuthService.AuthorizeAsync(state.User, Permissions.Investments.View)).Succeeded;
+        _canViewDashboards = (await AuthService.AuthorizeAsync(state.User, Permissions.Investments.View)).Succeeded;
+        _canViewSupport = (await AuthService.AuthorizeAsync(state.User, Permissions.Supports.View)).Succeeded;
+        _canViewRoles = (await AuthService.AuthorizeAsync(state.User, Permissions.Roles.View)).Succeeded;
+        _canViewUsers = (await AuthService.AuthorizeAsync(state.User, Permissions.Users.View)).Succeeded;
+    }
+}

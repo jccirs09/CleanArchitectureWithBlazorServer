@@ -1,19 +1,15 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using CleanArchitecture.Blazor.Application.Common.Interfaces.Identity.DTOs;
-using CleanArchitecture.Blazor.Application.Common.Security;
-using CleanArchitecture.Blazor.Infrastructure.Extensions;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using CleanArchitecture.Blazor.Application.Common.Interfaces.Identity.DTOs;
+using CleanArchitecture.Blazor.Infrastructure.Extensions;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
+using Microsoft.IdentityModel.Tokens;
 
 namespace CleanArchitecture.Blazor.Infrastructure.Services.Identity;
 
@@ -250,7 +246,7 @@ public class IdentityService : IIdentityService
     public async Task UpdateLiveStatus(string userId, bool isLive)
     {
         var user = await _userManager.FindByIdAsync(userId);
-        if (user is not null && user.IsLive!= isLive)
+        if (user is not null && user.IsLive != isLive)
         {
             user.IsLive = isLive;
             await _userManager.UpdateAsync(user);
@@ -263,5 +259,5 @@ public class IdentityService : IIdentityService
         return user?.DisplayName;
     }
 
-   
+
 }

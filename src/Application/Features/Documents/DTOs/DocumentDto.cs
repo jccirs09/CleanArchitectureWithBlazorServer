@@ -3,7 +3,7 @@
 
 namespace CleanArchitecture.Blazor.Application.Features.Documents.DTOs;
 
-public  class DocumentDto : IMapFrom<Document>
+public class DocumentDto : IMapFrom<Document>
 {
     public void Mapping(Profile profile)
     {

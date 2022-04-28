@@ -4,11 +4,12 @@
 
 namespace CleanArchitecture.Blazor.Application.Features.Investments.Caching;
 
-    public static class InvestmentCacheKey
+public static class InvestmentCacheKey
+{
+    public const string GetAllCacheKey = "all-Investments";
+    public static string GetPagtionCacheKey(string parameters)
     {
-        public const string GetAllCacheKey = "all-Investments";
-        public static string GetPagtionCacheKey(string parameters) {
-            return "InvestmentsWithPaginationQuery,{parameters}";
-        }
+        return "InvestmentsWithPaginationQuery,{parameters}";
     }
+}
 

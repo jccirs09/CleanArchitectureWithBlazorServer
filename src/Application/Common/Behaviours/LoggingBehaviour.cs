@@ -1,7 +1,6 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using CleanArchitecture.Blazor.Application.Common.Interfaces.Identity;
 using MediatR.Pipeline;
 
 namespace CleanArchitecture.Blazor.Application.Common.Behaviours;
@@ -22,8 +21,8 @@ public class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest> where T
     public async Task Process(TRequest request, CancellationToken cancellationToken)
     {
         var requestName = nameof(TRequest);
-        var userId =await _currentUserService.UserId();
+        var userId = await _currentUserService.UserId();
         _logger.LogTrace("Request: {Name} with {@Request} by  {@UserName}",
-            requestName,  request, userId);
+            requestName, request, userId);
     }
 }

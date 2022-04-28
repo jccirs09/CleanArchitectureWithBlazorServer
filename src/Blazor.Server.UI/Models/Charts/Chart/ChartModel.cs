@@ -103,20 +103,30 @@ public class ChartModel
                 [JsonPropertyName("months")]
                 public List<string> Months { get; set; } = new()
                 {
-                    "January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
-                    "November", "December"
+                    "January",
+                    "February",
+                    "March",
+                    "April",
+                    "May",
+                    "June",
+                    "July",
+                    "August",
+                    "September",
+                    "October",
+                    "November",
+                    "December"
                 };
 
                 [JsonPropertyName("shortMonths")]
                 public List<string> ShortMonths { get; set; } = new()
-                    {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+                { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
                 [JsonPropertyName("days")]
                 public List<string> Days { get; set; } = new()
-                    {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+                { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
 
                 [JsonPropertyName("shortDays")]
-                public List<string> ShortDays { get; set; } = new() {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+                public List<string> ShortDays { get; set; } = new() { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
 
                 [JsonPropertyName("toolbar")] public ToolbarModel Toolbar { get; set; } = new();
 

@@ -3,15 +3,15 @@
 
 namespace CleanArchitecture.Blazor.Application.Features.WalletPayouts.Commands.Create;
 
-    public class CreateWalletPayoutCommandValidator : AbstractValidator<CreateWalletPayoutCommand>
+public class CreateWalletPayoutCommandValidator : AbstractValidator<CreateWalletPayoutCommand>
+{
+    public CreateWalletPayoutCommandValidator()
     {
-        public CreateWalletPayoutCommandValidator()
-        {
-           //TODO:Implementing CreateWalletPayoutCommandValidator method 
-           //ex. RuleFor(v => v.Name)
-           //      .MaximumLength(256)
-           //      .NotEmpty();
-           throw new System.NotImplementedException();
-        }
+        //TODO:Implementing CreateWalletPayoutCommandValidator method 
+        //ex. RuleFor(v => v.Name)
+        //      .MaximumLength(256)
+        //      .NotEmpty();
+        throw new System.NotImplementedException();
     }
+}
 

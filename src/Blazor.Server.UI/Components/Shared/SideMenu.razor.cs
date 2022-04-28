@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.Components;
-using MudBlazor;
 using Blazor.Server.UI.Models.SideMenu;
 using Blazor.Server.UI.Services.Navigation;
 using CleanArchitecture.Blazor.Application.Common.Models;
+using Microsoft.AspNetCore.Components;
+using MudBlazor;
 
 namespace Blazor.Server.UI.Components.Shared;
 
@@ -10,7 +10,7 @@ public partial class SideMenu
 {
     private IEnumerable<MenuSectionModel> _menuSections = new List<MenuSectionModel>()
     {
-        
+
         new MenuSectionModel
         {
             Title = "GENERAL",
@@ -116,17 +116,22 @@ public partial class SideMenu
         }
     };
 
-    [EditorRequired] [Parameter] public bool SideMenuDrawerOpen { get; set; } 
-    [EditorRequired] [Parameter] public EventCallback<bool> SideMenuDrawerOpenChanged { get; set; }
-    [EditorRequired] [Parameter] public UserModel User { get; set; } = default!;
+
+    [EditorRequired][Parameter] public bool SideMenuDrawerOpen { get; set; }
+    [EditorRequired][Parameter] public EventCallback<bool> SideMenuDrawerOpenChanged { get; set; }
+    [EditorRequired][Parameter] public UserModel User { get; set; } = default!;
 
     [Inject] private IMenuService _menuService { get; set; } = default!;
 
+
     protected override Task OnInitializedAsync()
     {
-        _menuSections = _menuService.Features;
-        return Task.CompletedTask;
 
-        
+        _menuSections = _menuService.Features;
+
+        return Task.CompletedTask;
     }
+
+
+
 }

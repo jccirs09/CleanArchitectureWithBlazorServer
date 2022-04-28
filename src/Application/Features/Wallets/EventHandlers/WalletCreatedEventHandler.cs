@@ -3,22 +3,22 @@
 
 namespace CleanArchitecture.Blazor.Application.Features.Wallets.EventHandlers;
 
-    public class WalletCreatedEventHandler : INotificationHandler<DomainEventNotification<WalletCreatedEvent>>
+public class WalletCreatedEventHandler : INotificationHandler<DomainEventNotification<WalletCreatedEvent>>
+{
+    private readonly ILogger<WalletCreatedEventHandler> _logger;
+
+    public WalletCreatedEventHandler(
+        ILogger<WalletCreatedEventHandler> logger
+        )
     {
-        private readonly ILogger<WalletCreatedEventHandler> _logger;
-
-        public WalletCreatedEventHandler(
-            ILogger<WalletCreatedEventHandler> logger
-            )
-        {
-            _logger = logger;
-        }
-        public Task Handle(DomainEventNotification<WalletCreatedEvent> notification, CancellationToken cancellationToken)
-        {
-            var domainEvent = notification.DomainEvent;
-
-            _logger.LogInformation("CleanArchitecture Domain Event: {DomainEvent}", domainEvent.GetType().Name);
-
-            return Task.CompletedTask;
-        }
+        _logger = logger;
     }
+    public Task Handle(DomainEventNotification<WalletCreatedEvent> notification, CancellationToken cancellationToken)
+    {
+        var domainEvent = notification.DomainEvent;
+
+        _logger.LogInformation("CleanArchitecture Domain Event: {DomainEvent}", domainEvent.GetType().Name);
+
+        return Task.CompletedTask;
+    }
+}

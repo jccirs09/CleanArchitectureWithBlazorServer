@@ -3,15 +3,15 @@
 
 namespace CleanArchitecture.Blazor.Application.Features.Investments.Commands.Create;
 
-    public class CreateInvestmentCommandValidator : AbstractValidator<CreateInvestmentCommand>
+public class CreateInvestmentCommandValidator : AbstractValidator<CreateInvestmentCommand>
+{
+    public CreateInvestmentCommandValidator()
     {
-        public CreateInvestmentCommandValidator()
-        {
-           //TODO:Implementing CreateInvestmentCommandValidator method 
-           //ex. RuleFor(v => v.Name)
-           //      .MaximumLength(256)
-           //      .NotEmpty();
-           throw new System.NotImplementedException();
-        }
+        //TODO:Implementing CreateInvestmentCommandValidator method 
+        //ex. RuleFor(v => v.Name)
+        //      .MaximumLength(256)
+        //      .NotEmpty();
+        throw new System.NotImplementedException();
     }
+}
 

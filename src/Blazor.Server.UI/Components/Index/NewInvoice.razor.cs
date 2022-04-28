@@ -1,6 +1,6 @@
+using Blazor.Server.UI.Models.Invoice;
 using MudBlazor;
 using MudBlazor.Utilities;
-using Blazor.Server.UI.Models.Invoice;
 
 namespace Blazor.Server.UI.Components.Index;
 

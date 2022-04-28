@@ -34,10 +34,10 @@ public class ExportDocumentTypesQueryHandler :
     }
     public async Task<byte[]> Handle(ExportDocumentTypesQuery request, CancellationToken cancellationToken)
     {
-       var data = await _context.DocumentTypes.Where(x=>x.Name.Contains(request.Keyword) || x.Description.Contains(request.Keyword))
-            .OrderBy($"{request.OrderBy} {request.SortDirection}")
-            .ProjectTo<DocumentTypeDto>(_mapper.ConfigurationProvider)
-            .ToListAsync(cancellationToken);
+        var data = await _context.DocumentTypes.Where(x => x.Name.Contains(request.Keyword) || x.Description.Contains(request.Keyword))
+             .OrderBy($"{request.OrderBy} {request.SortDirection}")
+             .ProjectTo<DocumentTypeDto>(_mapper.ConfigurationProvider)
+             .ToListAsync(cancellationToken);
         var result = await _excelService.ExportAsync(data,
             new Dictionary<string, Func<DocumentTypeDto, object>>()
             {

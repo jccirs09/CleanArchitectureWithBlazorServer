@@ -6,7 +6,7 @@ using LazyCache;
 namespace CleanArchitecture.Blazor.Application.Common.Behaviours;
 
 public class CachingBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : IRequest<TResponse> ,ICacheable
+    where TRequest : IRequest<TResponse>, ICacheable
 {
     private readonly IAppCache _cache;
     private readonly ILogger<CachingBehaviour<TRequest, TResponse>> _logger;
@@ -21,7 +21,7 @@ public class CachingBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest,
     }
     public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
     {
-        _logger.LogTrace("{Name} is caching with {@Request}.", nameof(request),request);
+        _logger.LogTrace("{Name} is caching with {@Request}.", nameof(request), request);
         var response = await _cache.GetOrAddAsync(
             request.CacheKey,
             async () => await next(),

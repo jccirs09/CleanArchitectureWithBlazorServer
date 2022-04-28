@@ -19,7 +19,7 @@
     }
 </style>
 <MudTabs Elevation="2" Rounded="true" Centered="true">
-    <MudTabPanel Icon="@Icons.Material.Filled.ArrowUpward" ToolTip="Transactions" BadgeData='"!"' BadgeColor="Color.Success">
+    <MudTabPanel Icon="@Icons.Material.Filled.RoundedCorner" Text="Transaction" ToolTip="Transactions">
         @*Tab panel 1 start *@
             <ErrorBoundary>
                 <ChildContent>
@@ -77,11 +77,11 @@
                
                             @if(@context.Type == "Receive")
                             {
-                                 <MudTd DataLabel="Amount" Style="text-align:right; color:green"><MudIcon Icon="@Icons.Material.Outlined.MoveUp"/> -@context.Amount.ToString("C2")</MudTd>
+                                 <MudTd DataLabel="Amount" Style="text-align:right; color:green"><MudIcon Icon="@Icons.Material.Outlined.MoveUp"/> +@context.Amount.ToString("C2")</MudTd>
                             }
                             else
                             {
-                                <MudTd DataLabel="Amount" Style="text-align:right; color:red"><MudIcon Icon="@Icons.Material.Outlined.MoveDown"/> +@context.Amount.ToString("C2")</MudTd>
+                                <MudTd DataLabel="Amount" Style="text-align:right; color:red"><MudIcon Icon="@Icons.Material.Outlined.MoveDown"/> -@context.Amount.ToString("C2")</MudTd>
                             }
                             <MudTd DataLabel="Old Balance" Style="text-align:right">@context.PreviousBalance.ToString("C2")</MudTd>
                            <MudTd DataLabel="New Balance" Style="text-align:right">@context.NewBalance.ToString("C2")</MudTd>
@@ -103,7 +103,7 @@
             </ErrorBoundary>
         @*Tab panel 1 end *@
     </MudTabPanel>
-    <MudTabPanel Icon="@Icons.Material.Filled.RequestQuote" ToolTip="Payouts" BadgeData="3" BadgeColor="Color.Error">
+    <MudTabPanel Icon="@Icons.Material.Filled.RequestQuote" Text="Payout" ToolTip="Payouts" BadgeData="@_pending" BadgeColor="Color.Error">
         @*Tab panel 2 start *@
                 <ErrorBoundary>
                 <ChildContent>
@@ -203,6 +203,7 @@
     private string? _userId;
     private string? _receiver;
     private decimal _amount;
+    private int _pending;
     protected override async Task OnInitializedAsync()
     {
         Title = L["My Wallet"];
@@ -225,6 +226,7 @@
             var payouts = new GetAllWalletPayoutsQuery();
             _walletPayouts = await _mediator.Send(payouts);
 
+            _pending = await _walletTransactionService.GetPendingPayoutCountAsync();
             _loading = false;
         }
         var state = await AuthState;

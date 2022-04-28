@@ -3,6 +3,6 @@
 
 namespace CleanArchitecture.Blazor.Infrastructure.Services;
 
-    internal class SendGridMailService
-    {
-    }
+internal class SendGridMailService
+{
+}

@@ -1,9 +1,4 @@
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Server.Circuits;
 
 namespace CleanArchitecture.Blazor.Infrastructure.Services;
@@ -17,7 +12,7 @@ public class CircuitHandlerService : CircuitHandler
     protected virtual void OnCircuitsChanged(bool connected)
     => CircuitsChanged?.Invoke(this, connected);
 
-    public CircuitHandlerService( )
+    public CircuitHandlerService()
     {
         Circuits = new ConcurrentDictionary<string, Circuit>();
 
@@ -32,7 +27,7 @@ public class CircuitHandlerService : CircuitHandler
 
     public override async Task OnCircuitClosedAsync(Circuit circuit, CancellationToken cancellationToken)
     {
-        
+
         Circuit circuitRemoved;
         Circuits.TryRemove(circuit.Id, out circuitRemoved);
         OnCircuitsChanged(false);

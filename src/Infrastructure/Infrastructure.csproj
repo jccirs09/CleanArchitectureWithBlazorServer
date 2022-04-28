@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="ClosedXML" Version="0.95.4" />
+    <PackageReference Include="CoinGeckoAsyncApi" Version="1.5.5" />
     <PackageReference Include="Hangfire.Core" Version="1.8.0-beta3" />
     <PackageReference Include="MailKit" Version="3.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="6.0.3" />
@@ -32,10 +33,6 @@
     <PackageReference Include="Duende.IdentityServer.EntityFramework" Version="6.0.4" />
     <PackageReference Include="Duende.IdentityServer.EntityFramework.Storage" Version="6.0.4" />
     <PackageReference Include="Duende.IdentityServer.Storage" Version="6.0.4" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Persistence\Migrations\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -2,8 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
-using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
 
 namespace CleanArchitecture.Blazor.Infrastructure.Services;
 

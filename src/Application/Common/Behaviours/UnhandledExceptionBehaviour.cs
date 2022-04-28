@@ -29,7 +29,7 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavio
             var requestName = typeof(TRequest).Name;
             var userId = await _currentUserService.UserId();
             var userName = await _identityService.GetUserNameAsync(userId);
-            _logger.LogError(ex, "{Name}: {Exception} with {@Request} by {@UserName}", requestName, ex.Message, request,userName);
+            _logger.LogError(ex, "{Name}: {Exception} with {@Request} by {@UserName}", requestName, ex.Message, request, userName);
             throw;
         }
     }

@@ -22,7 +22,7 @@ public class DeleteProductCommand : IRequest<Result>, ICacheInvalidator
 
 public class DeleteProductCommandHandler :
              IRequestHandler<DeleteProductCommand, Result>
-    {
+{
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
     private readonly IStringLocalizer<DeleteProductCommandHandler> _localizer;

@@ -3,22 +3,22 @@
 
 namespace CleanArchitecture.Blazor.Application.Features.WalletPayouts.EventHandlers;
 
-    public class WalletPayoutDeletedEventHandler : INotificationHandler<DomainEventNotification<WalletPayoutDeletedEvent>>
+public class WalletPayoutDeletedEventHandler : INotificationHandler<DomainEventNotification<WalletPayoutDeletedEvent>>
+{
+    private readonly ILogger<WalletPayoutDeletedEventHandler> _logger;
+
+    public WalletPayoutDeletedEventHandler(
+        ILogger<WalletPayoutDeletedEventHandler> logger
+        )
     {
-        private readonly ILogger<WalletPayoutDeletedEventHandler> _logger;
-
-        public WalletPayoutDeletedEventHandler(
-            ILogger<WalletPayoutDeletedEventHandler> logger
-            )
-        {
-            _logger = logger;
-        }
-        public Task Handle(DomainEventNotification<WalletPayoutDeletedEvent> notification, CancellationToken cancellationToken)
-        {
-            var domainEvent = notification.DomainEvent;
-
-            _logger.LogInformation("CleanArchitecture Domain Event: {DomainEvent}", domainEvent.GetType().Name);
-
-            return Task.CompletedTask;
-        }
+        _logger = logger;
     }
+    public Task Handle(DomainEventNotification<WalletPayoutDeletedEvent> notification, CancellationToken cancellationToken)
+    {
+        var domainEvent = notification.DomainEvent;
+
+        _logger.LogInformation("CleanArchitecture Domain Event: {DomainEvent}", domainEvent.GetType().Name);
+
+        return Task.CompletedTask;
+    }
+}

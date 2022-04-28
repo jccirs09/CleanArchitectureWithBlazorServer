@@ -1,15 +1,15 @@
-using Blazored.LocalStorage;
-using Microsoft.AspNetCore.Components;
-using MudBlazor;
 using Blazor.Server.UI.Components.Shared;
 using Blazor.Server.UI.Models;
-using Toolbelt.Blazor.HotKeys;
-using Microsoft.AspNetCore.Components.Authorization;
-using CleanArchitecture.Blazor.Application.Common.Models;
-using CleanArchitecture.Blazor.Infrastructure.Services.Authentication;
+using Blazored.LocalStorage;
 using CleanArchitecture.Blazor.Application.Common.Interfaces.Identity;
-using CleanArchitecture.Blazor.Infrastructure.Hubs;
+using CleanArchitecture.Blazor.Application.Common.Models;
 using CleanArchitecture.Blazor.Infrastructure.Extensions;
+using CleanArchitecture.Blazor.Infrastructure.Hubs;
+using CleanArchitecture.Blazor.Infrastructure.Services.Authentication;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
+using MudBlazor;
+using Toolbelt.Blazor.HotKeys;
 
 namespace Blazor.Server.UI.Shared;
 
@@ -31,7 +31,7 @@ public partial class MainLayout : IAsyncDisposable, IDisposable
         ActionDefault = "#adadb1",
         ActionDisabled = "rgba(255,255,255, 0.26)",
         ActionDisabledBackground = "rgba(255,255,255, 0.12)",
-        DarkDarken= "rgba(21,27,34,0.7)",
+        DarkDarken = "rgba(21,27,34,0.7)",
         Divider = "rgba(255,255,255, 0.12)",
         DividerLight = "rgba(255,255,255, 0.06)",
         TableLines = "rgba(255,255,255, 0.12)",
@@ -50,16 +50,16 @@ public partial class MainLayout : IAsyncDisposable, IDisposable
     };
     private readonly MudTheme _theme = new()
     {
- 
+
         Palette = new Palette
         {
-            Primary = "#2d4275",
+            Primary = "#c7ab0e",
             Black = "#0A0E19",
             Success = "#64A70B",
             Secondary = "#ff4081ff",
             AppbarBackground = "rgba(255,255,255,0.8)",
         },
-        PaletteDark =new Palette
+        PaletteDark = new Palette
         {
             Black = "#27272f",
             Background = "rgb(21,27,34)",
@@ -197,7 +197,7 @@ public partial class MainLayout : IAsyncDisposable, IDisposable
 
     private UserModel _user = new()
     {
-     
+
     };
 
     private bool _commandPaletteOpen;
@@ -205,7 +205,7 @@ public partial class MainLayout : IAsyncDisposable, IDisposable
     private HotKeysContext? _hotKeysContext;
     private bool _sideMenuDrawerOpen = true;
     private bool _rightToLeft = false;
-    private bool _isDark = false;
+    private bool _isDark = true;
     private ThemeManagerModel _themeManager = new();
 
 
@@ -220,7 +220,7 @@ public partial class MainLayout : IAsyncDisposable, IDisposable
     private ProfileService _profileService { get; set; } = default!;
     [Inject]
     private IIdentityService _identityService { get; set; } = default!;
-    private HubClient _client  { get; set; } = default!;
+    private HubClient _client { get; set; } = default!;
 
     [Inject]
     private AuthenticationStateProvider _authenticationStateProvider { get; set; } = default!;
@@ -240,7 +240,7 @@ public partial class MainLayout : IAsyncDisposable, IDisposable
         }
         if (_client is not null)
         {
-            await  _client.StopAsync();
+            await _client.StopAsync();
             _client.LoggedOut -= _client_LoggedOut;
             _client.LoggedIn -= _client_LoggedIn;
         }
@@ -258,7 +258,7 @@ public partial class MainLayout : IAsyncDisposable, IDisposable
             await ThemeManagerChanged(_themeManager);
             StateHasChanged();
         }
-       
+
     }
 
     private void _client_LoggedIn(object? sender, string e)
@@ -274,13 +274,13 @@ public partial class MainLayout : IAsyncDisposable, IDisposable
 
     private void _client_LoggedOut(object? sender, string e)
     {
-        InvokeAsync( async () =>
-        {
-            var username = await _identityService.GetUserNameAsync(e);
-            Snackbar.Add($"{username} logout.", MudBlazor.Severity.Normal);
-            await _identityService.UpdateLiveStatus(e, false);
-            StateHasChanged();
-        });
+        InvokeAsync(async () =>
+       {
+           var username = await _identityService.GetUserNameAsync(e);
+           Snackbar.Add($"{username} logout.", MudBlazor.Severity.Normal);
+           await _identityService.UpdateLiveStatus(e, false);
+           StateHasChanged();
+       });
     }
 
     protected override async Task OnInitializedAsync()
@@ -293,7 +293,7 @@ public partial class MainLayout : IAsyncDisposable, IDisposable
                 StateHasChanged();
             });
         };
-        
+
         _hotKeysContext = _hotKeys.CreateContext()
             .Add(ModKeys.Meta, Keys.K, OpenCommandPalette, "Open command palette.");
         _authenticationStateProvider.AuthenticationStateChanged += _authenticationStateProvider_AuthenticationStateChanged;

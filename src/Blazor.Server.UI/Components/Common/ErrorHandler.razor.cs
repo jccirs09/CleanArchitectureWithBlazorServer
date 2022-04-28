@@ -1,6 +1,3 @@
-
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
 namespace Blazor.Server.UI.Components.Common;
@@ -10,7 +7,7 @@ public partial class ErrorHandler
 
     public List<Exception> _receivedExceptions = new();
 
-    protected override  Task OnErrorAsync(Exception exception)
+    protected override Task OnErrorAsync(Exception exception)
     {
         _receivedExceptions.Add(exception);
         switch (exception)

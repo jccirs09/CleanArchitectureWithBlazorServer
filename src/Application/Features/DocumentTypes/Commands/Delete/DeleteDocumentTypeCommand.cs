@@ -7,7 +7,7 @@ namespace CleanArchitecture.Blazor.Application.Features.DocumentTypes.Commands.D
 
 public class DeleteDocumentTypeCommand : IRequest<Result>, ICacheInvalidator
 {
-    public int[] Id { get;  }
+    public int[] Id { get; }
     public CancellationTokenSource SharedExpiryTokenSource => DocumentTypeCacheKey.SharedExpiryTokenSource;
     public DeleteDocumentTypeCommand(int[] id)
     {
@@ -37,5 +37,5 @@ public class DeleteDocumentTypeCommandHandler : IRequestHandler<DeleteDocumentTy
         return Result.Success();
     }
 
-     
+
 }

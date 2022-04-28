@@ -1,6 +1,3 @@
-using Microsoft.AspNetCore.Components;
-using MudBlazor;
-using MudBlazor.Utilities;
 using Blazor.Server.UI.Models.Charts;
 using Blazor.Server.UI.Models.Charts.Chart;
 using Blazor.Server.UI.Models.Charts.DataLabels;
@@ -9,6 +6,9 @@ using Blazor.Server.UI.Models.Charts.Series;
 using Blazor.Server.UI.Models.Charts.Stroke;
 using Blazor.Server.UI.Models.Charts.Tooltip;
 using Blazor.Server.UI.Models.Charts.YAxis;
+using Microsoft.AspNetCore.Components;
+using MudBlazor;
+using MudBlazor.Utilities;
 
 namespace Blazor.Server.UI.Components.Index;
 
@@ -21,12 +21,12 @@ public partial class DataCard : MudComponentBase
             .AddClass(Class)
             .Build();
 
-    [EditorRequired] [Parameter] public string Title { get; set; } = string.Empty;
-    [EditorRequired] [Parameter] public string ChartId { get; set; } = string.Empty;
+    [EditorRequired][Parameter] public string Title { get; set; } = string.Empty;
+    [EditorRequired][Parameter] public string ChartId { get; set; } = string.Empty;
     [Parameter] public string BarColor { get; set; } = "var(--mud-palette-primary)";
-    [EditorRequired] [Parameter] public double IncreaseDecrease { get; set; }
-    [EditorRequired] [Parameter] public int Total { get; set; }
-    [EditorRequired] [Parameter] public List<int> LastTenDays { get; set; } = new();
+    [EditorRequired][Parameter] public double IncreaseDecrease { get; set; }
+    [EditorRequired][Parameter] public int Total { get; set; }
+    [EditorRequired][Parameter] public List<int> LastTenDays { get; set; } = new();
 
     protected override void OnInitialized()
     {
@@ -46,7 +46,7 @@ public partial class DataCard : MudComponentBase
                 },
                 Id = ChartId,
             },
-            Colors = new List<string> {BarColor},
+            Colors = new List<string> { BarColor },
             Series = new List<SeriesModel<int>>
             {
                 new()

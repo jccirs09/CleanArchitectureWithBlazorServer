@@ -78,14 +78,14 @@ public partial class AddEditModal<TRequest> : IAddEditModal<TRequest>
         try
         {
             await SaveFunc(RequestModel);
-            Snackbar.Add($"{EntityName} {(IsCreate ? L["Created"] : L["Updated"])}.",Severity.Success);
+            Snackbar.Add($"{EntityName} {(IsCreate ? L["Created"] : L["Updated"])}.", Severity.Success);
             MudDialog.Close();
         }
         catch (Exception ex)
         {
             Snackbar.Add(ex.Message, Severity.Error);
         }
-         
+
     }
 
     private void Cancel() =>

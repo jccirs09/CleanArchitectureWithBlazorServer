@@ -28,10 +28,16 @@
                      OnSettingClick="@(() => _themingDrawerOpen = true)"
                      User="_user" />
 
-            <SideMenu SideMenuDrawerOpen="_sideMenuDrawerOpen"
+            @*
+                <SideMenu SideMenuDrawerOpen="_sideMenuDrawerOpen"
                       SideMenuDrawerOpenChanged="SideMenuDrawerOpenChangedHandler"
                       User="_user" />
-
+            *@
+            
+            <NavMenuRoles SideMenuDrawerOpen="_sideMenuDrawerOpen"
+                      SideMenuDrawerOpenChanged="SideMenuDrawerOpenChangedHandler"
+                      User="_user" />
+            
             <ThemesMenu ThemingDrawerOpen="_themingDrawerOpen"
                         ThemingDrawerOpenChanged="ThemingDrawerOpenChangedHandler"
                         ThemeManager="_themeManager"

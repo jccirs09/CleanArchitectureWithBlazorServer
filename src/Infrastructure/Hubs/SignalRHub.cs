@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Concurrent;
-using CleanArchitecture.Blazor.Application.Common.Interfaces.Identity;
 using CleanArchitecture.Blazor.Infrastructure.Constants;
 using Microsoft.AspNetCore.SignalR;
 
@@ -13,11 +12,11 @@ public class SignalRHub : Hub
 {
 
     private static readonly ConcurrentDictionary<string, string> _onlineUsers = new();
- 
+
 
     public SignalRHub()
     {
-        
+
     }
     public override async Task OnConnectedAsync()
     {
@@ -31,7 +30,7 @@ public class SignalRHub : Hub
         if (_onlineUsers.TryRemove(id, out string userId))
         {
             await Clients.AllExcept(id).SendAsync(SignalR.DisconnectUser, userId);
-           
+
         }
         await base.OnDisconnectedAsync(exception);
     }
@@ -46,7 +45,7 @@ public class SignalRHub : Hub
             {
                 // re-use existing message for now
                 await Clients.AllExcept(id).SendAsync(SignalR.ConnectUser, userId);
-              
+
             }
         }
     }

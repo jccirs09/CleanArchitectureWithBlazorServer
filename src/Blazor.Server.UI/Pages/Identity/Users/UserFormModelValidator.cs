@@ -1,7 +1,7 @@
 using FluentValidation;
 namespace Blazor.Server.UI.Pages.Identity.Users;
 
-public class UserFormModelValidator: AbstractValidator<UserFormModel>
+public class UserFormModelValidator : AbstractValidator<UserFormModel>
 {
     public UserFormModelValidator()
     {
@@ -15,7 +15,7 @@ public class UserFormModelValidator: AbstractValidator<UserFormModel>
              .MaximumLength(256)
              .NotEmpty()
              .EmailAddress();
- 
+
         RuleFor(p => p.Password).NotEmpty().WithMessage("Your password cannot be empty")
                  .MinimumLength(6).WithMessage("Your password length must be at least 6.")
                  .MaximumLength(16).WithMessage("Your password length must not exceed 16.")

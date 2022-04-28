@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using CleanArchitecture.Blazor.Application.Features.AuditTrails.DTOs;
-using CleanArchitecture.Blazor.Domain.Entities.Audit;
 
 namespace CleanArchitecture.Blazor.Application.AuditTrails.Queries.PaginationQuery;
 
@@ -30,7 +29,7 @@ public class AuditTrailsQueryHandler : IRequestHandler<AuditTrailsWithPagination
     public async Task<PaginatedData<AuditTrailDto>> Handle(AuditTrailsWithPaginationQuery request, CancellationToken cancellationToken)
     {
         var data = await _context.AuditTrails
-            .Where(x=>x.TableName.Contains(request.Keyword))
+            .Where(x => x.TableName.Contains(request.Keyword))
             .OrderBy($"{request.OrderBy} {request.SortDirection}")
                 .ProjectTo<AuditTrailDto>(_mapper.ConfigurationProvider)
                 .PaginatedDataAsync(request.PageNumber, request.PageSize);

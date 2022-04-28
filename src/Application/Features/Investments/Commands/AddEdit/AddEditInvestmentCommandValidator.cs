@@ -3,12 +3,12 @@
 
 namespace CleanArchitecture.Blazor.Application.Features.Investments.Commands.AddEdit;
 
-    public class AddEditInvestmentCommandValidator : AbstractValidator<AddEditInvestmentCommand>
-    {
+public class AddEditInvestmentCommandValidator : AbstractValidator<AddEditInvestmentCommand>
+{
 
 
     public AddEditInvestmentCommandValidator()
-        {
+    {
         RuleFor(v => v.ProofType)
            .MaximumLength(30)
            .NotEmpty();
@@ -17,17 +17,17 @@ namespace CleanArchitecture.Blazor.Application.Features.Investments.Commands.Add
         RuleFor(v => v.Amount)
                .LessThanOrEqualTo(10000);
         RuleFor(v => v.ImageDateUrl)
-            .NotEmpty();        
-       }
+            .NotEmpty();
+    }
 
-        public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
-        {
-            var result = await ValidateAsync(ValidationContext<AddEditInvestmentCommand>.CreateWithOptions((AddEditInvestmentCommand)model, x => x.IncludeProperties(propertyName)));
-            if (result.IsValid)
-                return Array.Empty<string>();
-            return result.Errors.Select(e => e.ErrorMessage);
-        };
+    public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
+    {
+        var result = await ValidateAsync(ValidationContext<AddEditInvestmentCommand>.CreateWithOptions((AddEditInvestmentCommand)model, x => x.IncludeProperties(propertyName)));
+        if (result.IsValid)
+            return Array.Empty<string>();
+        return result.Errors.Select(e => e.ErrorMessage);
+    };
 
-    
+
 }
 

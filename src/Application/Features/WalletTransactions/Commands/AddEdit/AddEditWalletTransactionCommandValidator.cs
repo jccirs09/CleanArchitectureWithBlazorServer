@@ -3,8 +3,8 @@
 
 namespace CleanArchitecture.Blazor.Application.Features.WalletTransactions.Commands.AddEdit;
 
-    public class AddEditWalletTransactionCommandValidator : AbstractValidator<AddEditWalletTransactionCommand>
-    {
+public class AddEditWalletTransactionCommandValidator : AbstractValidator<AddEditWalletTransactionCommand>
+{
     public AddEditWalletTransactionCommandValidator()
     {
         RuleFor(v => v.UserId)

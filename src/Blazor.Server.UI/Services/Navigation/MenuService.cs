@@ -1,6 +1,5 @@
 using Blazor.Server.UI.Models.SideMenu;
 using CleanArchitecture.Blazor.Infrastructure.Identity;
-using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using MudBlazor;
 
@@ -14,7 +13,7 @@ public class MenuService : IMenuService
         _roleManager = roleManager;
     }
     private readonly List<MenuSectionModel> _features = new List<MenuSectionModel>()
-    {        
+    {
         new MenuSectionModel
         {
             Title = "Application",
@@ -172,7 +171,7 @@ public class MenuService : IMenuService
             }
         }
     };
-    
+
 
     public IEnumerable<MenuSectionModel> Features => _features;
 }

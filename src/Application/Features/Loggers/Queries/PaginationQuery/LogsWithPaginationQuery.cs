@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using CleanArchitecture.Blazor.Application.Features.Logs.DTOs;
-using CleanArchitecture.Blazor.Domain.Entities.Log;
 
 namespace CleanArchitecture.Blazor.Application.Logs.Queries.PaginationQuery;
 
@@ -29,10 +28,10 @@ public class LogsQueryHandler : IRequestHandler<LogsWithPaginationQuery, Paginat
     }
     public async Task<PaginatedData<LogDto>> Handle(LogsWithPaginationQuery request, CancellationToken cancellationToken)
     {
-   
+
 
         var data = await _context.Loggers
-            .Where(x=>x.Message.Contains(request.Keyword) || x.Exception.Contains(request.Keyword))
+            .Where(x => x.Message.Contains(request.Keyword) || x.Exception.Contains(request.Keyword))
             .OrderBy($"{request.OrderBy} {request.SortDirection}")
                 .ProjectTo<LogDto>(_mapper.ConfigurationProvider)
                 .PaginatedDataAsync(request.PageNumber, request.PageSize);

@@ -11,15 +11,15 @@ public class ImportDocumentTypesCommand : IRequest<Result>, ICacheInvalidator
     public string FileName { get; set; } = default!;
     public byte[] Data { get; set; } = default!;
     public CancellationTokenSource? SharedExpiryTokenSource => DocumentTypeCacheKey.SharedExpiryTokenSource;
-    public ImportDocumentTypesCommand(string fileName,byte[] data)
+    public ImportDocumentTypesCommand(string fileName, byte[] data)
     {
-        FileName=fileName;
-        Data=data;
+        FileName = fileName;
+        Data = data;
     }
 }
 public record CreateDocumentTypeTemplateCommand : IRequest<byte[]>
 {
-    
+
 }
 public class ImportDocumentTypesCommandHandler :
     IRequestHandler<CreateDocumentTypeTemplateCommand, byte[]>,

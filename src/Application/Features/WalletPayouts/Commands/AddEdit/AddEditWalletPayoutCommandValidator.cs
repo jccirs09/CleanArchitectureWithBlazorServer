@@ -3,13 +3,13 @@
 
 namespace CleanArchitecture.Blazor.Application.Features.WalletPayouts.Commands.AddEdit;
 
-    public class AddEditWalletPayoutCommandValidator : AbstractValidator<AddEditWalletPayoutCommand>
-    {
-    
+public class AddEditWalletPayoutCommandValidator : AbstractValidator<AddEditWalletPayoutCommand>
+{
+
     public AddEditWalletPayoutCommandValidator()
-        {
-           
-       
+    {
+
+
         RuleFor(v => v.Amount)
               .GreaterThanOrEqualTo(50);
         RuleFor(v => v.Amount)
@@ -23,6 +23,6 @@ namespace CleanArchitecture.Blazor.Application.Features.WalletPayouts.Commands.A
         return result.Errors.Select(e => e.ErrorMessage);
     };
 
-    
+
 }
 

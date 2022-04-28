@@ -4,12 +4,10 @@ using Blazor.Server.UI.Models.Charts.Chart;
 using Blazor.Server.UI.Models.Charts.DataLabels;
 using Blazor.Server.UI.Models.Charts.Fill;
 using Blazor.Server.UI.Models.Charts.ForecastDataPoints;
-using Blazor.Server.UI.Models.Charts.Grid;
 using Blazor.Server.UI.Models.Charts.Legend;
 using Blazor.Server.UI.Models.Charts.NoData;
 using Blazor.Server.UI.Models.Charts.PlotOptions;
 using Blazor.Server.UI.Models.Charts.Responsive;
-using Blazor.Server.UI.Models.Charts.Series;
 using Blazor.Server.UI.Models.Charts.States;
 using Blazor.Server.UI.Models.Charts.Stroke;
 using Blazor.Server.UI.Models.Charts.Subtitle;
@@ -27,11 +25,11 @@ public class ChartOptionsModel<TSeries, TXAxis>
     [JsonPropertyName("chart")] public ChartModel Chart { get; set; } = new();
     //
     [JsonPropertyName("colors")]
-    public List<string> Colors { get; set; } = new() {"var(--mud-palette-primary)", "var(--mud-palette-secondary)"};
-    
+    public List<string> Colors { get; set; } = new() { "var(--mud-palette-primary)", "var(--mud-palette-secondary)" };
+
     [JsonPropertyName("dataLabels")] public DataLabelsModel DataLabels { get; set; } = new();
     [JsonPropertyName("fill")] public FillModel Fill { get; set; } = new();
-    
+
     [JsonPropertyName("forecastDataPoints")]
     public ForecastDataPointsModel ForecastDataPoints { get; set; } = new();
 

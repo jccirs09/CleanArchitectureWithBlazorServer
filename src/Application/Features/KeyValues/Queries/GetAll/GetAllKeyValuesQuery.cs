@@ -3,7 +3,6 @@
 
 using CleanArchitecture.Blazor.Application.Features.KeyValues.Caching;
 using CleanArchitecture.Blazor.Application.Features.KeyValues.DTOs;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace CleanArchitecture.Blazor.Application.Features.KeyValues.Queries.ByName;
 
@@ -30,7 +29,7 @@ public class GetAllKeyValuesQueryHandler : IRequestHandler<GetAllKeyValuesQuery,
     }
     public async Task<IList<KeyValueDto>> Handle(GetAllKeyValuesQuery request, CancellationToken cancellationToken)
     {
-        var data = await _context.KeyValues.OrderBy(x=>x.Name).ThenBy(x=>x.Value)
+        var data = await _context.KeyValues.OrderBy(x => x.Name).ThenBy(x => x.Value)
            .ProjectTo<KeyValueDto>(_mapper.ConfigurationProvider)
            .ToListAsync(cancellationToken);
         return data;

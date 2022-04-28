@@ -1,20 +1,20 @@
+using Blazor.Analytics;
+using Blazor.Server.UI.Services;
+using Blazor.Server.UI.Services.Navigation;
+using Blazor.Server.UI.Services.Notifications;
 using Blazored.LocalStorage;
+using CleanArchitecture.Blazor.Application;
+using CleanArchitecture.Blazor.Infrastructure;
+using CleanArchitecture.Blazor.Infrastructure.Extensions;
+using CleanArchitecture.Blazor.Infrastructure.Identity;
+using CleanArchitecture.Blazor.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using MudBlazor;
 using MudBlazor.Services;
-using Blazor.Server.UI.Services;
-using Toolbelt.Blazor.Extensions.DependencyInjection;
-using CleanArchitecture.Blazor.Infrastructure.Persistence;
-using CleanArchitecture.Blazor.Infrastructure.Identity;
-using CleanArchitecture.Blazor.Infrastructure;
-using CleanArchitecture.Blazor.Application;
-using CleanArchitecture.Blazor.Infrastructure.Extensions;
 using Serilog;
 using Serilog.Events;
-using MudBlazor;
-using Blazor.Analytics;
-using Blazor.Server.UI.Services.Notifications;
-using Blazor.Server.UI.Services.Navigation;
+using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 

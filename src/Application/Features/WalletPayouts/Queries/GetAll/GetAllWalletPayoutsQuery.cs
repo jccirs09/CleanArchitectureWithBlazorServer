@@ -5,17 +5,17 @@ using CleanArchitecture.Blazor.Application.Features.WalletPayouts.DTOs;
 
 namespace CleanArchitecture.Blazor.Application.Features.WalletPayouts.Queries.GetAll;
 
-    public class GetAllWalletPayoutsQuery : IRequest<IEnumerable<WalletPayoutDto>>
-    {
-       
-    }
-    
-    public class GetAllWalletPayoutsQueryHandler :
-         IRequestHandler<GetAllWalletPayoutsQuery, IEnumerable<WalletPayoutDto>>
-    {
-        private readonly IApplicationDbContext _context;
-        private readonly IMapper _mapper;
-        private readonly IStringLocalizer<GetAllWalletPayoutsQueryHandler> _localizer;
+public class GetAllWalletPayoutsQuery : IRequest<IEnumerable<WalletPayoutDto>>
+{
+
+}
+
+public class GetAllWalletPayoutsQueryHandler :
+     IRequestHandler<GetAllWalletPayoutsQuery, IEnumerable<WalletPayoutDto>>
+{
+    private readonly IApplicationDbContext _context;
+    private readonly IMapper _mapper;
+    private readonly IStringLocalizer<GetAllWalletPayoutsQueryHandler> _localizer;
     private readonly ICurrentUserService _userService;
 
     public GetAllWalletPayoutsQueryHandler(
@@ -28,17 +28,19 @@ namespace CleanArchitecture.Blazor.Application.Features.WalletPayouts.Queries.Ge
         _context = context;
         _mapper = mapper;
         _localizer = localizer;
-        }
+    }
 
-        public async Task<IEnumerable<WalletPayoutDto>> Handle(GetAllWalletPayoutsQuery request, CancellationToken cancellationToken)
-        {
+    public async Task<IEnumerable<WalletPayoutDto>> Handle(GetAllWalletPayoutsQuery request, CancellationToken cancellationToken)
+    {
         //TODO:Implementing GetAllWalletPayoutsQueryHandler method
         var userId = await _userService.UserId();
-        var data = await _context.WalletPayouts.Where(u=> u.FromUser.Equals(userId))
+        var data = await _context.WalletPayouts.Where(u => u.FromUser.Equals(userId))
+                         .OrderByDescending(s => s.Stat)
+                         .ThenByDescending(d => d.Created)
                          .ProjectTo<WalletPayoutDto>(_mapper.ConfigurationProvider)
                          .ToListAsync(cancellationToken);
-            return data;
-        }
+        return data;
     }
+}
 
 

@@ -3,15 +3,15 @@
 
 namespace CleanArchitecture.Blazor.Application.Features.Wallets.Commands.Update;
 
-    public class UpdateWalletCommandValidator : AbstractValidator<UpdateWalletCommand>
+public class UpdateWalletCommandValidator : AbstractValidator<UpdateWalletCommand>
+{
+    public UpdateWalletCommandValidator()
     {
-        public UpdateWalletCommandValidator()
-        {
-           //TODO:Implementing UpdateWalletCommandValidator method 
-           //ex. RuleFor(v => v.Name)
-           //      .MaximumLength(256)
-           //      .NotEmpty();
-           throw new System.NotImplementedException();
-        }
+        //TODO:Implementing UpdateWalletCommandValidator method 
+        //ex. RuleFor(v => v.Name)
+        //      .MaximumLength(256)
+        //      .NotEmpty();
+        throw new System.NotImplementedException();
     }
+}
 

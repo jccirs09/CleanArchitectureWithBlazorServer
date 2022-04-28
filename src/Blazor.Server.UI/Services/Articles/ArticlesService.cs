@@ -1,8 +1,6 @@
-using Blazor.Server.UI.Models.Article;
-using System.Collections.Generic;
-using System.Net.Http.Json;
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using Blazor.Server.UI.Models.Article;
 namespace Blazor.Server.UI.Services;
 
 public class ArticlesService : IArticlesService
@@ -11,7 +9,7 @@ public class ArticlesService : IArticlesService
     private readonly IWebHostEnvironment _environment;
 
     public ArticlesService(
-        IWebHostEnvironment  environment
+        IWebHostEnvironment environment
         )
     {
         _environment = environment;
@@ -19,7 +17,7 @@ public class ArticlesService : IArticlesService
 
     public async Task<IEnumerable<ArticlePreviewModel>> GetArticles()
     {
-        var jsonstring =File.ReadAllText(Path.Combine(_environment.WebRootPath,UriRequest));
+        var jsonstring = File.ReadAllText(Path.Combine(_environment.WebRootPath, UriRequest));
         var articles = JsonSerializer.Deserialize<IEnumerable<ArticlePreviewModel>>(jsonstring, new JsonSerializerOptions()
         {
             Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
