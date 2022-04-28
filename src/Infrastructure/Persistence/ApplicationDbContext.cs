@@ -2,14 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Reflection;
-using CleanArchitecture.Blazor.Domain.Common;
-using CleanArchitecture.Blazor.Domain.Entities;
-using CleanArchitecture.Blazor.Domain.Entities.Audit;
-using CleanArchitecture.Blazor.Domain.Entities.Log;
-using CleanArchitecture.Blazor.Domain.Enums;
-using CleanArchitecture.Blazor.Infrastructure.Persistence.Extensions;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Blazor.Infrastructure.Persistence;
 

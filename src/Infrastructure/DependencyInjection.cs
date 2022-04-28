@@ -8,6 +8,11 @@ using Microsoft.AspNetCore.Components.Server.Circuits;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using CleanArchitecture.Blazor.Infrastructure.Services.Authentication;
+using Microsoft.AspNetCore.Components.Server.Circuits;
+using CleanArchitecture.Blazor.Infrastructure.Services.Picklist;
+using CleanArchitecture.Blazor.Infrastructure.Hubs;
+using CleanArchitecture.Blazor.Infrastructure.Extensions;
 
 namespace CleanArchitecture.Blazor.Infrastructure;
 
@@ -35,22 +40,11 @@ public static class DependencyInjection
             services.AddDatabaseDeveloperPageExceptionFilter();
         }
 
-
-        services.Configure<CookiePolicyOptions>(options =>
-        {
-            // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-            options.CheckConsentNeeded = context => true;
-            options.MinimumSameSitePolicy = SameSiteMode.Strict;
-        });
         services.Configure<DashbordSettings>(configuration.GetSection(DashbordSettings.SectionName));
         services.AddSingleton(s => s.GetRequiredService<IOptions<DashbordSettings>>().Value);
-<<<<<<< HEAD
         services.AddScoped<IDbContextFactory<ApplicationDbContext>, BlazorContextFactory<ApplicationDbContext>>();
         services.AddTransient<IApplicationDbContext>(provider => provider.GetRequiredService<IDbContextFactory<ApplicationDbContext>>().CreateDbContext());
-=======
-        services.AddScoped<IDbContextFactory<ApplicationDbContext>,BlazorContextFactory<ApplicationDbContext>>();
-        services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<IDbContextFactory<ApplicationDbContext>>().CreateDbContext());
->>>>>>> main
+
         services.AddScoped<IDomainEventService, DomainEventService>();
 
         services
@@ -63,6 +57,7 @@ public static class DependencyInjection
         services.AddSingleton<ProfileService>();
         services.AddScoped<IdentityAuthenticationService>();
         services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<IdentityAuthenticationService>());
+        services.AddScoped<IPicklistService,PicklistService>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddTransient<IDateTime, DateTimeService>();
         services.AddTransient<IExcelService, ExcelService>();
@@ -72,26 +67,14 @@ public static class DependencyInjection
         services.AddScoped<IWalletTransactionService, WalletTransactionService>();
         services.Configure<AppConfigurationSettings>(configuration.GetSection("AppConfigurationSettings"));
         services.Configure<MailSettings>(configuration.GetSection("MailSettings"));
+        services.Configure<AppConfigurationSettings>(configuration.GetSection(AppConfigurationSettings.SectionName));
+        var mailSettings = new MailSettings();
+        configuration.GetSection(MailSettings.SectionName).Bind(mailSettings);
+        services.Configure<MailSettings>(configuration.GetSection(MailSettings.SectionName));
+        services.AddSingleton(mailSettings);
         services.AddTransient<IMailService, SMTPMailService>();
-        services.AddTransient<IDictionaryService, DictionaryService>();
-        services.AddAuthentication();
-        services.Configure<IdentityOptions>(options =>
-        {
-            // Default SignIn settings.
-            options.SignIn.RequireConfirmedEmail = false;
-            options.SignIn.RequireConfirmedPhoneNumber = false;
-            // Default Lockout settings.
-            options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(3);
-            options.Lockout.MaxFailedAccessAttempts = 5;
-            options.Lockout.AllowedForNewUsers = true;
-
-        });
-        services.ConfigureApplicationCookie(options =>
-        {
-            options.ExpireTimeSpan = TimeSpan.FromDays(30);
-            options.Cookie.HttpOnly = true;
-            options.SlidingExpiration = true;
-        });
+        services.AddAuthentication().TryConfigureMicrosoftAccount(configuration)
+                                    .TryConfigureGoogleAccount(configuration);
 
         services.AddAuthorization(options =>
         {
@@ -118,11 +101,22 @@ public static class DependencyInjection
             options.FallBackToParentUICultures = true;
 
         });
-
+        // configure your sender and template choices with dependency injection.
+        services.AddFluentEmail(mailSettings.From)
+                .AddRazorRenderer()
+                .AddSmtpSender(new System.Net.Mail.SmtpClient()
+                {
+                    Host = mailSettings.Host,
+                    Port = mailSettings.Port,
+                    EnableSsl = mailSettings.UseSsl,
+                    Credentials = new System.Net.NetworkCredential(mailSettings.UserName, mailSettings.Password)
+                });
 
 
         services.AddControllers();
-        services.AddSingleton<CircuitHandler, CircuitHandlerService>();
+        services.AddSingleton<IUsersStateContainer, UsersStateContainer>();
+        services.AddScoped<CircuitHandler, CircuitHandlerService>();
+        services.AddScoped<HubClient>();
         services.AddSignalR();
 
         return services;

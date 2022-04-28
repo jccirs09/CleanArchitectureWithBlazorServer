@@ -16,9 +16,11 @@
         <MudTable ServerData="@(new Func<TableState, Task<TableData<AuditTrailDto>>>(ServerReload))"
                   FixedHeader="true"
                   FixedFooter="true"
+                  Virtualize="true"
+                  RowsPerPage="25"
                   Height="calc(100vh - 265px)"
                   Loading="@_loading"
-                  SortLabel="@L["Sort By"]"
+                  SortLabel="@PromptText.ORDERBY"
                   Hover="true" @ref="_table">
             <ToolBarContent>
                 <div class="justify-start pt-3">
@@ -27,17 +29,17 @@
                                Size="Size.Small"
                                OnClick="@(()=>OnRefresh())"
                                StartIcon="@Icons.Material.Filled.Refresh" IconColor="Color.Surface" Color="Color.Primary"
-                               Style="margin-right: 5px;">@L["Refresh"]</MudButton>
+                               Style="margin-right: 5px;">@ButtonText.REFRESH</MudButton>
                 </div>
                 <MudSpacer />
                 <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Value="@_searchString" Placeholder="Search" Adornment="Adornment.Start"
                               AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
             </ToolBarContent>
             <ColGroup>
-                <col style="width:160px;" />
+                <col style="width:190px;" />
             </ColGroup>
             <HeaderContent>
-                <MudTh Style="width:80px">@L["Actions"]</MudTh>
+                <MudTh Style="width:190px">@ButtonText.ACTIONS</MudTh>
                 <MudTh><MudTableSortLabel SortLabel="UserId" T="AuditTrailDto">@L["User Id"]</MudTableSortLabel></MudTh>
                 <MudTh Style="text-align:center"><MudTableSortLabel SortLabel="AuditType" T="AuditTrailDto">@L["Audit Type"]</MudTableSortLabel></MudTh>
                 <MudTh><MudTableSortLabel SortLabel="TableName" T="AuditTrailDto">@L["Table Name"]</MudTableSortLabel></MudTh>
@@ -45,7 +47,7 @@
                 <MudTh><MudTableSortLabel SortLabel="DateTime" T="AuditTrailDto">@L["Date Time"]</MudTableSortLabel></MudTh>
             </HeaderContent>
             <RowTemplate>
-                <MudTd DataLabel="@L["Actions"]">
+                <MudTd DataLabel="@ButtonText.ACTIONS">
                     <MudButton Variant="Variant.Filled" DisableElevation="true"
                                OnClick="@(() => OnShowDetail(context))"
                                StartIcon="@(context.ShowDetails == true?Icons.Material.Filled.Close:Icons.Material.Filled.Add)" IconColor="Color.Secondary" Size="Size.Small"
@@ -94,10 +96,10 @@
                 }
             </ChildRowContent>
             <NoRecordsContent>
-                <MudText>@L["No matching records found"]</MudText>
+                <MudText>@PromptText.NOMACHING</MudText>
             </NoRecordsContent>
             <LoadingContent>
-                <MudText>@L["Loading.."].</MudText>
+                <MudText>@PromptText.LOADING</MudText>
             </LoadingContent>
             <PagerContent>
                 <MudTablePager />
@@ -129,7 +131,7 @@
                     PageNumber = state.Page + 1,
                     PageSize = state.PageSize
                 };
-            var result = await _mediator.Send(request);
+            var result = await _mediator.Send(request).ConfigureAwait(false);
             return new TableData<AuditTrailDto>() { TotalItems = result.TotalItems, Items = result.Items };
         }
         finally

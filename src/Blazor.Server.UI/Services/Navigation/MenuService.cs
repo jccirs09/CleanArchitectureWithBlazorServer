@@ -118,13 +118,13 @@ public class MenuService : IMenuService
                         new()
                         {
                             Title = "Users",
-                            Href = "/indentity/users",
+                            Href = "/identity/users",
                             PageStatus = PageStatus.Completed
                         },
                         new()
                         {
                             Title = "Roles",
-                            Href = "/indentity/roles",
+                            Href = "/identity/roles",
                             PageStatus = PageStatus.Completed
                         },
                         new()
@@ -143,8 +143,8 @@ public class MenuService : IMenuService
                     MenuItems = new List<MenuSectionSubItemModel>
                     {   new()
                         {
-                            Title = "Dictionaries",
-                            Href = "/system/dictionaries",
+                            Title = "Picklist",
+                            Href = "/system/picklist",
                             PageStatus = PageStatus.Completed
                         },
                         new()

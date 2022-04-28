@@ -20,13 +20,28 @@ public class ProfileService
             UserName = user.GetUserName(),
             ReferralCode = user.GetReferralCode(),
             ReferredBy = user.GetReferredBy(),
+    public event Action? OnChange;
+    public UserModel Profile { get; private set; } = new();
+    public Task Set(ClaimsPrincipal principal)
+    {
+        Profile =  new UserModel()
+        {
+            Avatar = principal.GetProfilePictureDataUrl(),
+            DisplayName = principal.GetDisplayName(),
+            Email = principal.GetEmail(),
+            PhoneNumber = principal.GetPhoneNumber(),
+            Site= principal.GetSite(),
+            Role = principal.GetRoles().FirstOrDefault(),
+            UserId = principal.GetUserId(),
+            UserName = principal.GetUserName(),
         };
-        return await Task.FromResult(Profile);
+        OnChange?.Invoke();
+        return Task.CompletedTask;
     }
     public Task Update(UserModel profile)
     {
         Profile = profile;
-        OnChange?.Invoke(Profile);
+        OnChange?.Invoke();
         return Task.CompletedTask;
     }
 

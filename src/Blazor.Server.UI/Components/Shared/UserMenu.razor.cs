@@ -3,31 +3,33 @@ using CleanArchitecture.Blazor.Application.Common.Models;
 using CleanArchitecture.Blazor.Infrastructure.Services.Authentication;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using MudBlazor;
+using Microsoft.JSInterop;
+using CleanArchitecture.Blazor.Application.Constants;
 
 namespace Blazor.Server.UI.Components.Shared;
 
 public partial class UserMenu
 {
-    [Parameter] public string Class { get; set; }
-    [EditorRequired][Parameter] public UserModel User { get; set; } = default!;
+
+    [EditorRequired] [Parameter] public UserModel User { get; set; } = default!;
     [Parameter] public EventCallback<MouseEventArgs> OnSettingClick { get; set; }
     [Inject] private IdentityAuthenticationService _authenticationService { get; set; } = default!;
+    [Inject] private IJSRuntime JS { get; set; } = default!;
     private async Task OnLogout()
     {
         var parameters = new DialogParameters
             {
-                { nameof(LogoutConfirmation.ContentText), $"{L["You are attempting to log out of application. Do you really want to log out?"]}"},
-                { nameof(LogoutConfirmation.ButtonText), $"{L["Logout"]}"},
+                { nameof(LogoutConfirmation.ContentText), $"{PromptText.LOGOUTCONFIRMATION}"},
                 { nameof(LogoutConfirmation.Color), Color.Error}
             };
 
         var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall, FullWidth = true };
-        var dialog = DialogService.Show<LogoutConfirmation>(L["Logout"], parameters, options);
+        var dialog = DialogService.Show<LogoutConfirmation>(PromptText.LOGOUTCONFIRMATIONTITLE, parameters, options);
         var result = await dialog.Result;
         if (!result.Cancelled)
         {
             await _authenticationService.Logout();
+            await JS.InvokeVoidAsync("externalLogout");
         }
     }
 }

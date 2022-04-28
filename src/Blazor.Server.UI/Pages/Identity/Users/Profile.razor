@@ -1,11 +1,9 @@
-@page "/user/profile"
 @inherits OwningComponentBase
+@page "/user/profile"
 @using CleanArchitecture.Blazor.Infrastructure.Services.Authentication
 @using SixLabors.ImageSharp
 @using SixLabors.ImageSharp.Formats
 @using SixLabors.ImageSharp.Processing
-
-
 @inject IStringLocalizer<Profile> L
 <PageTitle>@Title</PageTitle>
 
@@ -167,14 +165,17 @@
             PasswordInput = InputType.Text;
         }
     }
-    protected override async Task OnInitializedAsync()
+    protected override Task OnInitializedAsync()
     {
+        Title = L["Profile"];
         _userManager = ScopedServices.GetRequiredService<UserManager<ApplicationUser>>();
         var state = await AuthState;
         model = await _profileService.Get(state.User);
         userId = state.User.GetUserId();
         var data = await _referralService.GetReferralCodeAsync(userId);
         referralCode = data.ReferralCode;
+        model = _profileService.Profile;
+        return Task.CompletedTask;
     }
 
     private async Task UploadPhoto(InputFileChangeEventArgs e)
@@ -202,7 +203,7 @@
                     });
                 model.Avatar = result;
                 //Do your validations here
-                Snackbar.Add($"{L["Update successfully"]}", MudBlazor.Severity.Info);
+                Snackbar.Add($"{ToastText.UPDATESUCCESS}", MudBlazor.Severity.Info);
             }
         }
     }
@@ -218,13 +219,13 @@
             user.ProfilePictureDataUrl = model.Avatar;
             await _userManager.UpdateAsync(user);
             if(model.DisplayName is not null)
-                state.User.UpdateDisplayName(model.DisplayName);
+                state.User.SetDisplayName(model.DisplayName);
             if(model.Avatar is not null)
-                state.User.UpdateProfilePictureUrl(model.Avatar);
+                state.User.SetProfilePictureUrl(model.Avatar);
             if(model.PhoneNumber is not null)
-                state.User.UpdatePhoneNumber(model.PhoneNumber);
+                state.User.SetPhoneNumber(model.PhoneNumber);
             await _profileService.Update(model);
-            Snackbar.Add($"{L["Update successfully"]}", MudBlazor.Severity.Info);
+            Snackbar.Add($"{ToastText.UPDATESUCCESS}", MudBlazor.Severity.Info);
         }
 
     }

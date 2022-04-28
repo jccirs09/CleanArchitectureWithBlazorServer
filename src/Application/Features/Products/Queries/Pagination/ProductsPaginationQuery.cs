@@ -3,11 +3,21 @@
 
 using CleanArchitecture.Blazor.Application.Features.Products.Caching;
 using CleanArchitecture.Blazor.Application.Features.Products.DTOs;
+using CleanArchitecture.Blazor.Application.Features.Products.Queries.Specification;
 
 namespace CleanArchitecture.Blazor.Application.Features.Products.Queries.Pagination;
 
 public class ProductsWithPaginationQuery : PaginationFilter, IRequest<PaginatedData<ProductDto>>, ICacheable
 {
+    public string? Name { get; set; }
+    public string? Brand { get; set; }
+    public string? Unit { get; set; }
+    public decimal? MinPrice { get; set; }
+    public decimal? MaxPrice { get; set; }
+    public override string ToString()
+    {
+        return $"{base.ToString()},Name:{Name},Brand:{Brand},Unit:{Unit},MinPrice:{MinPrice},MaxPrice:{MaxPrice}";
+    }
     public string CacheKey => ProductCacheKey.GetPagtionCacheKey($"{this}");
     public MemoryCacheEntryOptions? Options => ProductCacheKey.MemoryCacheEntryOptions;
 }
@@ -32,7 +42,7 @@ public class ProductsWithPaginationQueryHandler :
 
     public async Task<PaginatedData<ProductDto>> Handle(ProductsWithPaginationQuery request, CancellationToken cancellationToken)
     {
-        var data = await _context.Products.Where(x => x.CreatedBy.Equals(request.UserId))
+        var data = await _context.Products.Specify(new SearchProductSpecification(request))
              .OrderBy($"{request.OrderBy} {request.SortDirection}")
              .ProjectTo<ProductDto>(_mapper.ConfigurationProvider)
              .PaginatedDataAsync(request.PageNumber, request.PageSize);

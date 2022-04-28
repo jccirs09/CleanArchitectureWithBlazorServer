@@ -68,11 +68,20 @@
                           Adornment="Adornment.End"
                           AdornmentIcon="@PasswordInputIcon"
                           Required="true"
-                          RequiredError="@L["password is required!"]"
+                          RequiredError="@L["confrm password is required!"]"
                           OnAdornmentClick="TogglePasswordVisibility" Class="mt-4" />
             </MudItem>
         }
         <MudItem xs="12" sm="6">
+            <MudTextField For="@(() => model.PhoneNumber)" @bind-Value="model.PhoneNumber" Label="@L["Phone Number"]" Variant="Variant.Text"></MudTextField>
+        </MudItem>
+       <MudItem xs="12" sm="6">
+            <MudText Typo="Typo.caption">@L["Status"]</MudText>
+            <div class="d-fex">
+                 <MudCheckBox For="@(() =>model.IsActive)" T="bool" @bind-Checked="model.IsActive" Label="@L["Is Active"]"></MudCheckBox>
+            </div>
+        </MudItem>
+        <MudItem xs="12" sm="12">
             <MudText Typo="Typo.caption">@L["Assign Roles"]</MudText>
             <div class="d-fex">
                 @for (int i = 0; i < _roles.Count; i++)
@@ -160,7 +169,7 @@
                     });
                 model.ProfilePictureDataUrl = result;
                 //Do your validations here
-                Snackbar.Add($"Upload successfully", MudBlazor.Severity.Info);
+                Snackbar.Add(ToastText.UPLOADSUCCESS, MudBlazor.Severity.Info);
             }
         }
     }

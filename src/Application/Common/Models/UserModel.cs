@@ -12,4 +12,7 @@ public class UserModel
     public string? UserId { get; set; }
     public string? ReferredBy { get; set; }
     public string? ReferralCode { get; set; }
+    public bool IsActive { get; set; }
+    public bool IsLive { get; set; }
+    public DateTimeOffset? LockoutEnd { get; set; }
 }

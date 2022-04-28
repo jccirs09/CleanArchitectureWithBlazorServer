@@ -142,7 +142,7 @@
     <value>客户信息</value>
   </data>
   <data name="Dictionaries" xml:space="preserve">
-    <value>数据字典</value>
+    <value>参数选用表</value>
   </data>
   <data name="E-Commerce" xml:space="preserve">
     <value>电子商务</value>
@@ -159,6 +159,9 @@
   <data name="MANAGEMENT" xml:space="preserve">
     <value>系统管理</value>
   </data>
+  <data name="Picklist" xml:space="preserve">
+    <value>参数选用表</value>
+  </data>
   <data name="Products" xml:space="preserve">
     <value>产品库</value>
   </data>
@@ -172,6 +175,6 @@
     <value>系统</value>
   </data>
   <data name="Users" xml:space="preserve">
-    <value>账号</value>
+    <value>系统账号</value>
   </data>
 </root>

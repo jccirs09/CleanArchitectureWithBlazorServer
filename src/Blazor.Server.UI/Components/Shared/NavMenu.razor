@@ -1,7 +1,7 @@
 @using Blazor.Server.UI.Components.Localization
 <MudAppBar Class=""
            Elevation="0"
-           Style="@(IsDarkMode ? "background: rgba(21,27,34,0.7)" : "background: rgba(255,255,255,0.8)")">
+           Style="background: --mud-palette-appbar-background">
     <MudTooltip Arrow="true"  Text="Toggle menu">
         <MudToggleIconButton Class="mr-3"
                              Color="@Color.Default"
@@ -22,22 +22,9 @@
                        OnClick="OpenCommandPalette" />
     </MudTooltip>
     <MudSpacer />
-<<<<<<< HEAD
 
    @*<NotificationMenu />*@
    @*
-=======
-    <MudTooltip Arrow="true"
-                Text="Navigate to GitHub">
-        <MudIconButton Class="mx-1"
-                       Color="Color.Default"
-                       Icon="@Icons.Custom.Brands.GitHub"
-                       Link="https://github.com/neozhu/CleanArchitectureWithBlazorServer"
-                       Target="_blank" />
-    </MudTooltip>
-    <LanguageSelector />
-    <NotificationMenu />
->>>>>>> main
     <MudTooltip Text="@(RightToLeft?"Toggle right-to-left":"Toggle left-to-right")">
         <MudIconButton Class="mx-1"
                        Icon="@(RightToLeft?Icons.Material.Filled.FormatTextdirectionLToR:Icons.Material.Filled.FormatTextdirectionRToL)"

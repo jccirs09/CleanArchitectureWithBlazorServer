@@ -2,6 +2,17 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 global using System.Security.Claims;
+global using Microsoft.AspNetCore.Components.Authorization;
+global using Microsoft.AspNetCore.Identity;
+global using Microsoft.Extensions.Logging;
+global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore;
+global using CleanArchitecture.Blazor.Domain;
+global using CleanArchitecture.Blazor.Domain.Common;
+global using CleanArchitecture.Blazor.Domain.Entities;
+global using CleanArchitecture.Blazor.Domain.Entities.Audit;
+global using CleanArchitecture.Blazor.Domain.Entities.Log;
+global using CleanArchitecture.Blazor.Infrastructure.Persistence.Extensions;
 global using CleanArchitecture.Blazor.Application.Common.Exceptions;
 global using CleanArchitecture.Blazor.Application.Common.Interfaces;
 global using CleanArchitecture.Blazor.Application.Common.Interfaces.Identity;

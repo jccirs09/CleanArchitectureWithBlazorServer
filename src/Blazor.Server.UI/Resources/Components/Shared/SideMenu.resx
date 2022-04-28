@@ -156,6 +156,9 @@
   <data name="MANAGEMENT" xml:space="preserve">
     <value>MANAGEMENT</value>
   </data>
+  <data name="Picklist" xml:space="preserve">
+    <value>Picklist</value>
+  </data>
   <data name="Products" xml:space="preserve">
     <value>Products</value>
   </data>
@@ -170,5 +173,8 @@
   </data>
   <data name="Users" xml:space="preserve">
     <value>Users</value>
+  </data>
+  <data name="Customers" xml:space="preserve">
+    <value>Customers</value>
   </data>
 </root>
